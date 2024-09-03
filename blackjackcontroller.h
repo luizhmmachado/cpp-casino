@@ -24,6 +24,8 @@ public:
     QList<int> cartasUser() const;
     QList<int> cartasCasa() const;
 
+    Q_INVOKABLE int somaCartas(const QList<int> &cartas) const;
+
 public slots:
     void startGame(int aposta);
     void jogar(int acao);

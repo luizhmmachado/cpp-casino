@@ -46,9 +46,11 @@ constexpr auto qt_meta_stringdata_CLASSBlackjackENDCLASS = QtMocHelpers::stringD
     "aposta",
     "jogar",
     "acao",
+    "somaCartas",
+    "QList<int>",
+    "cartas",
     "saldo",
     "cartasUser",
-    "QList<int>",
     "cartasCasa"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
@@ -62,22 +64,25 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSBlackjackENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
-       4,   60, // properties
+       7,   14, // methods
+       4,   69, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   50,    2, 0x06,    5 /* Public */,
-       3,    0,   51,    2, 0x06,    6 /* Public */,
-       4,    0,   52,    2, 0x06,    7 /* Public */,
-       5,    0,   53,    2, 0x06,    8 /* Public */,
+       1,    0,   56,    2, 0x06,    5 /* Public */,
+       3,    0,   57,    2, 0x06,    6 /* Public */,
+       4,    0,   58,    2, 0x06,    7 /* Public */,
+       5,    0,   59,    2, 0x06,    8 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       6,    1,   54,    2, 0x0a,    9 /* Public */,
-       8,    1,   57,    2, 0x0a,   11 /* Public */,
+       6,    1,   60,    2, 0x0a,    9 /* Public */,
+       8,    1,   63,    2, 0x0a,   11 /* Public */,
+
+ // methods: name, argc, parameters, tag, flags, initial metatype offsets
+      10,    1,   66,    2, 0x102,   13 /* Public | MethodIsConst  */,
 
  // signals: parameters
     QMetaType::Void,
@@ -89,11 +94,14 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSBlackjackENDCLASS[] = {
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, QMetaType::Int,    9,
 
+ // methods: parameters
+    QMetaType::Int, 0x80000000 | 11,   12,
+
  // properties: name, type, flags
-      10, QMetaType::Int, 0x00015103, uint(0), 0,
+      13, QMetaType::Int, 0x00015103, uint(0), 0,
        7, QMetaType::Int, 0x00015103, uint(1), 0,
-      11, 0x80000000 | 12, 0x00015009, uint(2), 0,
-      13, 0x80000000 | 12, 0x00015009, uint(3), 0,
+      14, 0x80000000 | 11, 0x00015009, uint(2), 0,
+      15, 0x80000000 | 11, 0x00015009, uint(3), 0,
 
        0        // eod
 };
@@ -128,7 +136,10 @@ Q_CONSTINIT const QMetaObject Blackjack::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'jogar'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'somaCartas'
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QList<int> &, std::false_type>
     >,
     nullptr
 } };
@@ -145,7 +156,20 @@ void Blackjack::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 3: _t->cartasCasaChanged(); break;
         case 4: _t->startGame((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         case 5: _t->jogar((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 6: { int _r = _t->somaCartas((*reinterpret_cast< std::add_pointer_t<QList<int>>>(_a[1])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+        case 6:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QList<int> >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -228,13 +252,13 @@ int Blackjack::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
-            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 6;
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
     }else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty
             || _c == QMetaObject::RegisterPropertyMetaType) {

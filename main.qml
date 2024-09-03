@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.3
 import Blackjack 1.0
 
 ApplicationWindow {
@@ -57,13 +58,19 @@ ApplicationWindow {
                 id: comprarButton
                 text: "Comprar"
                 enabled: false
-                onClicked: blackjack.jogar(1)
+                onClicked: {
+                    blackjack.jogar(1);
+                    verificarResultado();
+                }
             }
             Button {
                 id: manterButton
                 text: "Manter"
                 enabled: false
-                onClicked: blackjack.jogar(2)
+                onClicked: {
+                    blackjack.jogar(2)
+                    verificarResultado();
+                }
             }
             Button {
                 id: desistirButton
@@ -73,40 +80,50 @@ ApplicationWindow {
             }
         }
 
-        // Mostrar cartas do usuário
         Text {
             text: "Suas cartas:"
             font.pointSize: 16
         }
 
-        Row {
+        RowLayout {
             spacing: 10
             Repeater {
                 model: blackjack.cartasUser
                 Image {
                     source: "qrc:/images/carta" + modelData + ".png"
-                    width: 50
-                    height: 70
+                    Layout.maximumHeight: 140
+                    Layout.maximumWidth: 100
                 }
             }
+            Text {
+                    text: "Soma: " + blackjack.somaCartas(blackjack.cartasUser)
+                    font.pointSize: 16
+                    anchors.left: parent.right
+                    anchors.leftMargin: 10
+                }
         }
 
-        // Mostrar cartas da casa
         Text {
             text: "Cartas da casa:"
             font.pointSize: 16
         }
 
-        Row {
+        RowLayout {
             spacing: 10
             Repeater {
                 model: blackjack.cartasCasa
                 Image {
                     source: "qrc:/images/carta" + modelData + ".png"
-                    width: 50
-                    height: 70
+                    Layout.maximumHeight: 140
+                    Layout.maximumWidth: 100
                 }
             }
+            Text {
+                    text: "Soma: " + blackjack.somaCartas(blackjack.cartasCasa)
+                    font.pointSize: 16
+                    anchors.left: parent.right
+                    anchors.leftMargin: 10
+                }
         }
     }
 

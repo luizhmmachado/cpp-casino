@@ -98,3 +98,7 @@ void Blackjack::verificarResultado()
     emit cartasUserChanged();
     emit cartasCasaChanged();
 }
+
+int Blackjack::somaCartas(const QList<int> &cartas) const {
+    return std::accumulate(cartas.begin(), cartas.end(), 0);
+}
