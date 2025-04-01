@@ -13,9 +13,12 @@ class BlackJackControl : public QObject
     Q_PROPERTY(int somaCartasCPU READ somaCartasCPU WRITE setSomaCartasCPU NOTIFY somaCartasCPUChanged FINAL)
 public:
     BlackJackControl();
+
     Q_INVOKABLE int getIndiceCarta();
     Q_INVOKABLE void atualizarListaCartas();
     Q_INVOKABLE void limparListaCartas();
+    Q_INVOKABLE void userHold();
+
     QStringList imageList() const;
     QStringList listaCartasUser();
 
@@ -28,14 +31,24 @@ public:
     void setSomaCartasCPU(int newSomaCartasCPU);
 
 signals:
-    void listaCartasUserChanged();
+    void error(QString msg);
 
+    void listaCartasUserChanged();
 
     void listaCartasCPUChanged();
 
     void somaCartasUserChanged();
 
     void somaCartasCPUChanged();
+
+    void userWon();
+    void userLost();
+    void userBlackJack();
+
+    void CPUBlackJack();
+
+private slots:
+    void checkWinner();
 
 private:
     QStringList m_imageList;

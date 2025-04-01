@@ -43,10 +43,20 @@ void BlackJackControl::atualizarListaCartas()
     }
 
     m_listaCartasUser.push_back(m_imageList[indiceUser]);
+    qDebug() << "User" <<  m_listaCartasUser;
     m_somaCartasUser += indiceUser + 1;
+    qDebug() << m_somaCartasUser;
 
-    m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
-    m_somaCartasCPU += indiceCPU + 1;
+    if(m_somaCartasCPU <= 17 && m_somaCartasCPU < m_somaCartasUser && m_somaCartasUser < 21){
+
+        m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
+        qDebug() << "CPU" << m_listaCartasCPU;
+        m_somaCartasCPU += indiceCPU + 1;
+        qDebug() << m_somaCartasCPU;
+
+    }
+
+    checkWinner();
 
     emit listaCartasUserChanged();
     emit somaCartasUserChanged();
@@ -57,6 +67,33 @@ void BlackJackControl::atualizarListaCartas()
 void BlackJackControl::limparListaCartas()
 {
     m_listaCartasUser.clear();
+}
+
+void BlackJackControl::userHold()
+{
+    if(m_somaCartasCPU <= 17 && m_somaCartasCPU < m_somaCartasUser){
+        int indiceCPU = getIndiceCarta();
+
+        if(indiceCPU >= 9){
+            indiceCPU = 9;
+        }
+
+        m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
+        m_somaCartasCPU += indiceCPU + 1;
+
+        checkWinner();
+
+        emit somaCartasCPUChanged();
+    }else if(m_somaCartasCPU <= 17 && m_somaCartasCPU >= m_somaCartasUser){
+        emit error("A soma das cartas é igual. Não é permitido segurar a mão");
+        return;
+    }else{
+        if(m_somaCartasCPU <= m_somaCartasUser){
+            emit userLost();
+        }else{
+            emit userWon();
+        }
+    }
 }
 
 QStringList BlackJackControl::imageList() const
@@ -99,4 +136,19 @@ void BlackJackControl::setSomaCartasCPU(int newSomaCartasCPU)
         return;
     m_somaCartasCPU = newSomaCartasCPU;
     emit somaCartasCPUChanged();
+}
+
+void BlackJackControl::checkWinner()
+{
+    if (m_somaCartasUser > 21){
+        emit userLost();
+    } else if (m_somaCartasUser == 21){
+        emit userBlackJack();
+    }else if(m_somaCartasCPU > 21){
+        emit userWon();
+    }else if(m_somaCartasCPU == 21){
+        emit CPUBlackJack();
+    }else{
+        return;
+    }
 }

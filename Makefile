@@ -243,6 +243,7 @@ DIST          = ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/qt_config.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/toolchain.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/default_pre.prf \
@@ -457,6 +458,7 @@ Makefile: cassino-pt-br.pro ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspe
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/qt_config.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/toolchain.prf \
 		../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/default_pre.prf \
@@ -662,6 +664,7 @@ Makefile: cassino-pt-br.pro ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspe
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/qt_config.prf:
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf:
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/toolchain.prf:
 ../qt-5.15.4-Ubuntu-22.04-x86_64/5.15.4/gcc_64/mkspecs/features/default_pre.prf:

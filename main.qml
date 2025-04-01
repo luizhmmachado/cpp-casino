@@ -54,6 +54,10 @@ ApplicationWindow {
                     width: parent.width - 200
                 }
 
+                Row{
+                    spacing: 16
+                }
+
                 Rectangle {
                     width: 50
                     height: 50
