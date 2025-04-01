@@ -1,142 +1,87 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.3
-import Blackjack 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 ApplicationWindow {
-    visible: true
-    width: 1920
-    height: 1080
-    title: "Blackjack"
+    id: root
 
-    Blackjack {
-        id: blackjack
-    }
+    visibility: "FullScreen"
+    visible: true
+    title: qsTr("Cassino PT-BR")
 
     Column {
-        anchors.centerIn: parent
-        spacing: 20
+        anchors.fill: parent
 
-        Text {
-            text: "Saldo disponível: $" + blackjack.saldo
-            font.pointSize: 20
+        Loader {
+            id: contentLoader
+            width: parent.width
+            height: parent.height - 50
+            anchors.top: parent.top
+
+            sourceComponent: blackjackPage
         }
 
-        Text {
-            text: "Faça sua aposta (min. $100)"
-            font.pointSize: 16
-        }
+        Rectangle {
+            id: footer
+            color: "#ff3c00"
+            width: parent.width
+            height: 50
+            anchors.bottom: parent.bottom
 
-        SpinBox {
-            id: apostaSpinBox
-            from: 100
-            to: blackjack.saldo > 100 ? blackjack.saldo : 100 // Garante que o valor de 'to' seja sempre >= 100
-            value: 100
-            onValueChanged: blackjack.aposta = value
-        }
+            Row {
+                anchors.fill: parent
+                spacing: 0
+                Rectangle {
+                    width: 100
+                    height: 50
+                    color: "transparent"
 
-        Button {
-            text: "Iniciar Jogo"
-            onClicked: {
-                blackjack.startGame(apostaSpinBox.value)
-                resultadoText.text = ""
-                comprarButton.enabled = true
-                manterButton.enabled = true
-                desistirButton.enabled = true
-            }
-        }
+                    Text {
+                        anchors.centerIn: parent
+                        text: "BlackJack"
+                        font.pixelSize: 20
+                        color: "white"
+                    }
 
-        Text {
-            id: resultadoText
-            text: ""
-            font.pointSize: 20
-        }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
 
-        Row {
-            spacing: 10
-            Button {
-                id: comprarButton
-                text: "Comprar"
-                enabled: false
-                onClicked: {
-                    blackjack.jogar(1);
-                    verificarResultado();
+                        }
+                    }
+                }
+
+                Item {
+                    width: parent.width - 200
+                }
+
+                Rectangle {
+                    width: 50
+                    height: 50
+                    color: "transparent"
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "≡"
+                        font.pixelSize: 30
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+
+
+                        }
+                    }
                 }
             }
-            Button {
-                id: manterButton
-                text: "Manter"
-                enabled: false
-                onClicked: {
-                    blackjack.jogar(2)
-                    verificarResultado();
-                }
-            }
-            Button {
-                id: desistirButton
-                text: "Desistir"
-                enabled: false
-                onClicked: blackjack.jogar(3)
-            }
-        }
-
-        Text {
-            text: "Suas cartas:"
-            font.pointSize: 16
-        }
-
-        RowLayout {
-            spacing: 10
-            Repeater {
-                model: blackjack.cartasUser
-                Image {
-                    source: "qrc:/images/carta" + modelData + ".png"
-                    Layout.maximumHeight: 140
-                    Layout.maximumWidth: 100
-                }
-            }
-            Text {
-                    text: "Soma: " + blackjack.somaCartas(blackjack.cartasUser)
-                    font.pointSize: 16
-                    anchors.left: parent.right
-                    anchors.leftMargin: 10
-                }
-        }
-
-        Text {
-            text: "Cartas da casa:"
-            font.pointSize: 16
-        }
-
-        RowLayout {
-            spacing: 10
-            Repeater {
-                model: blackjack.cartasCasa
-                Image {
-                    source: "qrc:/images/carta" + modelData + ".png"
-                    Layout.maximumHeight: 140
-                    Layout.maximumWidth: 100
-                }
-            }
-            Text {
-                    text: "Soma: " + blackjack.somaCartas(blackjack.cartasCasa)
-                    font.pointSize: 16
-                    anchors.left: parent.right
-                    anchors.leftMargin: 10
-                }
         }
     }
 
-    Connections {
-        target: blackjack
-        function onResultado(msg) {
-            resultadoText.text = msg
-        }
-        function onJogoReiniciado() {
-            resultadoText.text = "Jogo terminado. Faça uma nova aposta."
-            comprarButton.enabled = false
-            manterButton.enabled = false
-            desistirButton.enabled = false
-        }
+    Component {
+        id: blackjackPage
+
+        BlackJack{}
     }
 }

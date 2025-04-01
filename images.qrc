@@ -1,15 +1,14 @@
 <RCC>
-    <qresource prefix="/images"/>
-    <qresource prefix="/">
-        <file>images/carta1.png</file>
-        <file>images/carta2.png</file>
-        <file>images/carta3.png</file>
-        <file>images/carta4.png</file>
-        <file>images/carta5.png</file>
-        <file>images/carta6.png</file>
-        <file>images/carta7.png</file>
-        <file>images/carta8.png</file>
-        <file>images/carta9.png</file>
-        <file>images/carta10.png</file>
+    <qresource prefix="/images">
+        <file>cartas/carta1.png</file>
+        <file>cartas/carta10.png</file>
+        <file>cartas/carta2.png</file>
+        <file>cartas/carta3.png</file>
+        <file>cartas/carta4.png</file>
+        <file>cartas/carta5.png</file>
+        <file>cartas/carta6.png</file>
+        <file>cartas/carta7.png</file>
+        <file>cartas/carta8.png</file>
+        <file>cartas/carta9.png</file>
     </qresource>
 </RCC>
