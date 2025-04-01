@@ -4,7 +4,9 @@ import QtQuick.Controls 2.15
 ApplicationWindow {
     id: root
 
-    visibility: "FullScreen"
+//    visibility: "FullScreen"
+    height: 768
+    width: 1024
     visible: true
     title: qsTr("Cassino PT-BR")
 

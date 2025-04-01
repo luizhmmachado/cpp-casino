@@ -11,6 +11,8 @@ Item {
     }
 
     Column {
+        id: mainClm
+
         anchors.fill: parent
         spacing: 32
         padding: 20
@@ -23,7 +25,7 @@ Item {
 
             Label{
                 id: lblSuasCartas
-                text: qsTr("Suas cartas:")
+                text: qsTr("Suas cartas: " + control.somaCartasUser)
                 font.pointSize: 14
                 color: "white"
             }
@@ -54,7 +56,7 @@ Item {
 
             Label{
                 id: lblCPUCartas
-                text: qsTr("Cartas da casa:")
+                text: qsTr("Cartas da casa: " + control.somaCartasCPU)
                 font.pointSize: 14
                 color: "white"
             }
@@ -123,17 +125,68 @@ Item {
         }
     }
 
+    Text{
+        id: txtWin
+
+        visible: false
+        anchors.fill: parent
+        text: "YOU WIN"
+        font.pointSize: 32
+    }
+
     BlackJackControl {
         id: control
 
         onSomaCartasUserChanged: {
-            if(control.somaCartasCPU < control.somaCartasCPU){
+            if(control.somaCartasCPU >= control.somaCartasUser){
+                console.log("Cartas CPU MAIOR")
                 btnHold.enabled = false
+                btnHold.opacity = 0.5
+            }else{
+                console.log("Cartas CPU MENOR")
+                btnHold.enabled = true
+                btnHold.opacity = 1
             }
 
-            if (control.somaCartasUser >= 21) {
+            if (control.somaCartasUser >= 21 ) {
                 btnBuy.enabled = false
+                btnBuy.opacity = 0.5
+            }else{
+                btnBuy.enabled = true
+                btnBuy.opacity = 1
             }
+        }
+
+        onSomaCartasCPUChanged: {
+            if(control.somaCartasCPU >= control.somaCartasUser){
+                btnHold.enabled = false
+                btnHold.opacity = 0.5
+            }else{
+                btnHold.enabled = true
+                btnHold.opacity = 1
+            }
+        }
+
+        onUserBlackJack: {
+            mainClm.visible = false
+            txtWin.visible = true
+        }
+
+        onUserWon: {
+            mainClm.visible = false
+            txtWin.visible = true
+        }
+
+        onUserLost: {
+            mainClm.visible = false
+            txtWin.visible = true
+            txtWin.text = "YOU LOST"
+        }
+
+        onCPUBlackJack: {
+            mainClm.visible = false
+            txtWin.visible = true
+            txtWin.text = "YOU LOST"
         }
     }
 }

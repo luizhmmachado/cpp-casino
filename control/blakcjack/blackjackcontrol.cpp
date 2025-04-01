@@ -71,6 +71,7 @@ void BlackJackControl::limparListaCartas()
 
 void BlackJackControl::userHold()
 {
+    qDebug() << "HOLD";
     if(m_somaCartasCPU <= 17 && m_somaCartasCPU < m_somaCartasUser){
         int indiceCPU = getIndiceCarta();
 
@@ -84,8 +85,10 @@ void BlackJackControl::userHold()
         checkWinner();
 
         emit somaCartasCPUChanged();
+        emit listaCartasCPUChanged();
     }else if(m_somaCartasCPU <= 17 && m_somaCartasCPU >= m_somaCartasUser){
         emit error("A soma das cartas é igual. Não é permitido segurar a mão");
+        qDebug() << "A soma das cartas é igual. Não é permitido segurar a mão";
         return;
     }else{
         if(m_somaCartasCPU <= m_somaCartasUser){
