@@ -1,4 +1,5 @@
 QT += quick
+QT += sql
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -6,6 +7,7 @@ QT += quick
 
 SOURCES += \
         control/blakcjack/blackjackcontrol.cpp \
+        control/blakcjack/databasecontrol.cpp \
         main.cpp
 
 RESOURCES += qml.qrc \
@@ -23,4 +25,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    control/blakcjack/blackjackcontrol.h
+    control/blakcjack/blackjackcontrol.h \
+    control/blakcjack/databasecontrol.h

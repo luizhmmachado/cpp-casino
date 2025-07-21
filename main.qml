@@ -4,10 +4,12 @@ import QtQuick.Controls 2.15
 ApplicationWindow {
     id: root
 
-//    visibility: "FullScreen"
+    property var loaderComponent: loginPage
+    //    visibility: "FullScreen"
     height: 768
     width: 1024
     visible: true
+    // @disable-check M16
     title: qsTr("Cassino PT-BR")
 
     Column {
@@ -19,7 +21,7 @@ ApplicationWindow {
             height: parent.height - 50
             anchors.top: parent.top
 
-            sourceComponent: blackjackPage
+            sourceComponent: loaderComponent
         }
 
         Rectangle {
@@ -88,6 +90,24 @@ ApplicationWindow {
     Component {
         id: blackjackPage
 
-        BlackJack{}
+        BlackJack{
+
+        }
+    }
+
+    Component{
+        id: loginPage
+
+        LoginPage{
+            onCadastrar: loaderComponent = cadastroPage
+        }
+    }
+
+    Component{
+        id: cadastroPage
+
+        CadastroPage{
+
+        }
     }
 }

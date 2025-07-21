@@ -98,7 +98,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        control.atualizarListaCartas()
+                        control.buy()
                     }
                 }
             }
@@ -123,16 +123,41 @@ Item {
                 }
             }
         }
+        Text {
+            id: txtWin
+
+            visible: false
+            text: "YOU WIN"
+            font.pointSize: 32
+            color: "white"
+
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Rectangle {
+            id: btnRestart
+            radius: 5
+            width: 256
+            height: 48
+            color: "red"
+            visible: false
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            Text {
+                anchors.centerIn: parent
+                text: "Play Again"
+                font.pointSize: 24
+                color: "white"
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    control.restartGame()
+                }
+            }
+        }
     }
 
-    Text{
-        id: txtWin
-
-        visible: false
-        anchors.fill: parent
-        text: "YOU WIN"
-        font.pointSize: 32
-    }
 
     BlackJackControl {
         id: control
@@ -168,25 +193,33 @@ Item {
         }
 
         onUserBlackJack: {
-            mainClm.visible = false
+            txtWin.text = "YOU WIN"
             txtWin.visible = true
+            btnRestart.visible = true
         }
 
         onUserWon: {
-            mainClm.visible = false
+            txtWin.text = "YOU WIN"
             txtWin.visible = true
+            btnRestart.visible = true
         }
 
         onUserLost: {
-            mainClm.visible = false
             txtWin.visible = true
             txtWin.text = "YOU LOST"
+            btnRestart.visible = true
         }
 
-        onCPUBlackJack: {
-            mainClm.visible = false
+        onCpuBlackJack: {
             txtWin.visible = true
             txtWin.text = "YOU LOST"
+            btnRestart.visible = true
         }
+
+        onOnRestartGame: {
+            btnRestart.visible = false
+            txtWin.visible = false
+        }
+
     }
 }

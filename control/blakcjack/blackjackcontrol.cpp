@@ -31,7 +31,7 @@ int BlackJackControl::getIndiceCarta()
     return indice;
 }
 
-void BlackJackControl::atualizarListaCartas()
+void BlackJackControl::buy()
 {
     int indiceUser = getIndiceCarta();
     if(indiceUser >= 9){
@@ -58,15 +58,17 @@ void BlackJackControl::atualizarListaCartas()
 
     checkWinner();
 
-    emit listaCartasUserChanged();
-    emit somaCartasUserChanged();
-    emit listaCartasCPUChanged();
-    emit somaCartasCPUChanged();
+    atualizarCartas();
 }
 
 void BlackJackControl::limparListaCartas()
 {
     m_listaCartasUser.clear();
+    m_somaCartasUser = 0;
+    m_listaCartasCPU.clear();
+    m_somaCartasCPU = 0;
+
+    atualizarCartas();
 }
 
 void BlackJackControl::userHold()
@@ -82,6 +84,8 @@ void BlackJackControl::userHold()
         m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
         m_somaCartasCPU += indiceCPU + 1;
 
+        qDebug() << "CPU" << m_listaCartasCPU;
+
         checkWinner();
 
         emit somaCartasCPUChanged();
@@ -92,11 +96,20 @@ void BlackJackControl::userHold()
         return;
     }else{
         if(m_somaCartasCPU <= m_somaCartasUser){
-            emit userLost();
-        }else{
             emit userWon();
+        }else{
+            emit userLost();
         }
     }
+
+    atualizarCartas();
+}
+
+void BlackJackControl::restartGame()
+{
+    limparListaCartas();
+
+    emit onRestartGame();
 }
 
 QStringList BlackJackControl::imageList() const
@@ -143,6 +156,8 @@ void BlackJackControl::setSomaCartasCPU(int newSomaCartasCPU)
 
 void BlackJackControl::checkWinner()
 {
+    atualizarCartas();
+
     if (m_somaCartasUser > 21){
         emit userLost();
     } else if (m_somaCartasUser == 21){
@@ -150,8 +165,16 @@ void BlackJackControl::checkWinner()
     }else if(m_somaCartasCPU > 21){
         emit userWon();
     }else if(m_somaCartasCPU == 21){
-        emit CPUBlackJack();
+        emit cpuBlackJack();
     }else{
         return;
     }
+}
+
+void BlackJackControl::atualizarCartas()
+{
+    emit listaCartasUserChanged();
+    emit somaCartasUserChanged();
+    emit listaCartasCPUChanged();
+    emit somaCartasCPUChanged();
 }

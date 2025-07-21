@@ -15,9 +15,10 @@ public:
     BlackJackControl();
 
     Q_INVOKABLE int getIndiceCarta();
-    Q_INVOKABLE void atualizarListaCartas();
+    Q_INVOKABLE void buy();
     Q_INVOKABLE void limparListaCartas();
     Q_INVOKABLE void userHold();
+    Q_INVOKABLE void restartGame();
 
     QStringList imageList() const;
     QStringList listaCartasUser();
@@ -45,10 +46,13 @@ signals:
     void userLost();
     void userBlackJack();
 
-    void CPUBlackJack();
+    void cpuBlackJack();
+
+    void onRestartGame();
 
 private slots:
     void checkWinner();
+    void atualizarCartas();
 
 private:
     QStringList m_imageList;

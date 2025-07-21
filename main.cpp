@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include <control/blakcjack/blackjackcontrol.h>
+#include <control/blakcjack/databasecontrol.h>
 
 
 int main(int argc, char *argv[])
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<BlackJackControl>("BlackJackControl", 1, 0, "BlackJackControl");
+    qmlRegisterType<DataBaseControl>("DataBaseControl", 1, 0, "DataBaseControl");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
