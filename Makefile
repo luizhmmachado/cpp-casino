@@ -53,7 +53,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = control/blakcjack/blackjackcontrol.cpp \
-		control/blakcjack/databasecontrol.cpp \
+		control/database/databasecontrol.cpp \
 		main.cpp qrc_qml.cpp \
 		qrc_images.cpp \
 		moc_blackjackcontrol.cpp \
@@ -335,8 +335,8 @@ DIST          = /usr/lib/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt6/mkspecs/features/yacc.prf \
 		/usr/lib/qt6/mkspecs/features/lex.prf \
 		cassino-pt-br.pro control/blakcjack/blackjackcontrol.h \
-		control/blakcjack/databasecontrol.h control/blakcjack/blackjackcontrol.cpp \
-		control/blakcjack/databasecontrol.cpp \
+		control/database/databasecontrol.h control/blakcjack/blackjackcontrol.cpp \
+		control/database/databasecontrol.cpp \
 		main.cpp
 QMAKE_TARGET  = cassino-pt-br
 DESTDIR       = 
@@ -930,8 +930,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents qml.qrc images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents control/blakcjack/blackjackcontrol.h control/blakcjack/databasecontrol.h $(DISTDIR)/
-	$(COPY_FILE) --parents control/blakcjack/blackjackcontrol.cpp control/blakcjack/databasecontrol.cpp main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents control/blakcjack/blackjackcontrol.h control/database/databasecontrol.h $(DISTDIR)/
+	$(COPY_FILE) --parents control/blakcjack/blackjackcontrol.cpp control/database/databasecontrol.cpp main.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -994,10 +994,10 @@ moc_blackjackcontrol.cpp: control/blakcjack/blackjackcontrol.h \
 		/usr/lib/qt6/moc
 	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/blakcjack/blackjackcontrol.h -o moc_blackjackcontrol.cpp
 
-moc_databasecontrol.cpp: control/blakcjack/databasecontrol.h \
+moc_databasecontrol.cpp: control/database/databasecontrol.h \
 		moc_predefs.h \
 		/usr/lib/qt6/moc
-	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/blakcjack/databasecontrol.h -o moc_databasecontrol.cpp
+	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/database/databasecontrol.h -o moc_databasecontrol.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1016,11 +1016,11 @@ compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_heade
 blackjackcontrol.o: control/blakcjack/blackjackcontrol.cpp control/blakcjack/blackjackcontrol.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o blackjackcontrol.o control/blakcjack/blackjackcontrol.cpp
 
-databasecontrol.o: control/blakcjack/databasecontrol.cpp control/blakcjack/databasecontrol.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o databasecontrol.o control/blakcjack/databasecontrol.cpp
+databasecontrol.o: control/database/databasecontrol.cpp control/database/databasecontrol.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o databasecontrol.o control/database/databasecontrol.cpp
 
 main.o: main.cpp control/blakcjack/blackjackcontrol.h \
-		control/blakcjack/databasecontrol.h
+		control/database/databasecontrol.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 qrc_qml.o: qrc_qml.cpp 

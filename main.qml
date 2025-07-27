@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 ApplicationWindow {
     id: root
 
-    property var loaderComponent: /*loginPage*/ blackjackPage
+    property var loaderComponent: loginPage
     //    visibility: "FullScreen"
     height: 768
     width: 1024

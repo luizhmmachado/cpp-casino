@@ -7,7 +7,7 @@ QT += sql
 
 SOURCES += \
         control/blakcjack/blackjackcontrol.cpp \
-        control/blakcjack/databasecontrol.cpp \
+        control/database/databasecontrol.cpp \
         main.cpp
 
 RESOURCES += qml.qrc \
@@ -26,4 +26,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     control/blakcjack/blackjackcontrol.h \
-    control/blakcjack/databasecontrol.h
+    control/database/databasecontrol.h

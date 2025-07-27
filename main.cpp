@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include <control/blakcjack/blackjackcontrol.h>
-#include <control/blakcjack/databasecontrol.h>
+#include <control/database/databasecontrol.h>
 
 
 int main(int argc, char *argv[])
