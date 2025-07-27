@@ -1,0 +1,36 @@
+# Arquivos de compilação
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+*.o
+*.obj
+*.so
+*.a
+*.out
+*.exe
+*.dll
+
+# Arquivos do Qt Creator
+*.pro.user
+*.qmake.stash
+*.autosave
+*.moc
+moc_*
+ui_*
+qrc_*
+
+# Arquivos de log e temporários
+*.log
+*.tmp
+*.bak
+*~
+*.swp
+*.swo
+
+# Diretórios ocultos do sistema/IDE
+.DS_Store
+.vscode/
+.idea/
+.clangd/
