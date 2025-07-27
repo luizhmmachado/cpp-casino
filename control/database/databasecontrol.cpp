@@ -6,8 +6,11 @@ DataBaseControl::DataBaseControl()
         QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "clientes_connection");
         db.setHostName("localhost");
         db.setDatabaseName("cassino_pt_br");
-        db.setUserName("luiz");
-        db.setPassword("1906");
+        QString usuario = QString::fromUtf8(qgetenv("DB_USER"));
+        QString senha = QString::fromUtf8(qgetenv("DB_PASS"));
+
+        db.setUserName(usuario);
+        db.setPassword(senha);
         if (!db.open()) {
             qWarning() << "Erro ao conectar no banco:" << db.lastError().text();
         }
@@ -29,14 +32,34 @@ bool DataBaseControl::autenticar()
 
     if (!query.exec()) {
         qWarning() << "Erro na consulta:" << query.lastError().text();
+        emit fail(query.lastError().text());
         return false;
     }
 
     if (query.next()) {
         int count = query.value(0).toInt();
-        return (count > 0);
+        if (count > 0) {
+            QSqlQuery saldoQuery(db);
+            saldoQuery.prepare("SELECT saldo FROM clientes WHERE email = :email");
+            saldoQuery.bindValue(":email", m_email);
+
+            if (!saldoQuery.exec()) {
+                emit fail("Erro ao buscar saldo: " + saldoQuery.lastError().text());
+                return false;
+            }
+
+            if (saldoQuery.next()) {
+                double saldo = saldoQuery.value(0).toDouble();
+                qInfo() << saldo;
+                QString saldoFormatado = QLocale::system().toCurrencyString(saldo);
+                emit sucesso(saldoFormatado);
+                return true;
+            }
+        }
     }
 
+
+    emit fail("Usuário ou senha incorreto(s)");
     return false;
 
 }
@@ -64,9 +87,11 @@ bool DataBaseControl::inserir()
 
     if (!query.exec()) {
         qWarning() <<  query.lastError().text();
+        emit fail(query.lastError().text());
         return false;
     }
 
+    emit sucesso(QLocale::system().toCurrencyString(0.00));
     return true;
 }
 

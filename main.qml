@@ -83,6 +83,25 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                Rectangle{
+                    width: txtSaldo.width + 20
+                    height: 30
+                    radius: 20
+                    color: "#1c2026"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    visible: !(loaderComponent === cadastroPage || loaderComponent === loginPage)
+
+                    Text{
+                        id: txtSaldo
+
+                        anchors.centerIn: parent
+                        color: "white"
+                    }
+                }
             }
         }
     }
@@ -100,6 +119,10 @@ ApplicationWindow {
 
         LoginPage{
             onCadastrar: loaderComponent = cadastroPage
+            onSucesso: function(saldo) {
+                loaderComponent = blackjackPage
+                txtSaldo.text = saldo
+            }
         }
     }
 
@@ -107,7 +130,10 @@ ApplicationWindow {
         id: cadastroPage
 
         CadastroPage{
-
+            onSucesso: function(saldo) {
+                loaderComponent = blackjackPage
+                txtSaldo.text = saldo
+            }
         }
     }
 }

@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_QML_DEBUG -DQT_QUICK_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_QMLMETA_LIB -DQT_QMLMODELS_LIB -DQT_QMLWORKERSCRIPT_LIB -DQT_QML_LIB -DQT_QMLINTEGRATION_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_QUICK_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_QMLMETA_LIB -DQT_QMLMODELS_LIB -DQT_QMLWORKERSCRIPT_LIB -DQT_QML_LIB -DQT_QMLINTEGRATION_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -mno-direct-extern-access -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -Wall -Wextra -mno-direct-extern-access -D_REENTRANT $(DEFINES)
-INCPATH       = -I. -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I. -I/usr/lib/qt6/mkspecs/linux-g++
+INCPATH       = -I. -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtConcurrent -I/usr/include/qt6/QtCore -I. -I/usr/lib/qt6/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake6
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = cassino-pt-br1.0.0
 DISTDIR = /home/luiz/cpp-casino/.tmp/cassino-pt-br1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/usr/lib -Wl,-rpath-link,/usr/lib
-LIBS          = $(SUBLIBS) /usr/lib/libQt6Quick.so /usr/lib/libQt6OpenGL.so /usr/lib/libQt6Gui.so /usr/lib/libGLX.so /usr/lib/libOpenGL.so /usr/lib/libQt6QmlMeta.so /usr/lib/libQt6QmlModels.so /usr/lib/libQt6QmlWorkerScript.so /usr/lib/libQt6Qml.so /usr/lib/libQt6Network.so /usr/lib/libQt6Sql.so /usr/lib/libQt6Core.so -lpthread -lGLX -lOpenGL   
+LIBS          = $(SUBLIBS) /usr/lib/libQt6Quick.so /usr/lib/libQt6OpenGL.so /usr/lib/libQt6Gui.so /usr/lib/libGLX.so /usr/lib/libOpenGL.so /usr/lib/libQt6QmlMeta.so /usr/lib/libQt6QmlModels.so /usr/lib/libQt6QmlWorkerScript.so /usr/lib/libQt6Qml.so /usr/lib/libQt6Network.so /usr/lib/libQt6Sql.so /usr/lib/libQt6Concurrent.so /usr/lib/libQt6Core.so -lpthread -lGLX -lOpenGL   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -630,6 +630,7 @@ Makefile: cassino-pt-br.pro /usr/lib/qt6/mkspecs/linux-g++/qmake.conf /usr/lib/q
 		/usr/lib/libQt6Qml.prl \
 		/usr/lib/libQt6Network.prl \
 		/usr/lib/libQt6Sql.prl \
+		/usr/lib/libQt6Concurrent.prl \
 		/usr/lib/libQt6Core.prl
 	$(QMAKE) -o Makefile cassino-pt-br.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/qt6/mkspecs/features/spec_pre.prf:
@@ -913,6 +914,7 @@ images.qrc:
 /usr/lib/libQt6Qml.prl:
 /usr/lib/libQt6Network.prl:
 /usr/lib/libQt6Sql.prl:
+/usr/lib/libQt6Concurrent.prl:
 /usr/lib/libQt6Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile cassino-pt-br.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
@@ -992,12 +994,12 @@ compiler_moc_header_clean:
 moc_blackjackcontrol.cpp: control/blakcjack/blackjackcontrol.h \
 		moc_predefs.h \
 		/usr/lib/qt6/moc
-	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/blakcjack/blackjackcontrol.h -o moc_blackjackcontrol.cpp
+	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtConcurrent -I/usr/include/qt6/QtCore -I/usr/include/c++/15.1.1 -I/usr/include/c++/15.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/15.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include-fixed -I/usr/include control/blakcjack/blackjackcontrol.h -o moc_blackjackcontrol.cpp
 
 moc_databasecontrol.cpp: control/database/databasecontrol.h \
 		moc_predefs.h \
 		/usr/lib/qt6/moc
-	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/database/databasecontrol.h -o moc_databasecontrol.cpp
+	/usr/lib/qt6/moc $(DEFINES) --include /home/luiz/cpp-casino/moc_predefs.h -I/usr/lib/qt6/mkspecs/linux-g++ -I/home/luiz/cpp-casino -I/usr/include/qt6 -I/usr/include/qt6/QtQuick -I/usr/include/qt6/QtOpenGL -I/usr/include/qt6/QtGui -I/usr/include/qt6/QtQmlMeta -I/usr/include/qt6/QtQmlModels -I/usr/include/qt6/QtQmlWorkerScript -I/usr/include/qt6/QtQml -I/usr/include/qt6/QtQmlIntegration -I/usr/include/qt6/QtNetwork -I/usr/include/qt6/QtSql -I/usr/include/qt6/QtConcurrent -I/usr/include/qt6/QtCore -I/usr/include/c++/15.1.1 -I/usr/include/c++/15.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/15.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include-fixed -I/usr/include control/database/databasecontrol.h -o moc_databasecontrol.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:

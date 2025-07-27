@@ -12,6 +12,7 @@ Item {
     property bool accept: fldEmail.acceptableInput && fldSenha.acceptableInput
 
     signal cadastrar
+    signal sucesso(var saldo)
 
     Rectangle {
         anchors.fill: parent
@@ -89,6 +90,16 @@ Item {
                 }
             }
 
+            Label{
+                id: lblErro
+
+                color: "red"
+                width: parent.width
+                height: 32
+                font.pointSize: 12
+                visible: false
+            }
+
             Rectangle {
                 id: btnLogin
                 radius: 5
@@ -106,11 +117,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        if (control.autenticar()) {
-                            console.log("Login OK!");
-                        } else {
-                            console.log("Email ou senha incorretos!");
-                        }
+                        control.autenticar()
                     }
                 }
             }
@@ -138,5 +145,14 @@ Item {
 
     DataBaseControl{
         id: control
+
+        onSucesso: function(saldo){
+            root.sucesso(saldo)
+        }
+
+        onFail: function(msg){
+            lblErro.visible = true
+            lblErro.text = msg
+        }
     }
 }

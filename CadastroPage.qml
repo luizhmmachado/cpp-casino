@@ -14,6 +14,8 @@ Item {
     property string ageBorderColor: idadeValida ? "#808080" : "red"
     property var regrasSenha: []
 
+    signal sucesso(var saldo)
+
     Rectangle {
         anchors.fill: parent
         color: "#1c2026"
@@ -278,6 +280,10 @@ Item {
 
     DataBaseControl{
         id: control
+
+        onSucesso:function(saldo) {
+            root.sucesso(saldo)
+        }
     }
 
     function calcularIdade(dia, mes, ano) {

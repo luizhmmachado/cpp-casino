@@ -38,12 +38,12 @@ public:
 signals:
     void emailChanged();
     void senhaChanged();
-
     void cpfChanged();
-
     void dtNascimentoChanged();
-
     void nomeChanged();
+
+    void sucesso(const QString &saldoFormatado);
+    void fail(const QString &msg);
 
 private:
     QString m_email;
