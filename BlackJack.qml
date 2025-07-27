@@ -79,7 +79,28 @@ Item {
             }
         }
 
+        Rectangle {
+            id: btnComecarJogo
+            radius: 5
+            width: parent.width / 2
+            height: 32
+            color: "#369f5a"
+            Text {
+                anchors.centerIn: parent
+                text: "Começar Jogo"
+                font.pointSize: 14
+                color: "white"
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    control.iniciarJogo()
+                }
+            }
+        }
+
         Row {
+            visible: !btnComecarJogo.visible
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -221,5 +242,12 @@ Item {
             txtWin.visible = false
         }
 
+        onLiberarCompra: {
+            btnComecarJogo.visible = false
+        }
+    }
+
+    Component.onCompleted: {
+        btnComecarJogo.visible = true
     }
 }

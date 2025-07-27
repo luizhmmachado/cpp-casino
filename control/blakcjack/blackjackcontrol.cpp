@@ -24,6 +24,14 @@ BlackJackControl::BlackJackControl() :
     });
 }
 
+void BlackJackControl::iniciarJogo()
+{
+    buy();
+    buy();
+
+    emit liberarCompra();
+}
+
 int BlackJackControl::getIndiceCarta()
 {
     int indice = QRandomGenerator::global()->bounded(m_imageList.size());

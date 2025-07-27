@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQml 2.15
 import DataBaseControl 1.0
 
 Item {
@@ -47,8 +48,8 @@ Item {
                 width: loginRequest.width * 0.8
                 placeholderText: "E-mail"
 
-                validator: RegExpValidator {
-                    regExp: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
+                validator: RegularExpressionValidator {
+                    regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
                 }
 
                 background: Rectangle {
@@ -72,8 +73,8 @@ Item {
                 echoMode: TextInput.Password
                 passwordCharacter: "•"
 
-                validator: RegExpValidator {
-                    regExp: /.{8,20}/
+                validator: RegularExpressionValidator {
+                    regularExpression: /.{8,20}/
                 }
 
                 background: Rectangle {

@@ -14,6 +14,7 @@ class BlackJackControl : public QObject
 public:
     BlackJackControl();
 
+    Q_INVOKABLE void iniciarJogo();
     Q_INVOKABLE int getIndiceCarta();
     Q_INVOKABLE void buy();
     Q_INVOKABLE void limparListaCartas();
@@ -49,6 +50,8 @@ signals:
     void cpuBlackJack();
 
     void onRestartGame();
+
+    void liberarCompra();
 
 private slots:
     void checkWinner();

@@ -23,7 +23,7 @@ bool DataBaseControl::autenticar()
     }
 
     QSqlQuery query(db);
-    query.prepare("SELECT COUNT(*) FROM clientes WHERE email = :email AND senha = :senha");
+    query.prepare("SELECT COUNT(*) FROM clientes WHERE email = :email AND senha = crypt(:senha, senha)");
     query.bindValue(":email", m_email);
     query.bindValue(":senha", m_senha);
 
@@ -40,6 +40,36 @@ bool DataBaseControl::autenticar()
     return false;
 
 }
+
+bool DataBaseControl::inserir()
+{
+    QSqlDatabase db = QSqlDatabase::database("clientes_connection");
+    if (!db.isOpen()) {
+        qWarning() << "Banco não está aberto!";
+        return false;
+    }
+
+    QSqlQuery query(db);
+
+    query.prepare(R"(
+        INSERT INTO clientes (cpf, nome, email, senha, data_criacao, data_nascimento)
+        VALUES (:cpf, :nome, :email, crypt(:senha, gen_salt('bf')), :data_criacao, :data_nascimento)
+    )");
+    query.bindValue(":cpf", m_cpf);
+    query.bindValue(":nome", m_nome);
+    query.bindValue(":email", m_email);
+    query.bindValue(":senha", m_senha);
+    query.bindValue(":data_criacao", QDateTime::currentDateTime());
+    query.bindValue(":data_nascimento", m_dtNascimento);
+
+    if (!query.exec()) {
+        qWarning() <<  query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 
 QString DataBaseControl::email() const
 {
@@ -65,4 +95,43 @@ void DataBaseControl::setSenha(const QString &newSenha)
         return;
     m_senha = newSenha;
     emit senhaChanged();
+}
+
+QString DataBaseControl::cpf() const
+{
+    return m_cpf;
+}
+
+void DataBaseControl::setCpf(const QString &newCpf)
+{
+    if (m_cpf == newCpf)
+        return;
+    m_cpf = newCpf;
+    emit cpfChanged();
+}
+
+QString DataBaseControl::dtNascimento() const
+{
+    return m_dtNascimento;
+}
+
+void DataBaseControl::setDtNascimento(const QString &newDtNascimento)
+{
+    if (m_dtNascimento == newDtNascimento)
+        return;
+    m_dtNascimento = newDtNascimento;
+    emit dtNascimentoChanged();
+}
+
+QString DataBaseControl::nome() const
+{
+    return m_nome;
+}
+
+void DataBaseControl::setNome(const QString &newNome)
+{
+    if (m_nome == newNome)
+        return;
+    m_nome = newNome;
+    emit nomeChanged();
 }
