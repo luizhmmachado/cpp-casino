@@ -3,14 +3,13 @@
 
 #include <QObject>
 
-class BlackJackControl : public QObject
-{
+class BlackJackControl : public QObject {
     Q_OBJECT
-    Q_PROPERTY(QStringList imageList READ imageList CONSTANT)
-    Q_PROPERTY(QStringList listaCartasUser READ listaCartasUser NOTIFY listaCartasUserChanged)
-    Q_PROPERTY(QStringList listaCartasCPU READ listaCartasCPU NOTIFY listaCartasCPUChanged)
-    Q_PROPERTY(int somaCartasUser READ somaCartasUser WRITE setSomaCartasUser NOTIFY somaCartasUserChanged FINAL)
-    Q_PROPERTY(int somaCartasCPU READ somaCartasCPU WRITE setSomaCartasCPU NOTIFY somaCartasCPUChanged FINAL)
+    Q_PROPERTY( QStringList imageList READ imageList CONSTANT )
+    Q_PROPERTY( QStringList listaCartasUser READ listaCartasUser NOTIFY listaCartasUserChanged )
+    Q_PROPERTY( QStringList listaCartasCPU READ listaCartasCPU NOTIFY listaCartasCPUChanged )
+    Q_PROPERTY( int somaCartasUser READ somaCartasUser WRITE setSomaCartasUser NOTIFY somaCartasUserChanged FINAL )
+    Q_PROPERTY( int somaCartasCPU READ somaCartasCPU WRITE setSomaCartasCPU NOTIFY somaCartasCPUChanged FINAL )
 public:
     BlackJackControl();
 
@@ -27,13 +26,13 @@ public:
     QStringList listaCartasCPU() const;
 
     int somaCartasUser() const;
-    void setSomaCartasUser(int newSomaCartasUser);
+    void setSomaCartasUser( int newSomaCartasUser );
 
     int somaCartasCPU() const;
-    void setSomaCartasCPU(int newSomaCartasCPU);
+    void setSomaCartasCPU( int newSomaCartasCPU );
 
 signals:
-    void error(QString msg);
+    void error( QString msg );
 
     void listaCartasUserChanged();
 
@@ -58,11 +57,12 @@ private slots:
     void atualizarCartas();
 
 private:
-    QStringList m_imageList;
-    QStringList m_listaCartasUser;
-    QStringList m_listaCartasCPU;
-    int m_somaCartasUser;
-    int m_somaCartasCPU;
+    QStringList _imageList;
+    QStringList _listaCartasUser;
+    QStringList _listaCartasCPU;
+    int _somaCartasUser;
+    int _somaCartasCPU;
+    bool _userHeld;
 };
 
 #endif // BLACKJACKCONTROL_H

@@ -4,10 +4,10 @@
 #include <QDebug>
 
 BlackJackControl::BlackJackControl() :
-    m_somaCartasUser(0),
-    m_somaCartasCPU(0)
-{
-    m_imageList = QStringList({
+    _somaCartasUser( 0 ),
+    _somaCartasCPU( 0 ),
+    _userHeld( false ) {
+    _imageList = QStringList( {
         "qrc:/images/cartas/carta1.png",
         "qrc:/images/cartas/carta2.png",
         "qrc:/images/cartas/carta3.png",
@@ -21,46 +21,43 @@ BlackJackControl::BlackJackControl() :
         "qrc:/images/cartas/carta10.png",
         "qrc:/images/cartas/carta10.png",
         "qrc:/images/cartas/carta10.png"
-    });
+    } );
 }
 
-void BlackJackControl::iniciarJogo()
-{
+void BlackJackControl::iniciarJogo() {
     buy();
     buy();
 
     emit liberarCompra();
 }
 
-int BlackJackControl::getIndiceCarta()
-{
-    int indice = QRandomGenerator::global()->bounded(m_imageList.size());
+int BlackJackControl::getIndiceCarta() {
+    int indice = QRandomGenerator::global()->bounded( _imageList.size() );
 
     return indice;
 }
 
-void BlackJackControl::buy()
-{
+void BlackJackControl::buy() {
     int indiceUser = getIndiceCarta();
-    if(indiceUser >= 9){
+    if ( indiceUser >= 9 ) {
         indiceUser = 9;
     }
     int indiceCPU = getIndiceCarta();
-    if(indiceCPU >= 9){
+    if ( indiceCPU >= 9 ) {
         indiceCPU = 9;
     }
 
-    m_listaCartasUser.push_back(m_imageList[indiceUser]);
-    qDebug() << "User" <<  m_listaCartasUser;
-    m_somaCartasUser += indiceUser + 1;
-    qDebug() << m_somaCartasUser;
+    _listaCartasUser.push_back( _imageList[indiceUser] );
+    qDebug() << "User" << _listaCartasUser;
+    _somaCartasUser += indiceUser + 1;
+    qDebug() << _somaCartasUser;
 
-    if(m_somaCartasCPU <= 17 && m_somaCartasCPU < m_somaCartasUser && m_somaCartasUser < 21){
+    if ( _somaCartasCPU <= 17 && _somaCartasCPU < _somaCartasUser && _somaCartasUser < 21 ) {
 
-        m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
-        qDebug() << "CPU" << m_listaCartasCPU;
-        m_somaCartasCPU += indiceCPU + 1;
-        qDebug() << m_somaCartasCPU;
+        _listaCartasCPU.push_back( _imageList[indiceCPU] );
+        qDebug() << "CPU" << _listaCartasCPU;
+        _somaCartasCPU += indiceCPU + 1;
+        qDebug() << _somaCartasCPU;
 
     }
 
@@ -69,41 +66,43 @@ void BlackJackControl::buy()
     atualizarCartas();
 }
 
-void BlackJackControl::limparListaCartas()
-{
-    m_listaCartasUser.clear();
-    m_somaCartasUser = 0;
-    m_listaCartasCPU.clear();
-    m_somaCartasCPU = 0;
+void BlackJackControl::limparListaCartas() {
+    _listaCartasUser.clear();
+    _somaCartasUser = 0;
+    _listaCartasCPU.clear();
+    _somaCartasCPU = 0;
 
     atualizarCartas();
 }
 
-void BlackJackControl::userHold()
-{
+void BlackJackControl::userHold() {
+
+    _userHeld = true;
+
     qDebug() << "HOLD";
-    if(m_somaCartasCPU <= 17 && m_somaCartasCPU < m_somaCartasUser){
+    if ( _somaCartasCPU <= 17 && _somaCartasCPU < _somaCartasUser ) {
         int indiceCPU = getIndiceCarta();
 
-        if(indiceCPU >= 9){
+        if ( indiceCPU >= 9 ) {
             indiceCPU = 9;
         }
 
-        m_listaCartasCPU.push_back(m_imageList[indiceCPU]);
-        m_somaCartasCPU += indiceCPU + 1;
+        _listaCartasCPU.push_back( _imageList[indiceCPU] );
+        _somaCartasCPU += indiceCPU + 1;
 
-        qDebug() << "CPU" << m_listaCartasCPU;
+        qDebug() << "CPU" << _listaCartasCPU;
 
         checkWinner();
 
         emit somaCartasCPUChanged();
         emit listaCartasCPUChanged();
-    }else if(m_somaCartasCPU <= 17 && m_somaCartasCPU >= m_somaCartasUser){
-        emit error("A soma das cartas é igual. Não é permitido segurar a mão");
+
+    }else if ( _somaCartasCPU <= 17 && _somaCartasCPU >= _somaCartasUser ) {
+        emit error( "A soma das cartas é igual. Não é permitido segurar a mão" );
         qDebug() << "A soma das cartas é igual. Não é permitido segurar a mão";
         return;
     }else{
-        if(m_somaCartasCPU <= m_somaCartasUser){
+        if ( _somaCartasCPU <= _somaCartasUser ) {
             emit userWon();
         }else{
             emit userLost();
@@ -113,74 +112,77 @@ void BlackJackControl::userHold()
     atualizarCartas();
 }
 
-void BlackJackControl::restartGame()
-{
+void BlackJackControl::restartGame() {
     limparListaCartas();
+    _userHeld = false;
 
     emit onRestartGame();
 }
 
-QStringList BlackJackControl::imageList() const
-{
-    return m_imageList;
+QStringList BlackJackControl::imageList() const {
+    return _imageList;
 }
 
-
-QStringList BlackJackControl::listaCartasUser()
-{
-    return m_listaCartasUser;
+QStringList BlackJackControl::listaCartasUser() {
+    return _listaCartasUser;
 }
 
-QStringList BlackJackControl::listaCartasCPU() const
-{
-    return m_listaCartasCPU;
+QStringList BlackJackControl::listaCartasCPU() const {
+    return _listaCartasCPU;
 }
 
-int BlackJackControl::somaCartasUser() const
-{
-    return m_somaCartasUser;
+int BlackJackControl::somaCartasUser() const {
+    return _somaCartasUser;
 }
 
-void BlackJackControl::setSomaCartasUser(int newSomaCartasUser)
-{
-    if (m_somaCartasUser == newSomaCartasUser)
+void BlackJackControl::setSomaCartasUser( int newSomaCartasUser ) {
+    if ( _somaCartasUser == newSomaCartasUser )
         return;
-    m_somaCartasUser = newSomaCartasUser;
+    _somaCartasUser = newSomaCartasUser;
     emit somaCartasUserChanged();
 }
 
-int BlackJackControl::somaCartasCPU() const
-{
-    return m_somaCartasCPU;
+int BlackJackControl::somaCartasCPU() const {
+    return _somaCartasCPU;
 }
 
-void BlackJackControl::setSomaCartasCPU(int newSomaCartasCPU)
-{
-    if (m_somaCartasCPU == newSomaCartasCPU)
+void BlackJackControl::setSomaCartasCPU( int newSomaCartasCPU ) {
+    if ( _somaCartasCPU == newSomaCartasCPU )
         return;
-    m_somaCartasCPU = newSomaCartasCPU;
+    _somaCartasCPU = newSomaCartasCPU;
     emit somaCartasCPUChanged();
 }
 
-void BlackJackControl::checkWinner()
-{
+void BlackJackControl::checkWinner() {
     atualizarCartas();
 
-    if (m_somaCartasUser > 21){
-        emit userLost();
-    } else if (m_somaCartasUser == 21){
-        emit userBlackJack();
-    }else if(m_somaCartasCPU > 21){
-        emit userWon();
-    }else if(m_somaCartasCPU == 21){
-        emit cpuBlackJack();
-    }else{
-        return;
+    if ( _userHeld ) {
+        if ( _somaCartasCPU>= _somaCartasUser ) {
+            emit userLost();
+        }
     }
+
+    if ( _somaCartasUser > 21 ) {
+        emit userLost();
+    }
+
+    if ( _somaCartasUser == 21 ) {
+        emit userBlackJack();
+    }
+
+    if ( _somaCartasCPU > 21 ) {
+        emit userWon();
+    }
+
+    if ( _somaCartasCPU == 21 ) {
+        emit cpuBlackJack();
+    }
+
+    return;
+
 }
 
-void BlackJackControl::atualizarCartas()
-{
+void BlackJackControl::atualizarCartas() {
     emit listaCartasUserChanged();
     emit somaCartasUserChanged();
     emit listaCartasCPUChanged();
