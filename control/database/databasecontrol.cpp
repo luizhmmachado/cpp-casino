@@ -17,6 +17,9 @@ DataBaseControl::DataBaseControl() {
 }
 
 bool DataBaseControl::athenticate() {
+
+    qInfo() << "DataBaseControl::athenticate";
+
     QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
     if ( !db.isOpen() ) {
         qWarning() << "Falha ao conectar ao banco de dados";
@@ -57,11 +60,17 @@ bool DataBaseControl::athenticate() {
     }
 
     emit fail( "Usuário ou senha incorreto(s)" );
+
+    qInfo() << "DataBaseControl::athenticate";
+
     return false;
 
 }
 
 bool DataBaseControl::insert() {
+
+    qInfo() << "DataBaseControl::insert";
+
     QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
     if ( !db.isOpen() ) {
         qWarning() << "Falha ao conectar ao banco de dados";
@@ -88,6 +97,9 @@ bool DataBaseControl::insert() {
     }
 
     emit success( QLocale::system().toCurrencyString( 0.00 ) );
+
+    qInfo() << "DataBaseControl::insert";
+
     return true;
 }
 

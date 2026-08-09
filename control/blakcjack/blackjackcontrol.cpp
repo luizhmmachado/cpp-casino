@@ -38,6 +38,9 @@ int BlackJackControl::cardIndex() {
 }
 
 void BlackJackControl::buy() {
+
+    qInfo() << "BlackJackControl::buy";
+
     int indiceUser = cardIndex();
     if ( indiceUser >= 9 ) {
         indiceUser = 9;
@@ -62,6 +65,8 @@ void BlackJackControl::buy() {
     checkWinner();
 
     refreshCards();
+
+    qInfo() << "BlackJackControl::buy";
 }
 
 void BlackJackControl::clearCardsList() {
@@ -74,6 +79,8 @@ void BlackJackControl::clearCardsList() {
 }
 
 void BlackJackControl::userHold() {
+
+    qInfo() << "BlackJackControl::userHold";
 
     _userHeld = true;
 
@@ -96,20 +103,29 @@ void BlackJackControl::userHold() {
         return;
     }else{
         if ( _CPUCardsSum <= _userCardsSum ) {
+            qInfo() << "BlackJackControl::userHold Usuário ganhou porque tem uma soma maior que a casa";
             emit userWon();
         }else{
+            qInfo() << "BlackJackControl::userHold Usuário perdei porque tem uma soma menor que a casa";
             emit userLost();
         }
     }
 
     refreshCards();
+
+    qInfo() << "BlackJackControl::userHold";
 }
 
 void BlackJackControl::onRestartGame() {
+
+    qInfo() << "BlackJackControl::onRestartGame";
+
     clearCardsList();
     _userHeld = false;
 
     emit restartGame();
+
+    qInfo() << "BlackJackControl::onRestartGame";
 }
 
 QStringList BlackJackControl::userCardsList() {
@@ -143,37 +159,51 @@ void BlackJackControl::setCPUCardsSum( int CPUCardsSum ) {
 }
 
 void BlackJackControl::checkWinner() {
+
+    qInfo() << "BlackJackControl::checkWinner";
+
     refreshCards();
 
     if ( _userHeld ) {
         if ( _CPUCardsSum>= _userCardsSum ) {
+            qInfo() << "BlackJackControl::checkWinner Usuário perdeu após segurar a mão e ter uma soma menor que a casa";
             emit userLost();
         }
     }
 
     if ( _userCardsSum > 21 ) {
+        qInfo() << "BlackJackControl::checkWinner Usuário perdeu por estourar a mão";
         emit userLost();
     }
 
     if ( _userCardsSum == 21 ) {
+        qInfo() << "BlackJackControl::checkWinner Usuário venceu por BlackJack";
         emit userBlackJack();
     }
 
     if ( _CPUCardsSum > 21 ) {
+        qInfo() << "BlackJackControl::checkWinner Usuário venceu porque a casa estourou a mão";
         emit userWon();
     }
 
     if ( _CPUCardsSum == 21 ) {
+        qInfo() << "BlackJackControl::checkWinner Usuário perdeu porque a casa tem BlackJack";
         emit cpuBlackJack();
     }
 
-    return;
+    qInfo() << "BlackJackControl::checkWinner";
 
+    return;
 }
 
 void BlackJackControl::refreshCards() {
+
+    qInfo() << "BlackJackControl::refreshCards";
+
     emit userCardsListChanged();
     emit userCardsSumChanged();
     emit CPUCardsListChanged();
     emit cpuCardsSumChanged();
+
+    qInfo() << "BlackJackControl::refreshCards";
 }
