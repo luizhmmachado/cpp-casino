@@ -8,11 +8,11 @@ Item {
     anchors.fill: parent
 
     property alias fldEmail: fldEmail
-    property alias fldSenha: fldSenha
-    property bool accept: fldEmail.acceptableInput && fldSenha.acceptableInput
+    property alias fldPassword: fldPassword
+    property bool accept: fldEmail.acceptableInput && fldPassword.acceptableInput
 
     signal cadastrar
-    signal sucesso(var saldo)
+    signal success(var balance)
 
     Rectangle {
         anchors.fill: parent
@@ -66,7 +66,7 @@ Item {
             }
 
             TextField {
-                id: fldSenha
+                id: fldPassword
 
                 height: 32
                 width: loginRequest.width * 0.8
@@ -80,13 +80,13 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldSenha.acceptableInput ? "#808080" : "red"
+                    border.color: fldPassword.acceptableInput ? "#808080" : "red"
                     border.width: 2
                     color: "white"
                     }
 
                 onTextChanged: {
-                    control.senha = fldSenha.text
+                    control.password = fldPassword.text
                 }
             }
 
@@ -117,12 +117,12 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        control.autenticar()
+                        control.athenticate()
                     }
                 }
             }
             Rectangle {
-                id: btnCadastro
+                id: btnRegister
                 radius: 5
                 width: loginRequest.width * 0.8
                 height: 32
@@ -146,8 +146,8 @@ Item {
     DataBaseControl{
         id: control
 
-        onSucesso: function(saldo){
-            root.sucesso(saldo)
+        onSuccess: function(balance){
+            root.success(balance)
         }
 
         onFail: function(msg){

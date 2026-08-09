@@ -7,14 +7,14 @@ Item {
     id: root
     anchors.fill: parent
 
-    property int dia: -1
-    property int mes: -1
-    property int ano: -1
-    property bool idadeValida: false
-    property string ageBorderColor: idadeValida ? "#808080" : "red"
-    property var regrasSenha: []
+    property int day: -1
+    property int month: -1
+    property int year: -1
+    property bool validAge: false
+    property string ageBorderColor: validAge ? "#808080" : "red"
+    property var passwordRequirements: []
 
-    signal sucesso(var saldo)
+    signal success(var balance)
 
     Rectangle {
         anchors.fill: parent
@@ -50,12 +50,12 @@ Item {
                 width: loginRequest.width * 0.8
                 placeholderText: "CPF"
 
-                property bool cpfValido: false
+                property bool validCpf: false
                 property bool programmaticChange: false
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldCpf.cpfValido ? "#808080" : "red"
+                    border.color: fldCpf.validCpf ? "#808080" : "red"
                     border.width: 2
                     color: "white"
                 }
@@ -88,12 +88,12 @@ Item {
                     control.cpf = numbers
 
 
-                    cpfValido = (numbers.length === 11)
+                    validCpf = (numbers.length === 11)
                 }
             }
 
             TextField {
-                id: fldNome
+                id: fldName
 
                 height: 32
                 width: loginRequest.width * 0.8
@@ -105,13 +105,13 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldNome.acceptableInput ? "#808080" : "red"
+                    border.color: fldName.acceptableInput ? "#808080" : "red"
                     border.width: 2
                     color: "white"
                 }
 
                 onTextChanged: {
-                    control.nome = fldNome.text
+                    control.name = fldName.text
                 }
             }
 
@@ -119,16 +119,16 @@ Item {
                 spacing: 8
 
                 TextField {
-                    id: inputDia
+                    id: inputday
                     width: 50
                     placeholderText: "DD"
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1; top: 31 }
-                    text: dia > 0 ? dia.toString() : ""
+                    text: day > 0 ? day.toString() : ""
 
                     onTextChanged: {
-                        dia = parseInt(inputDia.text)
-                        validarIdade(dia, mes, ano)
+                        day = parseInt(inputday.text)
+                        ageValidator(day, month, year)
                     }
                     background: Rectangle {
                         border.width: 2
@@ -138,16 +138,16 @@ Item {
                 }
 
                 TextField {
-                    id: inputMes
+                    id: inputmonth
                     width: 50
                     placeholderText: "MM"
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1; top: 12 }
-                    text: mes > 0 ? mes.toString() : ""
+                    text: month > 0 ? month.toString() : ""
 
                     onTextChanged: {
-                        mes = parseInt(inputMes.text)
-                        validarIdade(dia, mes, ano)
+                        month = parseInt(inputmonth.text)
+                        ageValidator(day, month, year)
                     }
                     background: Rectangle {
                         border.width: 2
@@ -157,16 +157,16 @@ Item {
                 }
 
                 TextField {
-                    id: inputAno
+                    id: inputyear
                     width: 70
                     placeholderText: "AAAA"
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1900; top: new Date().getFullYear() }
-                    text: ano > 0 ? ano.toString() : ""
+                    text: year > 0 ? year.toString() : ""
 
                     onTextChanged: {
-                        ano = parseInt(inputAno.text)
-                        validarIdade(dia, mes, ano)
+                        year = parseInt(inputyear.text)
+                        ageValidator(day, month, year)
                     }
                     background: Rectangle {
                         border.width: 2
@@ -203,11 +203,11 @@ Item {
                 spacing: 8
 
                 TextField {
-                    id: fldSenha
+                    id: fldPassword
 
                     height: 32
                     width: loginRequest.width * 0.8
-                    placeholderText: "Senha"
+                    placeholderText: "password"
                     echoMode: TextInput.Password
                     passwordCharacter: "•"
 
@@ -217,13 +217,13 @@ Item {
 
                     background: Rectangle {
                         radius: 5
-                        border.color: verificarSenha(fldSenha.text) ? "#808080" : "red"
+                        border.color: verifyPassword(fldPassword.text) ? "#808080" : "red"
                         border.width: 2
                         color: "white"
                     }
 
                     onTextChanged: {
-                        control.senha = fldSenha.text
+                        control.password = fldPassword.text
                     }
                 }
 
@@ -231,23 +231,23 @@ Item {
                     spacing: 6
 
                     Repeater {
-                        model: regrasSenha.length
+                        model: passwordRequirements.length
                         delegate: Row {
                             spacing: 6
 
-                            visible: (index === 0 && fldSenha.text.length < 8) ||
-                                     (index > 0 && fldSenha.text.length >= 8)
+                            visible: (index === 0 && fldPassword.text.length < 8) ||
+                                     (index > 0 && fldPassword.text.length >= 8)
 
                             Text {
                                 text: "•"
-                                color: regrasSenha[index].valida(fldSenha.text) ? "green" : "red"
+                                color: passwordRequirements[index].validate(fldPassword.text) ? "green" : "red"
                                 font.pixelSize: 16
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
-                                text: regrasSenha[index].texto
-                                color: regrasSenha[index].valida(fldSenha.text) ? "black" : "gray"
+                                text: passwordRequirements[index].text
+                                color: passwordRequirements[index].validate(fldPassword.text) ? "black" : "gray"
                                 font.pixelSize: 12
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -257,7 +257,7 @@ Item {
             }
 
             Rectangle {
-                id: btnCadastro
+                id: btnRegister
                 radius: 5
                 width: loginRequest.width * 0.8
                 height: 32
@@ -271,7 +271,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        control.inserir()
+                        control.insert()
                     }
                 }
             }
@@ -281,52 +281,52 @@ Item {
     DataBaseControl{
         id: control
 
-        onSucesso:function(saldo) {
-            root.sucesso(saldo)
+        onSuccess:function(balance) {
+            root.success(balance)
         }
     }
 
-    function calcularIdade(dia, mes, ano) {
-        var hoje = new Date()
-        var nascimento = new Date(ano, mes - 1, dia)
-        var idade = hoje.getFullYear() - nascimento.getFullYear()
-        var m = hoje.getMonth() - nascimento.getMonth()
-        if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-            idade--
+    function calculateAge(day, month, year) {
+        var today = new Date()
+        var birth = new Date(year, month - 1, day)
+        var age = today.getFullYear() - birth.getFullYear()
+        var m = today.getMonth() - birth.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--
         }
-        return idade
+        return age
     }
 
-    function validarIdade(dia, mes, ano) {
-        if (isNaN(dia) || isNaN(mes) || isNaN(ano) || dia <= 0 || mes <= 0 || ano <= 0) {
-            idadeValida = false
+    function ageValidator(day, month, year) {
+        if (isNaN(day) || isNaN(month) || isNaN(year) || day <= 0 || month <= 0 || year <= 0) {
+            validAge = false
             return
         }
-        var idade = calcularIdade(dia, mes, ano)
-        idadeValida = idade >= 18
-        control.dtNascimento = dia + "-" + mes + "-" + ano
+        var age = calculateAge(day, month, year)
+        validAge = age >= 18
+        control.birthDt = day + "-" + month + "-" + year
     }
 
-    function temMaiuscula(senha) { return /[A-Z]/.test(senha) }
-    function temMinuscula(senha) { return /[a-z]/.test(senha) }
-    function temNumero(senha) { return /\d/.test(senha) }
-    function temEspecial(senha) { return /[^A-Za-z0-9]/.test(senha) }
-    function temTamanho(senha) { return (senha).length >= 8 }
+    function hasUppercase(password) { return /[A-Z]/.test(password) }
+    function hasLowercase(password) { return /[a-z]/.test(password) }
+    function hasNumber(password) { return /\d/.test(password) }
+    function hasSpecial(password) { return /[^A-Za-z0-9]/.test(password) }
+    function hasSize(password) { return (password).length >= 8 }
 
-    function verificarSenha(senha){
-        if(temMaiuscula(senha) && temMinuscula(senha) && temNumero(senha) && temEspecial(senha) && temTamanho(senha)){
-            regrasSenha = []
+    function verifyPassword(password){
+        if(hasUppercase(password) && hasLowercase(password) && hasNumber(password) && hasSpecial(password) && hasSize(password)){
+            passwordRequirements = []
             return true;
         }else{
-            regrasSenha = [
-                    { texto: "Contém pelo menos 8 caracteres", valida: temTamanho },
-                    { texto: "Contém letra maiúscula", valida: temMaiuscula },
-                    { texto: "Contém letra minúscula", valida: temMinuscula },
-                    { texto: "Contém número", valida: temNumero },
-                    { texto: "Contém caractere especial", valida: temEspecial }
+            passwordRequirements = [
+                    { text: "Contém pelo menos 8 caracteres", validate: hasSize },
+                    { text: "Contém letra maiúscula", validate: hasUppercase },
+                    { text: "Contém letra minúscula", validate: hasLowercase },
+                    { text: "Contém número", validate: hasNumber },
+                    { text: "Contém caractere especial", validate: hasSpecial }
                 ]
         }
     }
 
-    Component.onCompleted: validarIdade(dia, mes, ano)
+    Component.onCompleted: ageValidator(day, month, year)
 }

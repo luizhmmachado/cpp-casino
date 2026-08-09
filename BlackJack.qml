@@ -24,21 +24,21 @@ Item {
             width: parent.width
 
             Label{
-                id: lblSuasCartas
-                text: qsTr("Suas cartas: " + control.somaCartasUser)
+                id: lblYourCards
+                text: qsTr( "Suas Cartas: " + control.userCardsSum )
                 font.pointSize: 14
                 color: "white"
             }
 
             ListView {
-                id:listViewSuasCartas
+                id:listViewYourCards
 
                 interactive: false
                 spacing: 16
                 height: 100
                 width: parent.width / 2
                 anchors.horizontalCenter: parent.horizontalCenter
-                model: control.listaCartasUser
+                model: control.userCardsList
                 orientation: ListView.Horizontal
 
                 delegate: Image {
@@ -55,20 +55,20 @@ Item {
             width: parent.width
 
             Label{
-                id: lblCPUCartas
-                text: qsTr("Cartas da casa: " + control.somaCartasCPU)
+                id: lblCPUCards
+                text: qsTr("Cartas da casa: " + control.CPUCardsSum)
                 font.pointSize: 14
                 color: "white"
             }
 
             ListView {
-                id:listViewCPUCartas
+                id:listViewCPUCards
                 interactive: false
                 spacing: 16
                 height: 100
                 width: parent.width / 2
                 anchors.horizontalCenter: parent.horizontalCenter
-                model: control.listaCartasCPU
+                model: control.CPUCardsList
                 orientation: ListView.Horizontal
 
                 delegate: Image {
@@ -80,7 +80,7 @@ Item {
         }
 
         Rectangle {
-            id: btnComecarJogo
+            id: btnStartGame
             radius: 5
             width: parent.width / 2
             height: 32
@@ -94,13 +94,13 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    control.iniciarJogo()
+                    control.startGame()
                 }
             }
         }
 
         Row {
-            visible: !btnComecarJogo.visible
+            visible: !btnStartGame.visible
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -112,7 +112,7 @@ Item {
                 color: "#369f5a"
                 Text {
                     anchors.centerIn: parent
-                    text: "Buy"
+                    text: "Comprar"
                     font.pointSize: 14
                     color: "white"
                 }
@@ -148,7 +148,7 @@ Item {
             id: txtWin
 
             visible: false
-            text: "YOU WIN"
+            text: "VOCÊ VENCEU"
             font.pointSize: 32
             color: "white"
 
@@ -173,7 +173,7 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    control.restartGame()
+                    control.onRestartGame()
                 }
             }
         }
@@ -183,18 +183,16 @@ Item {
     BlackJackControl {
         id: control
 
-        onSomaCartasUserChanged: {
-            if(control.somaCartasCPU >= control.somaCartasUser){
-                console.log("Cartas CPU MAIOR")
+        onUserCardsSumChanged: {
+            if(control.CPUCardsSum >= control.userCardsSum){
                 btnHold.enabled = false
                 btnHold.opacity = 0.5
             }else{
-                console.log("Cartas CPU MENOR")
                 btnHold.enabled = true
                 btnHold.opacity = 1
             }
 
-            if (control.somaCartasUser >= 21 ) {
+            if (control.userCardsSum >= 21 ) {
                 btnBuy.enabled = false
                 btnBuy.opacity = 0.5
             }else{
@@ -203,8 +201,8 @@ Item {
             }
         }
 
-        onSomaCartasCPUChanged: {
-            if(control.somaCartasCPU >= control.somaCartasUser){
+        onCpuCardsSumChanged: {
+            if(control.CPUCardsSum >= control.userCardsSum){
                 btnHold.enabled = false
                 btnHold.opacity = 0.5
             }else{
@@ -214,40 +212,40 @@ Item {
         }
 
         onUserBlackJack: {
-            txtWin.text = "YOU WIN"
+            txtWin.text = "VOCÊ VENCEU"
             txtWin.visible = true
             btnRestart.visible = true
         }
 
         onUserWon: {
-            txtWin.text = "YOU WIN"
+            txtWin.text = "VOCÊ VENCEU"
             txtWin.visible = true
             btnRestart.visible = true
         }
 
         onUserLost: {
             txtWin.visible = true
-            txtWin.text = "YOU LOST"
+            txtWin.text = "VOCÊ PERDEU"
             btnRestart.visible = true
         }
 
         onCpuBlackJack: {
             txtWin.visible = true
-            txtWin.text = "YOU LOST"
+            txtWin.text = "VOCÊ PERDEU"
             btnRestart.visible = true
         }
 
-        onOnRestartGame: {
+        onRestartGame: {
             btnRestart.visible = false
             txtWin.visible = false
         }
 
-        onLiberarCompra: {
-            btnComecarJogo.visible = false
+        onReleaseBuy: {
+            btnStartGame.visible = false
         }
     }
 
     Component.onCompleted: {
-        btnComecarJogo.visible = true
+        btnStartGame.visible = true
     }
 }

@@ -1,4 +1,4 @@
-#ifndef DATABASECONTROL_H
+ #ifndef DATABASECONTROL_H
 #define DATABASECONTROL_H
 
 #include <QObject>
@@ -9,48 +9,49 @@ class DataBaseControl : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString cpf READ cpf WRITE setCpf NOTIFY cpfChanged)
-    Q_PROPERTY(QString nome READ nome WRITE setNome NOTIFY nomeChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString email READ email WRITE setEmail NOTIFY emailChanged)
-    Q_PROPERTY(QString senha READ senha WRITE setSenha NOTIFY senhaChanged)
-    Q_PROPERTY(QString dtNascimento READ dtNascimento WRITE setDtNascimento NOTIFY dtNascimentoChanged)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(QString birthDt READ birthDt WRITE setBirthDt NOTIFY birthDtChanged)
 
 public:
     DataBaseControl();
 
-    Q_INVOKABLE bool autenticar();
-    Q_INVOKABLE bool inserir();
-
     QString email() const;
-    void setEmail(const QString &newEmail);
+    void setEmail(const QString &email);
 
-    QString senha() const;
-    void setSenha(const QString &newSenha);
+    QString password() const;
+    void setPassword(const QString &password);
 
     QString cpf() const;
-    void setCpf(const QString &newCpf);
+    void setCpf(const QString &cpf);
 
-    QString dtNascimento() const;
-    void setDtNascimento(const QString &newDtNascimento);
+    QString birthDt() const;
+    void setBirthDt(const QString &birthDt );
 
-    QString nome() const;
-    void setNome(const QString &newNome);
+    QString name() const;
+    void setName(const QString &name);
+
+public slots:
+    bool athenticate();
+    bool insert();
 
 signals:
     void emailChanged();
-    void senhaChanged();
+    void passwordChanged();
     void cpfChanged();
-    void dtNascimentoChanged();
-    void nomeChanged();
+    void birthDtChanged();
+    void nameChanged();
 
-    void sucesso(const QString &saldoFormatado);
+    void success(const QString &formattedBalance);
     void fail(const QString &msg);
 
 private:
-    QString m_email;
-    QString m_senha;
-    QString m_cpf;
-    QString m_dtNascimento;
-    QString m_nome;
+    QString _email;
+    QString _password;
+    QString _cpf;
+    QString _birthDt;
+    QString _name;
 };
 
 #endif // DATABASECONTROL_H

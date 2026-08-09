@@ -3,6 +3,6 @@
         <file>main.qml</file>
         <file>BlackJack.qml</file>
         <file>LoginPage.qml</file>
-        <file>CadastroPage.qml</file>
+        <file>RegisterPage.qml</file>
     </qresource>
 </RCC>

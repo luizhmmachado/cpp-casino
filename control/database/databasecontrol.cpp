@@ -5,18 +5,18 @@ DataBaseControl::DataBaseControl() {
         QSqlDatabase db = QSqlDatabase::addDatabase( "QPSQL", "clientes_connection" );
         db.setHostName( "localhost" );
         db.setDatabaseName( "cassino_pt_br" );
-        QString usuario = QString::fromUtf8( qgetenv( "DB_USER" ) );
-        QString senha = QString::fromUtf8( qgetenv( "DB_PASS" ) );
+        QString user = QString::fromUtf8( qgetenv( "DB_USER" ) );
+        QString password = QString::fromUtf8( qgetenv( "DB_PASS" ) );
 
-        db.setUserName( usuario );
-        db.setPassword( senha );
+        db.setUserName( user );
+        db.setPassword( password );
         if ( !db.open() ) {
             qWarning() << "Erro ao conectar no banco:" << db.lastError().text();
         }
     }
 }
 
-bool DataBaseControl::autenticar() {
+bool DataBaseControl::athenticate() {
     QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
     if ( !db.isOpen() ) {
         qWarning() << "Falha ao conectar ao banco de dados";
@@ -24,9 +24,9 @@ bool DataBaseControl::autenticar() {
     }
 
     QSqlQuery query( db );
-    query.prepare( "SELECT COUNT(*) FROM clientes WHERE email = :email AND senha = crypt(:senha, senha)" );
-    query.bindValue( ":email", m_email );
-    query.bindValue( ":senha", m_senha );
+    query.prepare( "SELECT COUNT(*) FROM clientes WHERE email = :email AND password = crypt(:password, password)" );
+    query.bindValue( ":email", _email );
+    query.bindValue( ":password", _password );
 
     if ( !query.exec() ) {
         qWarning() << "Erro na consulta:" << query.lastError().text();
@@ -37,20 +37,20 @@ bool DataBaseControl::autenticar() {
     if ( query.next() ) {
         int count = query.value( 0 ).toInt();
         if ( count > 0 ) {
-            QSqlQuery saldoQuery( db );
-            saldoQuery.prepare( "SELECT saldo FROM clientes WHERE email = :email" );
-            saldoQuery.bindValue( ":email", m_email );
+            QSqlQuery balanceQuery( db );
+            balanceQuery.prepare( "SELECT balance FROM clientes WHERE email = :email" );
+            balanceQuery.bindValue( ":email", _email );
 
-            if ( !saldoQuery.exec() ) {
-                emit fail( "Erro ao buscar saldo: " + saldoQuery.lastError().text() );
+            if ( !balanceQuery.exec() ) {
+                emit fail( "Erro ao buscar saldo: " + balanceQuery.lastError().text() );
                 return false;
             }
 
-            if ( saldoQuery.next() ) {
-                double saldo = saldoQuery.value( 0 ).toDouble();
-                qInfo() << saldo;
-                QString saldoFormatado = QLocale::system().toCurrencyString( saldo );
-                emit sucesso( saldoFormatado );
+            if ( balanceQuery.next() ) {
+                double balance = balanceQuery.value( 0 ).toDouble();
+                qInfo() << balance;
+                QString formattedBalance = QLocale::system().toCurrencyString( balance );
+                emit success( formattedBalance );
                 return true;
             }
         }
@@ -61,7 +61,7 @@ bool DataBaseControl::autenticar() {
 
 }
 
-bool DataBaseControl::inserir() {
+bool DataBaseControl::insert() {
     QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
     if ( !db.isOpen() ) {
         qWarning() << "Falha ao conectar ao banco de dados";
@@ -71,15 +71,15 @@ bool DataBaseControl::inserir() {
     QSqlQuery query( db );
 
     query.prepare( R"(
-        INSERT INTO clientes (cpf, nome, email, senha, data_criacao, data_nascimento)
-        VALUES (:cpf, :nome, :email, crypt(:senha, gen_salt('bf')), :data_criacao, :data_nascimento)
+        INSERT INTO clientes (cpf, nome, email, password, creation_date, birth_date)
+        VALUES (:cpf, :nome, :email, crypt(:password, gen_salt('bf')), :creation_date, :birth_date)
     )" );
-    query.bindValue( ":cpf", m_cpf );
-    query.bindValue( ":nome", m_nome );
-    query.bindValue( ":email", m_email );
-    query.bindValue( ":senha", m_senha );
-    query.bindValue( ":data_criacao", QDateTime::currentDateTime() );
-    query.bindValue( ":data_nascimento", m_dtNascimento );
+    query.bindValue( ":cpf", _cpf );
+    query.bindValue( ":nome", _name );
+    query.bindValue( ":email", _email );
+    query.bindValue( ":password", _password );
+    query.bindValue( ":creation_date", QDateTime::currentDateTime() );
+    query.bindValue( ":birth_date", _birthDt );
 
     if ( !query.exec() ) {
         qWarning() << query.lastError().text();
@@ -87,61 +87,61 @@ bool DataBaseControl::inserir() {
         return false;
     }
 
-    emit sucesso( QLocale::system().toCurrencyString( 0.00 ) );
+    emit success( QLocale::system().toCurrencyString( 0.00 ) );
     return true;
 }
 
 QString DataBaseControl::email() const {
-    return m_email;
+    return _email;
 }
 
-void DataBaseControl::setEmail( const QString& newEmail ) {
-    if ( m_email == newEmail )
+void DataBaseControl::setEmail( const QString& email ) {
+    if ( _email == email )
         return;
-    m_email = newEmail;
+    _email = email;
     emit emailChanged();
 }
 
-QString DataBaseControl::senha() const {
-    return m_senha;
+QString DataBaseControl::password() const {
+    return _password;
 }
 
-void DataBaseControl::setSenha( const QString& newSenha ) {
-    if ( m_senha == newSenha )
+void DataBaseControl::setPassword( const QString& password ) {
+    if ( _password == password )
         return;
-    m_senha = newSenha;
-    emit senhaChanged();
+    _password = password;
+    emit passwordChanged();
 }
 
 QString DataBaseControl::cpf() const {
-    return m_cpf;
+    return _cpf;
 }
 
-void DataBaseControl::setCpf( const QString& newCpf ) {
-    if ( m_cpf == newCpf )
+void DataBaseControl::setCpf( const QString& cpf ) {
+    if ( _cpf == cpf )
         return;
-    m_cpf = newCpf;
+    _cpf = cpf;
     emit cpfChanged();
 }
 
-QString DataBaseControl::dtNascimento() const {
-    return m_dtNascimento;
+QString DataBaseControl::birthDt() const {
+    return _birthDt;
 }
 
-void DataBaseControl::setDtNascimento( const QString& newDtNascimento ) {
-    if ( m_dtNascimento == newDtNascimento )
+void DataBaseControl::setBirthDt( const QString& birthDt ) {
+    if ( _birthDt == birthDt )
         return;
-    m_dtNascimento = newDtNascimento;
-    emit dtNascimentoChanged();
+    _birthDt = birthDt;
+    emit birthDtChanged();
 }
 
-QString DataBaseControl::nome() const {
-    return m_nome;
+QString DataBaseControl::name() const {
+    return _name;
 }
 
-void DataBaseControl::setNome( const QString& newNome ) {
-    if ( m_nome == newNome )
+void DataBaseControl::setName( const QString& name ) {
+    if ( _name == name )
         return;
-    m_nome = newNome;
-    emit nomeChanged();
+    _name = name;
+    emit nameChanged();
 }

@@ -5,42 +5,43 @@
 
 class BlackJackControl : public QObject {
     Q_OBJECT
-    Q_PROPERTY( QStringList imageList READ imageList CONSTANT )
-    Q_PROPERTY( QStringList listaCartasUser READ listaCartasUser NOTIFY listaCartasUserChanged )
-    Q_PROPERTY( QStringList listaCartasCPU READ listaCartasCPU NOTIFY listaCartasCPUChanged )
-    Q_PROPERTY( int somaCartasUser READ somaCartasUser WRITE setSomaCartasUser NOTIFY somaCartasUserChanged FINAL )
-    Q_PROPERTY( int somaCartasCPU READ somaCartasCPU WRITE setSomaCartasCPU NOTIFY somaCartasCPUChanged FINAL )
+    Q_PROPERTY( QStringList userCardsList READ userCardsList NOTIFY userCardsListChanged )
+    Q_PROPERTY( QStringList CPUCardsList READ CPUCardsList NOTIFY CPUCardsListChanged )
+    Q_PROPERTY( int userCardsSum READ userCardsSum WRITE setUserCardsSum NOTIFY userCardsSumChanged FINAL )
+    Q_PROPERTY( int CPUCardsSum READ CPUCardsSum WRITE setCPUCardsSum NOTIFY cpuCardsSumChanged FINAL )
 public:
     BlackJackControl();
 
-    Q_INVOKABLE void iniciarJogo();
-    Q_INVOKABLE int getIndiceCarta();
+    Q_INVOKABLE void startGame();
     Q_INVOKABLE void buy();
-    Q_INVOKABLE void limparListaCartas();
+
     Q_INVOKABLE void userHold();
-    Q_INVOKABLE void restartGame();
+    Q_INVOKABLE void onRestartGame();
 
     QStringList imageList() const;
-    QStringList listaCartasUser();
+    QStringList userCardsList();
 
-    QStringList listaCartasCPU() const;
+    QStringList CPUCardsList() const;
 
-    int somaCartasUser() const;
-    void setSomaCartasUser( int newSomaCartasUser );
+    int userCardsSum() const;
+    void setUserCardsSum( int userCardsSum );
 
-    int somaCartasCPU() const;
-    void setSomaCartasCPU( int newSomaCartasCPU );
+    int CPUCardsSum() const;
+    void setCPUCardsSum( int CPUCardsSum );
+
+    int cardIndex();
+    void clearCardsList();
 
 signals:
     void error( QString msg );
 
-    void listaCartasUserChanged();
+    void userCardsListChanged();
 
-    void listaCartasCPUChanged();
+    void CPUCardsListChanged();
 
-    void somaCartasUserChanged();
+    void userCardsSumChanged();
 
-    void somaCartasCPUChanged();
+    void cpuCardsSumChanged();
 
     void userWon();
     void userLost();
@@ -48,20 +49,20 @@ signals:
 
     void cpuBlackJack();
 
-    void onRestartGame();
+    void restartGame();
 
-    void liberarCompra();
+    void releaseBuy();
 
 private slots:
     void checkWinner();
-    void atualizarCartas();
+    void refreshCards();
 
 private:
     QStringList _imageList;
-    QStringList _listaCartasUser;
-    QStringList _listaCartasCPU;
-    int _somaCartasUser;
-    int _somaCartasCPU;
+    QStringList _userCardsList;
+    QStringList _CPUCardsList;
+    int _userCardsSum;
+    int _CPUCardsSum;
     bool _userHeld;
 };
 

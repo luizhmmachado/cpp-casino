@@ -85,7 +85,7 @@ ApplicationWindow {
                 }
 
                 Rectangle{
-                    width: txtSaldo.width + 20
+                    width: txtBalance.width + 20
                     height: 30
                     radius: 20
                     color: "#1c2026"
@@ -93,10 +93,10 @@ ApplicationWindow {
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
 
-                    visible: !(loaderComponent === cadastroPage || loaderComponent === loginPage)
+                    visible: !(loaderComponent === registerPage || loaderComponent === loginPage)
 
                     Text{
-                        id: txtSaldo
+                        id: txtBalance
 
                         anchors.centerIn: parent
                         color: "white"
@@ -118,21 +118,21 @@ ApplicationWindow {
         id: loginPage
 
         LoginPage{
-            onCadastrar: loaderComponent = cadastroPage
-            onSucesso: function(saldo) {
+            onCadastrar: loaderComponent = registerPage
+            onSuccess: function(balance) {
                 loaderComponent = blackjackPage
-                txtSaldo.text = saldo
+                txtBalance.text = balance
             }
         }
     }
 
     Component{
-        id: cadastroPage
+        id: registerPage
 
-        CadastroPage{
-            onSucesso: function(saldo) {
+        RegisterPage{
+            onSuccess: function(balance) {
                 loaderComponent = blackjackPage
-                txtSaldo.text = saldo
+                txtBalance.text = balance
             }
         }
     }
