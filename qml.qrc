@@ -1,10 +1,14 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>BlackJack.qml</file>
-        <file>LoginPage.qml</file>
-        <file>RegisterPage.qml</file>
-        <file>HorsesRace.qml</file>
-        <file>theme/Colors.qml</file>
+        <file>ui/blackjack/BlackJack.qml</file>
+        <file>ui/login/LoginPage.qml</file>
+        <file>ui/login/RegisterPage.qml</file>
+        <file>ui/horserace/HorseRace.qml</file>
+        <file>ui/theme/Colors.qml</file>
+        <file>ui/theme/Fonts.qml</file>
+        <file>ui/theme/fonts/PressStart2P-Regular.ttf</file>
+        <file>ui/horserace/HorseRaceDesign.ui.qml</file>
+        <file>ui/horserace/qmldir</file>
     </qresource>
 </RCC>

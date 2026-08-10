@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import DataBaseControl 1.0
 import QtQuick.Layouts 1.15
 import Colors 1.0
+import Fonts 1.0
 
 Item {
     id: root
@@ -50,6 +51,7 @@ Item {
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "CPF"
+                font: Fonts.text8bit
 
                 property bool validCpf: false
                 property bool programmaticChange: false
@@ -99,6 +101,7 @@ Item {
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "Nome Completo"
+                font: Fonts.text8bit
 
                 validator: RegularExpressionValidator {
                     regularExpression: /.{8,}/
@@ -123,6 +126,7 @@ Item {
                     id: inputday
                     width: 50
                     placeholderText: "DD"
+                    font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1; top: 31 }
                     text: day > 0 ? day.toString() : ""
@@ -142,6 +146,7 @@ Item {
                     id: inputmonth
                     width: 50
                     placeholderText: "MM"
+                    font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1; top: 12 }
                     text: month > 0 ? month.toString() : ""
@@ -161,6 +166,7 @@ Item {
                     id: inputyear
                     width: 70
                     placeholderText: "AAAA"
+                    font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1900; top: new Date().getFullYear() }
                     text: year > 0 ? year.toString() : ""
@@ -183,6 +189,7 @@ Item {
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "E-mail"
+                font: Fonts.text8bit
 
                 validator: RegularExpressionValidator {
                     regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
@@ -209,6 +216,7 @@ Item {
                     height: 32
                     width: loginRequest.width * 0.8
                     placeholderText: "password"
+                    font: Fonts.text8bit
                     echoMode: TextInput.Password
                     passwordCharacter: "•"
 
@@ -242,14 +250,14 @@ Item {
                             Text {
                                 text: "•"
                                 color: passwordRequirements[index].validate(fldPassword.text) ? Colors.success : Colors.error
-                                font.pixelSize: 16
+                                font: Fonts.text8bit
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
                                 text: passwordRequirements[index].text
                                 color: passwordRequirements[index].validate(fldPassword.text) ? Colors.primary : Colors.secondary
-                                font.pixelSize: 12
+                                font: Fonts.text8bit
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -266,7 +274,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "Fazer Cadastro"
-                    font.pointSize: 14
+                    font: Fonts.text8bit
                     color: Colors.textColor
                 }
                 MouseArea {

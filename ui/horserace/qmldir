@@ -1,0 +1,4 @@
+module minigames.horserace
+
+HorseRace 1.0 HorseRace.qml
+HorseRaceDesign 1.0 HorseRaceDesign.ui.qml

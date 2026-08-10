@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQml 2.15
 import DataBaseControl 1.0
 import Colors 1.0
+import Fonts 1.0
 
 Item {
     id: root
@@ -49,6 +50,7 @@ Item {
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "E-mail"
+                font: Fonts.text8bit
 
                 validator: RegularExpressionValidator {
                     regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
@@ -72,6 +74,7 @@ Item {
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "Senha"
+                font: Fonts.text8bit
                 echoMode: TextInput.Password
                 passwordCharacter: "•"
 
@@ -97,7 +100,7 @@ Item {
                 color: Colors.error
                 width: parent.width
                 height: 32
-                font.pointSize: 12
+                font: Fonts.text8bit
                 visible: false
             }
 
@@ -112,7 +115,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "Fazer Login"
-                    font.pointSize: 14
+                    font: Fonts.text8bit
                     color: Colors.textColor
                 }
                 MouseArea {
@@ -131,7 +134,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "Fazer Cadastro"
-                    font.pointSize: 14
+                    font: Fonts.text8bit
                     color: Colors.textColor
                 }
                 MouseArea {
