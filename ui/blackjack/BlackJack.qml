@@ -2,9 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import BlackJackControl 1.0
 import Colors 1.0
+import Fonts 1.0
 
 Item {
     anchors.fill: parent
+    property real cardsLabelWidth: Math.max( lblYourCards.implicitWidth, lblCPUCards.implicitWidth )
 
     Rectangle {
         anchors.fill: parent
@@ -27,8 +29,9 @@ Item {
             Label{
                 id: lblYourCards
                 text: qsTr( "Suas Cartas: " + control.userCardsSum )
-                font.pointSize: 14
+                font: Fonts.text8bit
                 color: Colors.textColor
+                width: cardsLabelWidth
             }
 
             ListView {
@@ -37,8 +40,8 @@ Item {
                 interactive: false
                 spacing: 16
                 height: 100
-                width: parent.width / 2
-                anchors.horizontalCenter: parent.horizontalCenter
+                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
+                clip: true
                 model: control.userCardsList
                 orientation: ListView.Horizontal
 
@@ -58,8 +61,9 @@ Item {
             Label{
                 id: lblCPUCards
                 text: qsTr("Cartas da casa: " + control.CPUCardsSum)
-                font.pointSize: 14
+                font: Fonts.text8bit
                 color: Colors.textColor
+                width: cardsLabelWidth
             }
 
             ListView {
@@ -67,8 +71,8 @@ Item {
                 interactive: false
                 spacing: 16
                 height: 100
-                width: parent.width / 2
-                anchors.horizontalCenter: parent.horizontalCenter
+                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
+                clip: true
                 model: control.CPUCardsList
                 orientation: ListView.Horizontal
 
@@ -89,7 +93,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: "Começar Jogo"
-                font.pointSize: 14
+                font: Fonts.text8bit
                 color: Colors.textColor
             }
             MouseArea {
@@ -114,7 +118,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "Comprar"
-                    font.pointSize: 14
+                    font: Fonts.text8bit
                     color: Colors.textColor
                 }
                 MouseArea {
@@ -134,7 +138,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "Hold"
-                    font.pointSize: 14
+                    font: Fonts.text8bit
                     color: Colors.textColor
                 }
                 MouseArea {
@@ -150,7 +154,7 @@ Item {
 
             visible: false
             text: "VOCÊ VENCEU"
-            font.pointSize: 32
+            font: Fonts.title8bit
             color: Colors.yellow100
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -168,7 +172,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: "Play Again"
-                font.pointSize: 24
+                font: Fonts.text8bit
                 color: Colors.textColor
             }
             MouseArea {
