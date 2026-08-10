@@ -7,7 +7,7 @@ QT += concurrent
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        control/blakcjack/blackjackcontrol.cpp \
+        control/blackjack/blackjackcontrol.cpp \
         control/database/databasecontrol.cpp \
         control/horserace/horsemodel.cpp \
         control/horserace/horseracecontrol.cpp \
@@ -28,7 +28,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    control/blakcjack/blackjackcontrol.h \
+    control/blackjack/blackjackcontrol.h \
     control/database/databasecontrol.h \
     control/horserace/horsemodel.h \
     control/horserace/horseracecontrol.h
