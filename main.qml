@@ -1,6 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Colors 1.0
+import "ui/blackjack"
+import "ui/horserace"
+import "ui/login"
 
 ApplicationWindow {
     id: root
@@ -110,7 +113,7 @@ ApplicationWindow {
     Component {
         id: horseracePage
 
-        HorsesRace{
+        HorseRace{
 
         }
     }

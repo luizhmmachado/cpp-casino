@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include <control/blakcjack/blackjackcontrol.h>
+#include <control/blackjack/blackjackcontrol.h>
 #include <control/database/databasecontrol.h>
 #include <control/horserace/horseracecontrol.h>
 
@@ -14,7 +14,7 @@ int main( int argc, char* argv[] ) {
     qmlRegisterType<BlackJackControl>( "BlackJackControl", 1, 0, "BlackJackControl" );
     qmlRegisterType<DataBaseControl>( "DataBaseControl", 1, 0, "DataBaseControl" );
     qmlRegisterType<HorseRaceControl>( "HorseRaceControl", 1, 0, "HorseRaceControl" );
-    qmlRegisterSingletonType( QUrl( QStringLiteral( "qrc:/theme/Colors.qml" ) ),
+    qmlRegisterSingletonType( QUrl( QStringLiteral( "qrc:/ui/theme/Colors.qml" ) ),
                               "Colors", 1, 0, "Colors" );
 
     QQmlApplicationEngine engine;
