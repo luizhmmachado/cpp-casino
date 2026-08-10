@@ -14,8 +14,11 @@ int main( int argc, char* argv[] ) {
     qmlRegisterType<BlackJackControl>( "BlackJackControl", 1, 0, "BlackJackControl" );
     qmlRegisterType<DataBaseControl>( "DataBaseControl", 1, 0, "DataBaseControl" );
     qmlRegisterType<HorseRaceControl>( "HorseRaceControl", 1, 0, "HorseRaceControl" );
+    qmlRegisterSingletonType( QUrl( QStringLiteral( "qrc:/theme/Colors.qml" ) ),
+                              "Colors", 1, 0, "Colors" );
 
     QQmlApplicationEngine engine;
+    engine.addImportPath( "qrc:/" );
     const QUrl url( QStringLiteral( "qrc:/main.qml" ) );
     QObject::connect( &engine, &QQmlApplicationEngine::objectCreated,
                       &app, [url]( QObject* obj, const QUrl& objUrl ) {

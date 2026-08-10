@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import DataBaseControl 1.0
 import QtQuick.Layouts 1.15
+import Colors 1.0
 
 Item {
     id: root
@@ -11,14 +12,14 @@ Item {
     property int month: -1
     property int year: -1
     property bool validAge: false
-    property string ageBorderColor: validAge ? "#808080" : "red"
+    property color ageBorderColor: validAge ? Colors.secondary : Colors.error
     property var passwordRequirements: []
 
     signal success(var balance)
 
     Rectangle {
         anchors.fill: parent
-        color: "#1c2026"
+        color: Colors.background
     }
 
     Item {
@@ -30,7 +31,7 @@ Item {
         Rectangle {
             id: background
             anchors.fill: parent
-            color: "white"
+            color: Colors.yellow200
             radius: 16
         }
 
@@ -55,9 +56,9 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldCpf.validCpf ? "#808080" : "red"
+                    border.color: fldCpf.validCpf ? Colors.secondary : Colors.error
                     border.width: 2
-                    color: "white"
+                    color: Colors.yellow200
                 }
 
                 onTextChanged: {
@@ -105,9 +106,9 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldName.acceptableInput ? "#808080" : "red"
+                    border.color: fldName.acceptableInput ? Colors.secondary : Colors.error
                     border.width: 2
-                    color: "white"
+                    color: Colors.yellow200
                 }
 
                 onTextChanged: {
@@ -189,9 +190,9 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldEmail.acceptableInput ? "#808080" : "red"
+                    border.color: fldEmail.acceptableInput ? Colors.secondary : Colors.error
                     border.width: 2
-                    color: "white"
+                    color: Colors.yellow200
                 }
 
                 onTextChanged: {
@@ -217,9 +218,9 @@ Item {
 
                     background: Rectangle {
                         radius: 5
-                        border.color: verifyPassword(fldPassword.text) ? "#808080" : "red"
+                        border.color: verifyPassword(fldPassword.text) ? Colors.secondary : Colors.error
                         border.width: 2
-                        color: "white"
+                        color: Colors.yellow200
                     }
 
                     onTextChanged: {
@@ -240,14 +241,14 @@ Item {
 
                             Text {
                                 text: "•"
-                                color: passwordRequirements[index].validate(fldPassword.text) ? "green" : "red"
+                                color: passwordRequirements[index].validate(fldPassword.text) ? Colors.success : Colors.error
                                 font.pixelSize: 16
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
                                 text: passwordRequirements[index].text
-                                color: passwordRequirements[index].validate(fldPassword.text) ? "black" : "gray"
+                                color: passwordRequirements[index].validate(fldPassword.text) ? Colors.primary : Colors.secondary
                                 font.pixelSize: 12
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -266,7 +267,7 @@ Item {
                     anchors.centerIn: parent
                     text: "Fazer Cadastro"
                     font.pointSize: 14
-                    color: "white"
+                    color: Colors.textColor
                 }
                 MouseArea {
                     anchors.fill: parent

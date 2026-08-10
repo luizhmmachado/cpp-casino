@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQml 2.15
 import DataBaseControl 1.0
+import Colors 1.0
 
 Item {
     id: root
@@ -16,7 +17,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#1c2026"
+        color: Colors.background
     }
 
     Item {
@@ -28,7 +29,7 @@ Item {
         Rectangle {
             id: background
             anchors.fill: parent
-            color: "white"
+            color: Colors.yellow200
             radius: 16
         }
 
@@ -55,9 +56,9 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldEmail.acceptableInput ? "#808080" : "red"
+                    border.color: fldEmail.acceptableInput ? Colors.secondary : Colors.error
                     border.width: 2
-                    color: "white"
+                    color: Colors.yellow200
                 }
 
                 onTextChanged: {
@@ -80,9 +81,9 @@ Item {
 
                 background: Rectangle {
                     radius: 5
-                    border.color: fldPassword.acceptableInput ? "#808080" : "red"
+                    border.color: fldPassword.acceptableInput ? Colors.secondary : Colors.error
                     border.width: 2
-                    color: "white"
+                    color: Colors.yellow200
                     }
 
                 onTextChanged: {
@@ -93,7 +94,7 @@ Item {
             Label{
                 id: lblErro
 
-                color: "red"
+                color: Colors.error
                 width: parent.width
                 height: 32
                 font.pointSize: 12
@@ -105,14 +106,14 @@ Item {
                 radius: 5
                 width: loginRequest.width * 0.8
                 height: 32
-                color: "#369f5a"
+                color: Colors.success
                 enabled: accept
                 opacity: accept ? 1 : 0.5
                 Text {
                     anchors.centerIn: parent
                     text: "Fazer Login"
                     font.pointSize: 14
-                    color: "white"
+                    color: Colors.textColor
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -131,7 +132,7 @@ Item {
                     anchors.centerIn: parent
                     text: "Fazer Cadastro"
                     font.pointSize: 14
-                    color: "white"
+                    color: Colors.textColor
                 }
                 MouseArea {
                     anchors.fill: parent
