@@ -9,10 +9,12 @@ QT += concurrent
 SOURCES += \
         control/blakcjack/blackjackcontrol.cpp \
         control/database/databasecontrol.cpp \
+        control/horserace/horsemodel.cpp \
+        control/horserace/horseracecontrol.cpp \
         main.cpp
 
 RESOURCES += qml.qrc \
-    images.qrc
+    resources.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -27,4 +29,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     control/blakcjack/blackjackcontrol.h \
-    control/database/databasecontrol.h
+    control/database/databasecontrol.h \
+    control/horserace/horsemodel.h \
+    control/horserace/horseracecontrol.h
