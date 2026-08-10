@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 ApplicationWindow {
     id: root
 
-    property var loaderComponent: loginPage
+    property var loaderComponent: horseracePage
     //    visibility: "FullScreen"
     height: 768
     width: 1024
@@ -103,6 +103,14 @@ ApplicationWindow {
                     }
                 }
             }
+        }
+    }
+
+    Component {
+        id: horseracePage
+
+        HorsesRace{
+
         }
     }
 

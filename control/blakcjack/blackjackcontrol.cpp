@@ -8,19 +8,19 @@ BlackJackControl::BlackJackControl() :
     _CPUCardsSum( 0 ),
     _userHeld( false ) {
     _imageList = QStringList( {
-        "qrc:/images/cartas/carta1.png",
-        "qrc:/images/cartas/carta2.png",
-        "qrc:/images/cartas/carta3.png",
-        "qrc:/images/cartas/carta4.png",
-        "qrc:/images/cartas/carta5.png",
-        "qrc:/images/cartas/carta6.png",
-        "qrc:/images/cartas/carta7.png",
-        "qrc:/images/cartas/carta8.png",
-        "qrc:/images/cartas/carta9.png",
-        "qrc:/images/cartas/carta10.png",
-        "qrc:/images/cartas/carta10.png",
-        "qrc:/images/cartas/carta10.png",
-        "qrc:/images/cartas/carta10.png"
+        "qrc:/resources/images/cartas/carta1.png",
+        "qrc:/resources/images/cartas/carta2.png",
+        "qrc:/resources/images/cartas/carta3.png",
+        "qrc:/resources/images/cartas/carta4.png",
+        "qrc:/resources/images/cartas/carta5.png",
+        "qrc:/resources/images/cartas/carta6.png",
+        "qrc:/resources/images/cartas/carta7.png",
+        "qrc:/resources/images/cartas/carta8.png",
+        "qrc:/resources/images/cartas/carta9.png",
+        "qrc:/resources/images/cartas/carta10.png",
+        "qrc:/resources/images/cartas/carta10.png",
+        "qrc:/resources/images/cartas/carta10.png",
+        "qrc:/resources/images/cartas/carta10.png"
     } );
 }
 
