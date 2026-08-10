@@ -1,10 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Colors 1.0
 
 ApplicationWindow {
     id: root
 
-    property var loaderComponent: loginPage
+    property var loaderComponent: blackjackPage
     //    visibility: "FullScreen"
     height: 768
     width: 1024
@@ -26,7 +27,7 @@ ApplicationWindow {
 
         Rectangle {
             id: footer
-            color: "#ff3c00"
+            color: Colors.primary
             width: parent.width
             height: 50
             anchors.bottom: parent.bottom
@@ -43,7 +44,7 @@ ApplicationWindow {
                         anchors.centerIn: parent
                         text: "BlackJack"
                         font.pixelSize: 20
-                        color: "white"
+                        color: Colors.textColor
                     }
 
                     MouseArea {
@@ -72,7 +73,7 @@ ApplicationWindow {
                         anchors.centerIn: parent
                         text: "≡"
                         font.pixelSize: 30
-                        color: "white"
+                        color: Colors.textColor
                     }
 
                     MouseArea {
@@ -88,7 +89,7 @@ ApplicationWindow {
                     width: txtBalance.width + 20
                     height: 30
                     radius: 20
-                    color: "#1c2026"
+                    color: Colors.primary
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
@@ -99,7 +100,7 @@ ApplicationWindow {
                         id: txtBalance
 
                         anchors.centerIn: parent
-                        color: "white"
+                        color: Colors.textColor
                     }
                 }
             }

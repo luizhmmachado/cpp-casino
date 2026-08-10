@@ -1,13 +1,14 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import BlackJackControl 1.0
+import Colors 1.0
 
 Item {
     anchors.fill: parent
 
     Rectangle {
         anchors.fill: parent
-        color: "#1c2026"
+        color: Colors.background
     }
 
     Column {
@@ -27,7 +28,7 @@ Item {
                 id: lblYourCards
                 text: qsTr( "Suas Cartas: " + control.userCardsSum )
                 font.pointSize: 14
-                color: "white"
+                color: Colors.textColor
             }
 
             ListView {
@@ -58,7 +59,7 @@ Item {
                 id: lblCPUCards
                 text: qsTr("Cartas da casa: " + control.CPUCardsSum)
                 font.pointSize: 14
-                color: "white"
+                color: Colors.textColor
             }
 
             ListView {
@@ -84,12 +85,12 @@ Item {
             radius: 5
             width: parent.width / 2
             height: 32
-            color: "#369f5a"
+            color: Colors.primary
             Text {
                 anchors.centerIn: parent
                 text: "Começar Jogo"
                 font.pointSize: 14
-                color: "white"
+                color: Colors.textColor
             }
             MouseArea {
                 anchors.fill: parent
@@ -109,12 +110,12 @@ Item {
                 radius: 5
                 width: 256
                 height: 32
-                color: "#369f5a"
+                color: Colors.primary
                 Text {
                     anchors.centerIn: parent
                     text: "Comprar"
                     font.pointSize: 14
-                    color: "white"
+                    color: Colors.textColor
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -129,12 +130,12 @@ Item {
                 radius: 5
                 width: 256
                 height: 32
-                color: "#369f5a"
+                color: Colors.primary
                 Text {
                     anchors.centerIn: parent
                     text: "Hold"
                     font.pointSize: 14
-                    color: "white"
+                    color: Colors.textColor
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -150,7 +151,7 @@ Item {
             visible: false
             text: "VOCÊ VENCEU"
             font.pointSize: 32
-            color: "white"
+            color: Colors.yellow100
 
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -160,7 +161,7 @@ Item {
             radius: 5
             width: 256
             height: 48
-            color: "red"
+            color: Colors.secondary
             visible: false
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -168,7 +169,7 @@ Item {
                 anchors.centerIn: parent
                 text: "Play Again"
                 font.pointSize: 24
-                color: "white"
+                color: Colors.textColor
             }
             MouseArea {
                 anchors.fill: parent
