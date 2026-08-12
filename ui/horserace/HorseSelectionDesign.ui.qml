@@ -133,16 +133,20 @@ Item {
                 radius: 5
                 width: 256
                 height: 48
-                color: Colors.secondary
+                color: enabled ? Colors.secondary : Colors.background
+                border.color: Colors.secondary
                 anchors.top: repeater.bottom
+                enabled: selectedIndex != -1
 
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 Text {
                     anchors.centerIn: parent
                     text: "Apostar"
                     font: Fonts.text8bit
                     color: Colors.textColor
                 }
+
                 MouseArea {
                     id: btnBet
                     anchors.fill: parent

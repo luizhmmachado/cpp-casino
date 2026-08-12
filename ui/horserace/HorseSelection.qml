@@ -3,7 +3,7 @@ import QtQuick 2.15
 HorseSelectionDesign {
     id: root
 
-    signal placeBet()
+    signal placeBet(int selectedIndex)
 
     Component.onCompleted: {
         for(var i = 0; i < horsesList.length; i++){
@@ -13,7 +13,7 @@ HorseSelectionDesign {
 
     btnBet.onClicked: {
         console.log("Clicou ", selectedIndex)
-        root.placeBet()
+        root.placeBet( selectedIndex )
     }
 
 }
