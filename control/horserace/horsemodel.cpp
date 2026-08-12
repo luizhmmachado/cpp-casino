@@ -14,6 +14,9 @@ void HorseModel::setStars() {
     int rawStars = QRandomGenerator::global()->bounded( 1, 11 );
     _stars = rawStars / 2.0;
 
+    bool hasHalfStar = static_cast<int>( _stars * 2 ) % 2 != 0;
+    setHasHalfStar( hasHalfStar );
+
     emit starsChanged();
     setSpeed( _stars );
 }
@@ -52,4 +55,15 @@ void HorseModel::setImage( QString image ) {
     _image = image;
 
     emit imageChanged();
+}
+
+bool HorseModel::hasHalfStar() const {
+    return _hasHalfStar;
+}
+
+void HorseModel::setHasHalfStar( bool hasHalfStar ) {
+    if ( _hasHalfStar == hasHalfStar )
+        return;
+    _hasHalfStar = hasHalfStar;
+    emit hasHalfStarChanged();
 }

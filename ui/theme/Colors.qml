@@ -3,6 +3,10 @@ pragma Singleton
 import QtQuick 2.15
 
 QtObject {
+
+    // @brief
+    // system colors
+
     property color background: "#060f06"
     property color primary: "#0c200c"
     property color secondary: "#283412"
@@ -12,4 +16,14 @@ QtObject {
 
     property color yellow100: "#ffd700"
     property color yellow200: "#f5c842"
+
+    // @brief
+    // horse race colors
+
+    property color redHorse: "#F50000"
+    property color blueHorse: "#5A00C4"
+    property color yellowHorse: "#A39F00"
+    property color greenHorse: "#008841"
+    property color orangehorse: "#CA5B00"
+
 }
