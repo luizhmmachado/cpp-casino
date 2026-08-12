@@ -16,6 +16,15 @@ ApplicationWindow {
     // @disable-check M16
     title: qsTr("Cassino PT-BR")
 
+    function _getPageTitle(){
+        switch(loaderComponent){
+        case horseracePage:
+            return "Corrida de Cavalos"
+        case blackjackPage:
+            return "BlackJack"
+        }
+    }
+
     Column {
         anchors.fill: parent
 
@@ -45,7 +54,7 @@ ApplicationWindow {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "BlackJack"
+                        text: _getPageTitle()
                         font.pixelSize: 20
                         color: Colors.textColor
                     }
@@ -113,7 +122,7 @@ ApplicationWindow {
     Component {
         id: horseracePage
 
-        HorseRace{
+        HorseRaceMain{
 
         }
     }

@@ -2,3 +2,7 @@ module minigames.horserace
 
 HorseRace 1.0 HorseRace.qml
 HorseRaceDesign 1.0 HorseRaceDesign.ui.qml
+HorseRaceMain 1.0 HorseRaceMain.qml
+HorseRaceMainDesign 1.0 HorseRaceMainDesign.ui.qml
+HorseSelection 1.0 HorseSelection.qml
+HorseSelectionDesign 1.0 HorseSelectionDesign.ui.qml

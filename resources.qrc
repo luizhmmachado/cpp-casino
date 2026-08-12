@@ -11,5 +11,7 @@
         <file>images/cartas/carta9.png</file>
         <file>images/cartas/carta10.png</file>
         <file>images/horserace/horse.svg</file>
+        <file>images/horserace/star.svg</file>
+        <file>images/horserace/half-star.svg</file>
     </qresource>
 </RCC>

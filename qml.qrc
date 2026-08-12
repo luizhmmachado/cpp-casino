@@ -4,11 +4,15 @@
         <file>ui/blackjack/BlackJack.qml</file>
         <file>ui/login/LoginPage.qml</file>
         <file>ui/login/RegisterPage.qml</file>
-        <file>ui/horserace/HorseRace.qml</file>
+        <file>ui/horserace/HorseRaceMain.qml</file>
         <file>ui/theme/Colors.qml</file>
         <file>ui/theme/Fonts.qml</file>
         <file>ui/theme/fonts/PressStart2P-Regular.ttf</file>
-        <file>ui/horserace/HorseRaceDesign.ui.qml</file>
+        <file>ui/horserace/HorseRaceMainDesign.ui.qml</file>
         <file>ui/horserace/qmldir</file>
+        <file>ui/horserace/HorseSelectionDesign.ui.qml</file>
+        <file>ui/horserace/HorseSelection.qml</file>
+        <file>ui/horserace/HorseRace.qml</file>
+        <file>ui/horserace/HorseRaceDesign.ui.qml</file>
     </qresource>
 </RCC>
