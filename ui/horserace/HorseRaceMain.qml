@@ -11,6 +11,10 @@ HorseRaceMainDesign {
 
     }
 
-    horseSelection.onPlaceBet: horseSelection.visible = false
+    horseSelection.onPlaceBet: {
+        horseSelection.visible = false
+        horseRace.visible = true
+        horseRace.raceStarted = true
+    }
 
 }

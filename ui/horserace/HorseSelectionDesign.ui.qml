@@ -23,17 +23,6 @@ Item {
             anchors.margins: 16
             spacing: 32
 
-            Label{
-                id: title
-
-                width: parent.width
-                height: contentHeight
-                font: Fonts.title8bit
-                color: Colors.yellow200
-                text: qsTr("Corrida de Cavalos")
-                horizontalAlignment: Text.AlignHCenter
-            }
-
             Column{
                 width: parent.width
                 spacing: 4

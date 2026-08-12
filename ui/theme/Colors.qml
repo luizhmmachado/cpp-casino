@@ -17,6 +17,9 @@ QtObject {
     property color yellow100: "#ffd700"
     property color yellow200: "#f5c842"
 
+    property color white: "#FFFFFF"
+    property color black: "#000000"
+
     // @brief
     // horse race colors
 
