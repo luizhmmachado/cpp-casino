@@ -21,6 +21,7 @@ signals:
     void horsesListChanged();
 
 private:
+    QString getRandomName();
     void createHorses();
     QVariantList _horsesList{};
     QStringList _imageList;
