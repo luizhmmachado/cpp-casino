@@ -1,5 +1,6 @@
 #include "horsemodel.h"
 #include <QRandomGenerator>
+#include <random>
 
 HorseModel::HorseModel() {
     setStars();
@@ -27,13 +28,46 @@ int HorseModel::speed() const {
 }
 
 void HorseModel::setSpeed( double stars ) {
+    static std::mt19937 generator( QRandomGenerator::global()->generate() );
 
-    int speed = QRandomGenerator::global()->bounded(
-        ( static_cast<int>( stars * 2 ) - 1 ) * 10 + 1,
-        ( static_cast<int>( stars * 2 ) - 1 ) * 10 + 11
-        );
+    const int baseSpeed = qRound( stars * 20.0 );
 
-    _speed = speed;
+    int extremeChance = 0;
+
+    if ( stars <= 0.5 ) {
+        extremeChance = 8;
+    } else if ( stars <= 1.0 ) {
+        extremeChance = 7;
+    } else if ( stars <= 1.5 ) {
+        extremeChance = 6;
+    } else if ( stars <= 2.5 ) {
+        extremeChance = 5;
+    } else if ( stars <= 3.0 ) {
+        extremeChance = 4;
+    } else if ( stars <= 3.5 ) {
+        extremeChance = 3;
+    } else if ( stars <= 4.0 ) {
+        extremeChance = 2;
+    } else if ( stars <= 4.5 ) {
+        extremeChance = 1;
+    }
+
+    const int event = QRandomGenerator::global()->bounded( 100 );
+
+    int speed = baseSpeed;
+
+    if ( event < 75 ) {
+        std::uniform_int_distribution<int> distribution( -10, 10 );
+        speed += distribution( generator );
+    } else if ( event < 95 ) {
+        std::uniform_int_distribution<int> distribution( -25, 25 );
+        speed += distribution( generator );
+    } else if ( event < 95 + extremeChance ) {
+        std::uniform_int_distribution<int> distribution( 70, 100 );
+        speed = distribution( generator );
+    }
+
+    _speed = qBound( 1, speed, 100 );
 
     emit speedChanged();
 }
