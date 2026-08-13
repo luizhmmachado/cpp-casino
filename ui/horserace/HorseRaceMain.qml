@@ -27,7 +27,7 @@ HorseRaceMainDesign {
         root.betIndex = selectedIndex
         horseSelection.visible = false
         horseRace.visible = true
-        horseRace.raceStarted = true
+        horseRace.startCountdown()
     }
 
     horseRace.onFinished: {
