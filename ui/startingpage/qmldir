@@ -1,0 +1,4 @@
+module startingpage
+
+StartingPage 1.0 StartingPage.qml
+StartingPageDesign 1.0 StartingPageDesign.ui.qml

@@ -13,5 +13,9 @@
         <file>images/horserace/horse.svg</file>
         <file>images/horserace/star.svg</file>
         <file>images/horserace/half-star.svg</file>
+        <file>images/icons/blackjack.svg</file>
+        <file>images/icons/horserace.svg</file>
+        <file>images/icons/profile.svg</file>
+        <file>images/icons/menu.svg</file>
     </qresource>
 </RCC>
