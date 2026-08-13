@@ -23,17 +23,6 @@ Item {
             anchors.margins: 16
             spacing: 32
 
-            Label{
-                id: title
-
-                width: parent.width
-                height: contentHeight
-                font: Fonts.title8bit
-                color: Colors.yellow200
-                text: qsTr("Corrida de Cavalos")
-                horizontalAlignment: Text.AlignHCenter
-            }
-
             Column{
                 width: parent.width
                 spacing: 4
@@ -144,16 +133,20 @@ Item {
                 radius: 5
                 width: 256
                 height: 48
-                color: Colors.secondary
+                color: enabled ? Colors.secondary : Colors.background
+                border.color: Colors.secondary
                 anchors.top: repeater.bottom
+                enabled: selectedIndex != -1
 
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 Text {
                     anchors.centerIn: parent
                     text: "Apostar"
                     font: Fonts.text8bit
                     color: Colors.textColor
                 }
+
                 MouseArea {
                     id: btnBet
                     anchors.fill: parent
