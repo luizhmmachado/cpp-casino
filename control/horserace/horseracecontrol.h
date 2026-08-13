@@ -16,9 +16,11 @@ public:
 
 public slots:
     void startGame();
+    void restartRace();
 
 signals:
     void horsesListChanged();
+    void gameRestarted();
 
 private:
     QString getRandomName();

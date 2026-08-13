@@ -6,3 +6,5 @@ HorseRaceMain 1.0 HorseRaceMain.qml
 HorseRaceMainDesign 1.0 HorseRaceMainDesign.ui.qml
 HorseSelection 1.0 HorseSelection.qml
 HorseSelectionDesign 1.0 HorseSelectionDesign.ui.qml
+HorseRacePopup 1.0 HorseRacePopup.qml
+HorseRacePopupDesign 1.0 HorseRacePopupDesign.ui.qml

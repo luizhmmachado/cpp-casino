@@ -13,6 +13,7 @@ QtObject {
     property color textColor: "#e8d5a3"
     property color success: "#369f5a"
     property color error: "#d64545"
+    property color popupDim: "#E6000000"
 
     property color yellow100: "#ffd700"
     property color yellow200: "#f5c842"

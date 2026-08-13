@@ -15,6 +15,13 @@ void HorseRaceControl::startGame() {
     createHorses();
 }
 
+void HorseRaceControl::restartRace() {
+    setHorsesList( {} );
+    startGame();
+
+    emit gameRestarted();
+}
+
 QString HorseRaceControl::getRandomName() {
 
     QString nomeEscolhido = POSSIBLE_NAMES.value( QRandomGenerator::global()->bounded( 0, POSSIBLE_NAMES.size() ) );

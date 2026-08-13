@@ -12,6 +12,7 @@ Item {
 
     property alias horseSelection: horseSelection
     property alias horseRace: horseRace
+    property alias horsePopup: horsePopup
 
     Rectangle{
         anchors.fill: parent
@@ -49,6 +50,14 @@ Item {
                 height: parent.height - title.height
                 horsesList: control.horsesList
                 visible: false
+            }
+
+            HorseRacePopup {
+                id: horsePopup
+
+                width: parent.width / 2
+                height: parent.height / 2
+                anchors.centerIn: parent
             }
         }
     }

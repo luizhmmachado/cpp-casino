@@ -7,6 +7,15 @@ HorseRaceMainDesign {
 
     HorseRaceControl{
         id:control
+
+        onGameRestarted: {
+            horseRace.horseWinner = -1
+            horseRace.raceFinished = false
+            horseRace.raceStarted = false
+            horseRace.visible = false
+            horseSelection.selectedIndex = -1
+            horseSelection.visible = true
+        }
     }
 
     Component.onCompleted: {
@@ -23,10 +32,17 @@ HorseRaceMainDesign {
 
     horseRace.onFinished: {
         if( root.betIndex == winner){
-            console.log("Ganhou")
+            horsePopup.titlePopup = "Você venceu"
         }else{
-            console.log("Perdeu")
+            horsePopup.titlePopup = "Você perdeu"
         }
+
+        horsePopup.open()
+    }
+
+    horsePopup.onBetAgain: {
+        horsePopup.close()
+        control.restartRace()
     }
 
 }
