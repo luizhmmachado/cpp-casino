@@ -16,5 +16,8 @@
         <file>ui/horserace/HorseRaceDesign.ui.qml</file>
         <file>ui/horserace/HorseRacePopup.qml</file>
         <file>ui/horserace/HorseRacePopupDesign.ui.qml</file>
+        <file>ui/startingpage/StartingPage.qml</file>
+        <file>ui/startingpage/StartingPageDesign.ui.qml</file>
+        <file>ui/startingpage/qmldir</file>
     </qresource>
 </RCC>

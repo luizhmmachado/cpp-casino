@@ -1,20 +1,22 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Colors 1.0
+import Fonts 1.0
 import "ui/blackjack"
 import "ui/horserace"
 import "ui/login"
+import "ui/startingpage"
 
 ApplicationWindow {
     id: root
 
-    property var loaderComponent: blackjackPage
+    property var loaderComponent: startingPage
     //    visibility: "FullScreen"
     height: 768
     width: 1024
     visible: true
     // @disable-check M16
-    title: qsTr("Cassino PT-BR")
+    title: qsTr("Pixel Casino")
 
     function _getPageTitle(){
         switch(loaderComponent){
@@ -22,100 +24,173 @@ ApplicationWindow {
             return "Corrida de Cavalos"
         case blackjackPage:
             return "BlackJack"
+        case startingPage:
+            return "Página Inicial"
         }
     }
 
     Column {
         anchors.fill: parent
 
+        Rectangle {
+            id: header
+
+            width: parent.width
+            height: 60
+            color: Colors.primary
+
+            anchors.top: parent.top
+
+            Rectangle {
+                width: parent.width
+                height: 2
+
+                anchors.bottom: parent.bottom
+
+                color: Colors.secondary
+            }
+
+            Row {
+                anchors.fill: header
+                spacing: 8
+
+                anchors{
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 32
+                }
+
+                Image {
+                    id: imgProfile
+
+                    source: "qrc:/resources/images/icons/profile.svg"
+                    width: 32
+                    height: 32
+                    anchors {
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                Text {
+                    // todo alterar para o nome do usuario
+                    text: qsTr("JOGADOR_99")
+                    font: Fonts.secondaryText8bit
+                    color: Colors.textColor
+                    anchors {
+                        leftMargin: 8
+                        left: imgProfile.right
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                Text {
+                    text: qsTr("SALDO: ")
+                    font: Fonts.secondaryText8bit
+                    color: Colors.secondaryGreen
+                    anchors {
+                        right: txtBalance.left
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                Text {
+                    id: txtBalance
+
+                    // todo alterar para saldo do usuario
+                    text: qsTr("R$ 15.420,00")
+                    font: Fonts.secondaryText8bit
+                    color: Colors.yellow100
+                    anchors {
+                        rightMargin: 32
+                        right: parent.right
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+        }
+
         Loader {
             id: contentLoader
             width: parent.width
-            height: parent.height - 50
-            anchors.top: parent.top
+            height: parent.height - header.height
 
             sourceComponent: loaderComponent
+
+            anchors.top: header.bottom
         }
 
         Rectangle {
             id: footer
-            color: Colors.primary
+
             width: parent.width
-            height: 50
+            height: 48
+
+            color: Colors.primary
+
             anchors.bottom: parent.bottom
 
-            Row {
-                anchors.fill: parent
-                spacing: 0
-                Rectangle {
-                    width: 100
-                    height: 50
-                    color: "transparent"
+            Rectangle {
+                width: parent.width
+                height: 2
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: _getPageTitle()
-                        font.pixelSize: 20
-                        color: Colors.textColor
-                    }
+                anchors.bottom: parent.top
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-
-                        }
-                    }
-                }
-
-                Item {
-                    width: parent.width - 200
-                }
-
-                Row{
-                    spacing: 16
-                }
-
-                Rectangle {
-                    width: 50
-                    height: 50
-                    color: "transparent"
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "≡"
-                        font.pixelSize: 30
-                        color: Colors.textColor
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
+                color: Colors.secondary
+            }
+        }
 
 
-                        }
-                    }
-                }
 
-                Rectangle{
-                    width: txtBalance.width + 20
-                    height: 30
-                    radius: 20
-                    color: Colors.primary
-                    anchors.right: parent.right
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
+        Text {
+            text: _getPageTitle()
+            font: Fonts.text8bit
+            color: Colors.secondaryGreen
+            anchors{
+                leftMargin: 32
+                left: parent.left
+                verticalCenter: footer.verticalCenter
+            }
+        }
 
-                    visible: !(loaderComponent === registerPage || loaderComponent === loginPage)
+        Image {
+            anchors.centerIn: footer
+            source: "qrc:/resources/images/icons/menu.svg"
+            width: 32
+            height: 32
+        }
 
-                    Text{
-                        id: txtBalance
+        Text {
+            property date currentTime: new Date()
 
-                        anchors.centerIn: parent
-                        color: Colors.textColor
-                    }
+            anchors{
+                rightMargin: 32
+                right: parent.right
+                verticalCenter: footer.verticalCenter
+            }
+
+            text: Qt.formatTime(currentTime, "HH:mm:ss")
+            font: Fonts.text8bit
+            color: Colors.yellow200
+
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+
+                onTriggered: {
+                    parent.currentTime = new Date()
                 }
             }
+        }
+
+    }
+
+    Component {
+        id: startingPage
+
+        StartingPage {
+
         }
     }
 
@@ -141,8 +216,8 @@ ApplicationWindow {
         LoginPage{
             onCadastrar: loaderComponent = registerPage
             onSuccess: function(balance) {
+                // todo alterar para startingPage
                 loaderComponent = blackjackPage
-                txtBalance.text = balance
             }
         }
     }
@@ -152,8 +227,8 @@ ApplicationWindow {
 
         RegisterPage{
             onSuccess: function(balance) {
+                // todo alterar para startingPage
                 loaderComponent = blackjackPage
-                txtBalance.text = balance
             }
         }
     }

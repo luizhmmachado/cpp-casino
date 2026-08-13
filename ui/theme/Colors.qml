@@ -30,4 +30,9 @@ QtObject {
     property color greenHorse: "#008841"
     property color orangehorse: "#CA5B00"
 
+    // @brief
+    // starting page color
+
+    property color secondaryGreen: "#7EAF89"
+
 }
