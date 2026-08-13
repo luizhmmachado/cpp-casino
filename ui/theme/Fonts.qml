@@ -9,6 +9,7 @@ QtObject {
 
     property int titleSize: 32
     property int textSize: 16
+    property int secondaryTextSize: 12
 
     readonly property font title8bit: Qt.font({
         family: family || fallbackFamily,
@@ -18,5 +19,10 @@ QtObject {
     readonly property font text8bit: Qt.font({
         family: family || fallbackFamily,
         pixelSize: textSize
+    })
+
+    readonly property font secondaryText8bit: Qt.font({
+        family: family || fallbackFamily,
+        pixelSize: secondaryTextSize
     })
 }

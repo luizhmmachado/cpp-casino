@@ -6,10 +6,11 @@
 class HorseModel : public QObject {
     Q_OBJECT
     Q_PROPERTY( double stars READ stars NOTIFY starsChanged )
+    Q_PROPERTY( double bettingOdds READ bettingOdds NOTIFY bettingOddsChanged FINAL )
     Q_PROPERTY( int speed READ speed NOTIFY speedChanged )
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
     Q_PROPERTY( QString image READ image NOTIFY imageChanged )
-    Q_PROPERTY( bool hasHalfStar READ hasHalfStar WRITE setHasHalfStar NOTIFY hasHalfStarChanged FINAL )
+    Q_PROPERTY( bool hasHalfStar READ hasHalfStar NOTIFY hasHalfStarChanged FINAL )
 
 public:
     HorseModel();
@@ -24,26 +25,30 @@ public:
     QString image();
 
     bool hasHalfStar() const;
-    void setHasHalfStar( bool hasHalfStar );
+
+    double bettingOdds() const;
 
 signals:
     void starsChanged();
     void speedChanged();
     void nameChanged();
     void imageChanged();
-
     void hasHalfStarChanged();
+    void bettingOddsChanged();
 
 private:
+    void setHasHalfStar( bool hasHalfStar );
     void setImage( QString image );
     void setStars();
     void setSpeed( double stars );
-    double _stars;
+    void setBettingOdds( double stars );
+
+    bool _hasHalfStar;
     int _speed;
+    double _bettingOdds;
+    double _stars;
     QString _name;
     QString _image;
-    bool _hasHalfStar;
-
 };
 
 #endif // HORSEMODEL_H

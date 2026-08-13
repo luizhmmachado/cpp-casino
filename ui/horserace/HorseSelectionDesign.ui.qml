@@ -119,6 +119,41 @@ Item {
                             }
                         }
 
+                        Column {
+                            width: 80
+                            spacing: 8
+
+                            anchors {
+                                rightMargin: 32
+                                right: parent.right
+                                verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                id: bettingOdd
+
+                                width: parent.width
+
+                                text: modelData.bettingOdds + "×"
+                                color: Colors.yellow100
+                                font: Fonts.text8bit
+
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+
+                            Text {
+                                id: txtOdd
+
+                                width: parent.width
+
+                                text: qsTr("PAGA")
+                                font: Fonts.secondaryText8bit
+                                color: Colors.secondary
+
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
                         MouseArea{
                             id: horseMouseArea
                             anchors.fill: parent
