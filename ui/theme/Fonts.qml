@@ -7,9 +7,15 @@ QtObject {
     property string family: "Press Start 2P"
     property string fallbackFamily: "Monospace"
 
+    property int bigTitleSize: 128
     property int titleSize: 32
     property int textSize: 16
     property int secondaryTextSize: 12
+
+    readonly property font bigTitle8bit: Qt.font({
+        family: family || fallbackFamily,
+        pixelSize: bigTitleSize
+    })
 
     readonly property font title8bit: Qt.font({
         family: family || fallbackFamily,
