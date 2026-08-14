@@ -81,9 +81,8 @@ Item {
                         componentWidth: btnText.contentWidth + 16
                         componentEnabledColor: Colors.background
                         componentDisabledColor: Colors.background
-                        componentBorderColor: Colors.secondaryGreen
-                        componentTextColor: Colors.secondaryGreen
-                        enabled: true
+                        componentBorderColor: root.selectedCategory === model.index ? Colors.yellow100 : Colors.secondaryGreen
+                        componentTextColor:  root.selectedCategory === model.index ? Colors.yellow100 : Colors.secondaryGreen
 
                         onClicked: selectedCategory = model.index
                     }
