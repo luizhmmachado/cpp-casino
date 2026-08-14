@@ -118,7 +118,7 @@ Item {
                 opacity: accept ? 1 : 0.5
 
                 onClicked: {
-                    control.athenticate()
+                    control.authenticate()
                 }
             }
 

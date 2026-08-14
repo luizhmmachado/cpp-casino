@@ -70,16 +70,21 @@ Item {
                     }
 
                     var numbers = text.replace(/\D/g, "")
+
                     if (numbers.length > 11)
                         numbers = numbers.slice(0, 11)
 
                     var formatted = ""
+
                     if (numbers.length > 0)
                         formatted += numbers.substring(0, Math.min(3, numbers.length))
+
                     if (numbers.length >= 4)
                         formatted += "." + numbers.substring(3, Math.min(6, numbers.length))
+
                     if (numbers.length >= 7)
                         formatted += "." + numbers.substring(6, Math.min(9, numbers.length))
+
                     if (numbers.length >= 10)
                         formatted += "-" + numbers.substring(9, Math.min(11, numbers.length))
 
@@ -89,15 +94,12 @@ Item {
                     }
 
                     control.cpf = numbers
-
-
-                    validCpf = (numbers.length === 11)
+                    validCpf = numbers.length === 11
                 }
             }
 
             TextField {
                 id: fldName
-
                 height: 32
                 width: loginRequest.width * 0.8
                 placeholderText: "Nome Completo"
@@ -128,13 +130,23 @@ Item {
                     placeholderText: "DD"
                     font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator { bottom: 1; top: 31 }
+                    validator: IntValidator {
+                        bottom: 1
+                        top: 31
+                    }
+
                     text: day > 0 ? day.toString() : ""
 
                     onTextChanged: {
-                        day = parseInt(inputday.text)
+                        day = inputday.text.length > 0 ? parseInt(inputday.text) : -1
                         ageValidator(day, month, year)
                     }
+
+                    onActiveFocusChanged: {
+                        if (!activeFocus && day > 0 && day < 10)
+                            inputday.text = "0" + day
+                    }
+
                     background: Rectangle {
                         border.width: 2
                         border.color: ageBorderColor
@@ -148,13 +160,29 @@ Item {
                     placeholderText: "MM"
                     font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator { bottom: 1; top: 12 }
-                    text: month > 0 ? month.toString() : ""
+                    validator: IntValidator {
+                        bottom: 1
+                        top: 12
+                    }
+
+                    text: month > 0 ? (month < 10 ? "0" + month : month.toString()) : ""
 
                     onTextChanged: {
-                        month = parseInt(inputmonth.text)
+                        var value = inputmonth.text.replace(/\D/g, "")
+
+                        if (value.length > 2)
+                            value = value.slice(0, 2)
+
+                        month = value.length > 0 ? parseInt(value) : -1
+
                         ageValidator(day, month, year)
                     }
+
+                    onActiveFocusChanged: {
+                        if (!activeFocus && month > 0 && month < 10)
+                            inputmonth.text = "0" + month
+                    }
+
                     background: Rectangle {
                         border.width: 2
                         border.color: ageBorderColor
@@ -168,13 +196,18 @@ Item {
                     placeholderText: "AAAA"
                     font: Fonts.text8bit
                     inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator { bottom: 1900; top: new Date().getFullYear() }
+                    validator: IntValidator {
+                        bottom: 1900
+                        top: new Date().getFullYear()
+                    }
+
                     text: year > 0 ? year.toString() : ""
 
                     onTextChanged: {
-                        year = parseInt(inputyear.text)
+                        year = inputyear.text.length > 0 ? parseInt(inputyear.text) : -1
                         ageValidator(day, month, year)
                     }
+
                     background: Rectangle {
                         border.width: 2
                         border.color: ageBorderColor
@@ -207,7 +240,7 @@ Item {
                 }
             }
 
-            Column{
+            Column {
                 spacing: 8
 
                 TextField {
@@ -241,6 +274,7 @@ Item {
 
                     Repeater {
                         model: passwordRequirements.length
+
                         delegate: Row {
                             spacing: 6
 
@@ -271,14 +305,17 @@ Item {
                 width: loginRequest.width * 0.8
                 height: 32
                 color: "#ff3c00"
+
                 Text {
                     anchors.centerIn: parent
                     text: "Fazer Cadastro"
                     font: Fonts.text8bit
                     color: Colors.textColor
                 }
+
                 MouseArea {
                     anchors.fill: parent
+
                     onClicked: {
                         control.insert()
                     }
@@ -287,11 +324,15 @@ Item {
         }
     }
 
-    DataBaseControl{
+    DataBaseControl {
         id: control
 
         onSuccess:function(balance) {
             root.success(balance)
+        }
+
+        onFail: function(){
+            console.log("Fail")
         }
     }
 
@@ -300,42 +341,68 @@ Item {
         var birth = new Date(year, month - 1, day)
         var age = today.getFullYear() - birth.getFullYear()
         var m = today.getMonth() - birth.getMonth()
-        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate()))
             age--
-        }
+
         return age
     }
 
     function ageValidator(day, month, year) {
-        if (isNaN(day) || isNaN(month) || isNaN(year) || day <= 0 || month <= 0 || year <= 0) {
+        if (isNaN(day) || isNaN(month) || isNaN(year) ||
+                day <= 0 || month <= 0 || year <= 0) {
             validAge = false
             return
         }
+
         var age = calculateAge(day, month, year)
+
         validAge = age >= 18
         control.birthDt = day + "-" + month + "-" + year
     }
 
-    function hasUppercase(password) { return /[A-Z]/.test(password) }
-    function hasLowercase(password) { return /[a-z]/.test(password) }
-    function hasNumber(password) { return /\d/.test(password) }
-    function hasSpecial(password) { return /[^A-Za-z0-9]/.test(password) }
-    function hasSize(password) { return (password).length >= 8 }
-
-    function verifyPassword(password){
-        if(hasUppercase(password) && hasLowercase(password) && hasNumber(password) && hasSpecial(password) && hasSize(password)){
-            passwordRequirements = []
-            return true;
-        }else{
-            passwordRequirements = [
-                    { text: "Contém pelo menos 8 caracteres", validate: hasSize },
-                    { text: "Contém letra maiúscula", validate: hasUppercase },
-                    { text: "Contém letra minúscula", validate: hasLowercase },
-                    { text: "Contém número", validate: hasNumber },
-                    { text: "Contém caractere especial", validate: hasSpecial }
-                ]
-        }
+    function hasUppercase(password) {
+        return /[A-Z]/.test(password)
     }
 
-    Component.onCompleted: ageValidator(day, month, year)
+    function hasLowercase(password) {
+        return /[a-z]/.test(password)
+    }
+
+    function hasNumber(password) {
+        return /\d/.test(password)
+    }
+
+    function hasSpecial(password) {
+        return /[^A-Za-z0-9]/.test(password)
+    }
+
+    function hasSize(password) {
+        return password.length >= 8
+    }
+
+    function verifyPassword(password) {
+        if (hasUppercase(password) &&
+                hasLowercase(password) &&
+                hasNumber(password) &&
+                hasSpecial(password) &&
+                hasSize(password)) {
+            passwordRequirements = []
+            return true
+        }
+
+        passwordRequirements = [
+            { text: "Contém pelo menos 8 caracteres", validate: hasSize },
+            { text: "Contém letra maiúscula", validate: hasUppercase },
+            { text: "Contém letra minúscula", validate: hasLowercase },
+            { text: "Contém número", validate: hasNumber },
+            { text: "Contém caractere especial", validate: hasSpecial }
+        ]
+
+        return false
+    }
+
+    Component.onCompleted: {
+        ageValidator(day, month, year)
+    }
 }
