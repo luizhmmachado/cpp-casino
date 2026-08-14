@@ -1,4 +1,4 @@
-module components
+module Components
 
 ComponentButton 1.0 ComponentButton.qml
 ComponentButtonDesign 1.0 ComponentButtonDesign.ui.qml

@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import Fonts 1.0
 import Colors 1.0
-import components 1.0
+import Components 1.0
 
 Rectangle {
     id: rctGameCard

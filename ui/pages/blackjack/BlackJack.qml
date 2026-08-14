@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import BlackJackControl 1.0
 import Colors 1.0
 import Fonts 1.0
-import components 1.0
+import Components 1.0
 
 Item {
     anchors.fill: parent
