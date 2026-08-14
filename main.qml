@@ -12,8 +12,8 @@ ApplicationWindow {
 
     property var loaderComponent: startingPage
     //    visibility: "FullScreen"
-    height: 768
-    width: 1024
+    height: 960
+    width: 1280
     visible: true
     // @disable-check M16
     title: qsTr("Pixel Casino")
@@ -190,7 +190,8 @@ ApplicationWindow {
         id: startingPage
 
         StartingPage {
-
+            onPlayHorseRace: loaderComponent = horseracePage
+            onPlayBlackJack: loaderComponent = blackjackPage
         }
     }
 
@@ -216,8 +217,7 @@ ApplicationWindow {
         LoginPage{
             onCadastrar: loaderComponent = registerPage
             onSuccess: function(balance) {
-                // todo alterar para startingPage
-                loaderComponent = blackjackPage
+                loaderComponent = startingPage
             }
         }
     }
@@ -227,8 +227,7 @@ ApplicationWindow {
 
         RegisterPage{
             onSuccess: function(balance) {
-                // todo alterar para startingPage
-                loaderComponent = blackjackPage
+                loaderComponent = startingPage
             }
         }
     }

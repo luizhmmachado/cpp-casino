@@ -19,5 +19,7 @@
         <file>ui/startingpage/StartingPage.qml</file>
         <file>ui/startingpage/StartingPageDesign.ui.qml</file>
         <file>ui/startingpage/qmldir</file>
+        <file>ui/startingpage/StartingPageGameCard.qml</file>
+        <file>ui/startingpage/StartingPageGameCardDesign.ui.qml</file>
     </qresource>
 </RCC>

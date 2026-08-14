@@ -2,3 +2,5 @@ module startingpage
 
 StartingPage 1.0 StartingPage.qml
 StartingPageDesign 1.0 StartingPageDesign.ui.qml
+StartingPageGameCard 1.0 StartingPageGameCard.qml
+StartingPageGameCardDesign 1.0 StartingPageGameCardDesign.ui.qml
