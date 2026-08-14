@@ -23,5 +23,10 @@
         <file>ui/pages/startingpage/StartingPageDesign.ui.qml</file>
         <file>ui/pages/startingpage/StartingPageGameCard.qml</file>
         <file>ui/pages/startingpage/StartingPageGameCardDesign.ui.qml</file>
+        <file>ui/components/ComponentButton.qml</file>
+        <file>ui/components/ComponentButtonDesign.ui.qml</file>
+        <file>ui/components/qmldir</file>
+        <file>ui/components/ComponentTitleDesign.ui.qml</file>
+        <file>ui/components/ComponentTitle.qml</file>
     </qresource>
 </RCC>

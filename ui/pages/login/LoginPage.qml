@@ -4,6 +4,7 @@ import QtQml 2.15
 import DataBaseControl 1.0
 import Colors 1.0
 import Fonts 1.0
+import components 1.0
 
 Item {
     id: root
@@ -87,7 +88,7 @@ Item {
                     border.color: fldPassword.acceptableInput ? Colors.secondary : Colors.error
                     border.width: 2
                     color: Colors.yellow200
-                    }
+                }
 
                 onTextChanged: {
                     control.password = fldPassword.text
@@ -104,44 +105,35 @@ Item {
                 visible: false
             }
 
-            Rectangle {
+            ComponentButton {
                 id: btnLogin
-                radius: 5
-                width: loginRequest.width * 0.8
-                height: 32
-                color: Colors.success
+
+                componentBtnText: qsTr( "Fazer Login" )
+                componentWidth: loginRequest.width * 0.8
+                componentHeight: 32
+                componentEnabledColor: Colors.success
+                componentDisabledColor: Colors.success
+                componentBorderColor: Colors.success
                 enabled: accept
                 opacity: accept ? 1 : 0.5
-                Text {
-                    anchors.centerIn: parent
-                    text: "Fazer Login"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        control.athenticate()
-                    }
+
+                onClicked: {
+                    control.athenticate()
                 }
             }
-            Rectangle {
+
+            ComponentButton {
                 id: btnRegister
-                radius: 5
-                width: loginRequest.width * 0.8
-                height: 32
-                color: "#ff3c00"
-                Text {
-                    anchors.centerIn: parent
-                    text: "Fazer Cadastro"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        cadastrar()
-                    }
+
+                componentBtnText: qsTr( "Fazer Cadastro" )
+                componentWidth: loginRequest.width * 0.8
+                componentHeight: 32
+                componentEnabledColor: Colors.error
+                componentDisabledColor: Colors.error
+                componentBorderColor: Colors.error
+
+                onClicked: {
+                    cadastrar()
                 }
             }
         }

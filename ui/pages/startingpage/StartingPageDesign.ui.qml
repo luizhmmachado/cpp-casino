@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.3
 import Fonts 1.0
 import Colors 1.0
+import components 1.0
 
 Item {
     anchors.fill: parent
@@ -16,13 +17,10 @@ Item {
         color: Colors.background
     }
 
-    Label {
+    ComponentTitle {
         id: lblTitle
 
-        text: qsTr("PIXEL CASINO")
-        font: Fonts.title8bit
-        color: Colors.yellow200
-
+        componentText: qsTr("PIXEL CASINO")
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: parent.top
@@ -81,23 +79,14 @@ Item {
                 Repeater {
                     model: gameCategories
 
-                    Rectangle {
-                        width: txtButton.contentWidth + 16
-                        height: 48
-
-                        radius: 5
-                        color: Colors.background
-                        border.color: Colors.secondaryGreen
-
-                        Text {
-                            id: txtButton
-
-                            anchors.centerIn: parent
-
-                            text: modelData
-                            font: Fonts.text8bit
-                            color: Colors.secondaryGreen
-                        }
+                    ComponentButton {
+                        componentBtnText: modelData
+                        componentHeight: 48
+                        componentWidth: btnText.contentWidth+ 16
+                        componentEnabledColor: Colors.background
+                        componentDisabledColor: Colors.background
+                        componentBorderColor: Colors.secondaryGreen
+                        componentTextColor: Colors.secondaryGreen
                     }
                 }
             }

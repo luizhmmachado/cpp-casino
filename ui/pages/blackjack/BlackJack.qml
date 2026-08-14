@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import BlackJackControl 1.0
 import Colors 1.0
 import Fonts 1.0
+import components 1.0
 
 Item {
     anchors.fill: parent
@@ -109,43 +110,21 @@ Item {
             spacing: 16
             anchors.horizontalCenter: parent.horizontalCenter
 
-            Rectangle {
+            ComponentButton {
                 id: btnBuy
-                radius: 5
-                width: 256
-                height: 32
-                color: Colors.primary
-                Text {
-                    anchors.centerIn: parent
-                    text: "Comprar"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        control.buy()
-                    }
+
+                componentBtnText: qsTr( "Comprar" )
+                onClicked: {
+                    control.buy()
                 }
             }
 
-            Rectangle {
+            ComponentButton {
                 id: btnHold
-                radius: 5
-                width: 256
-                height: 32
-                color: Colors.primary
-                Text {
-                    anchors.centerIn: parent
-                    text: "Hold"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        control.userHold()
-                    }
+
+                componentBtnText: qsTr( "Hold" )
+                onClicked: {
+                    control.userHold()
                 }
             }
         }

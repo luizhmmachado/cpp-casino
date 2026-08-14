@@ -1,8 +1,7 @@
 import QtQuick 2.15
 import Fonts 1.0
 import Colors 1.0
-
-
+import components 1.0
 
 Rectangle {
     id: rctGameCard
@@ -102,15 +101,14 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    ComponentButton {
         id: rctButton
 
-        border.width: 2
-        border.color: hover ? Colors.secondary : Colors.yellow100
-        color: hover ? Colors.background :Colors.secondary
-        width: parent.width - 32
-        height: 40
-        radius: 5
+        componentWidth: parent.width - 32
+        componentHeight: 40
+        componentBorderColor: rctGameCard.hover ? Colors.secondary : Colors.yellow100
+        componentBorderWidth: 2
+        componentBtnText: buttonText
 
         anchors {
             left: parent.left
@@ -119,16 +117,11 @@ Rectangle {
             bottomMargin: -( rctButton.height / 2 )
         }
 
-        Text {
-            text: buttonText
-            font: Fonts.text8bit
-            color: Colors.textColor
-            anchors.centerIn: parent
-        }
     }
 
     MouseArea {
         id: mouseAreaCard
+
         hoverEnabled: true
         anchors.fill: parent
     }

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import Fonts 1.0
 import Colors 1.0
+import components 1.0
 
 Item {
     id: root
@@ -24,15 +25,12 @@ Item {
             anchors.margins: 16
             spacing: 32
 
-            Label{
+            ComponentTitle {
                 id: title
 
-                width: parent.width
-                height: contentHeight
-                font: Fonts.title8bit
-                color: Colors.yellow200
-                text: qsTr("Corrida de Cavalos")
+                componentText: qsTr("Corrida de Cavalos")
                 horizontalAlignment: Text.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             HorseSelection{
