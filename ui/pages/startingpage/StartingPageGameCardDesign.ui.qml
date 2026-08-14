@@ -1,0 +1,135 @@
+import QtQuick 2.15
+import Fonts 1.0
+import Colors 1.0
+
+
+
+Rectangle {
+    id: rctGameCard
+
+    property string gameName: ""
+    property string gameDescription: ""
+    property string gameCategory: ""
+    property string buttonText: qsTr("JOGAR AGORA")
+    property bool hover: true
+    property int index: -1
+
+    property alias mouseAreaCard: mouseAreaCard
+
+    border.width: 2
+    border.color: hover ? Colors.secondary : Colors.yellow100
+    color: Colors.primary
+
+    anchors {
+        top: rowButtons.bottom
+        topMargin: 64
+        left: parent.left
+        leftMargin: 32
+    }
+
+    Rectangle {
+        id: rctImage
+
+        anchors {
+            top: parent.top
+            topMargin: 16
+            leftMargin: 16
+            left: rctGameCard.left
+        }
+
+        height: 72
+        width: rctGameCard.width - 32
+        border.width: 2
+        border.color: Colors.secondary
+        color: Colors.background
+
+        Image {
+            height: 48
+            width: 48
+            anchors.centerIn: parent
+            source: "qrc:/resources/images/icons/horserace.svg"
+        }
+    }
+
+    Text {
+        id: txtGameCategory
+
+        width: rctGameCard.width
+        text: gameCategory
+        font: Fonts.secondaryText8bit
+        color: Colors.secondaryGreen
+
+        anchors {
+            top: rctImage.bottom
+            topMargin: 16
+            leftMargin: 16
+            left: rctGameCard.left
+        }
+    }
+
+    Text {
+        id: txtGameName
+
+        width: rctGameCard.width
+        text: gameName
+        font: Fonts.text8bit
+        color: Colors.yellow200
+
+        anchors {
+            top: txtGameCategory.bottom
+            topMargin: 16
+            leftMargin: 16
+            left: rctGameCard.left
+        }
+    }
+
+    Text {
+        id: txtGameDescription
+
+        width: rctGameCard.width
+        text: gameDescription
+        font: Fonts.secondaryText8bit
+        color: Colors.secondaryGreen
+        wrapMode: Text.WordWrap
+        lineHeight: 1.3
+        lineHeightMode: Text.ProportionalHeight
+
+        anchors {
+            top: txtGameName.bottom
+            topMargin: 16
+            leftMargin: 16
+            left: rctGameCard.left
+        }
+    }
+
+    Rectangle {
+        id: rctButton
+
+        border.width: 2
+        border.color: hover ? Colors.secondary : Colors.yellow100
+        color: hover ? Colors.background :Colors.secondary
+        width: parent.width - 32
+        height: 40
+        radius: 5
+
+        anchors {
+            left: parent.left
+            leftMargin: 16
+            bottom: rctGameCard.bottom
+            bottomMargin: -( rctButton.height / 2 )
+        }
+
+        Text {
+            text: buttonText
+            font: Fonts.text8bit
+            color: Colors.textColor
+            anchors.centerIn: parent
+        }
+    }
+
+    MouseArea {
+        id: mouseAreaCard
+        hoverEnabled: true
+        anchors.fill: parent
+    }
+}

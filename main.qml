@@ -2,18 +2,18 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Colors 1.0
 import Fonts 1.0
-import "ui/blackjack"
-import "ui/horserace"
-import "ui/login"
-import "ui/startingpage"
+import minigames.blackjack 1.0
+import minigames.horserace 1.0
+import minigames.login 1.0
+import startingpage 1.0
 
 ApplicationWindow {
     id: root
 
     property var loaderComponent: startingPage
     //    visibility: "FullScreen"
-    height: 768
-    width: 1024
+    height: 960
+    width: 1280
     visible: true
     // @disable-check M16
     title: qsTr("Pixel Casino")
@@ -190,7 +190,8 @@ ApplicationWindow {
         id: startingPage
 
         StartingPage {
-
+            onPlayHorseRace: loaderComponent = horseracePage
+            onPlayBlackJack: loaderComponent = blackjackPage
         }
     }
 
@@ -216,8 +217,7 @@ ApplicationWindow {
         LoginPage{
             onCadastrar: loaderComponent = registerPage
             onSuccess: function(balance) {
-                // todo alterar para startingPage
-                loaderComponent = blackjackPage
+                loaderComponent = startingPage
             }
         }
     }
@@ -227,8 +227,7 @@ ApplicationWindow {
 
         RegisterPage{
             onSuccess: function(balance) {
-                // todo alterar para startingPage
-                loaderComponent = blackjackPage
+                loaderComponent = startingPage
             }
         }
     }
