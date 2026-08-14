@@ -9,22 +9,15 @@ Rectangle {
     property string gameName: ""
     property string gameDescription: ""
     property string gameCategory: ""
+    property string gameImage: ""
     property string buttonText: qsTr("JOGAR AGORA")
     property bool hover: true
-    property int index: -1
 
     property alias mouseAreaCard: mouseAreaCard
 
     border.width: 2
     border.color: hover ? Colors.secondary : Colors.yellow100
     color: Colors.primary
-
-    anchors {
-        top: rowButtons.bottom
-        topMargin: 64
-        left: parent.left
-        leftMargin: 32
-    }
 
     Rectangle {
         id: rctImage
@@ -46,7 +39,7 @@ Rectangle {
             height: 48
             width: 48
             anchors.centerIn: parent
-            source: "qrc:/resources/images/icons/horserace.svg"
+            source: gameImage
         }
     }
 

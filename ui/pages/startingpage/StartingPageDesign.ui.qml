@@ -8,10 +8,6 @@ import Components 1.0
 Item {
     anchors.fill: parent
 
-    property var gameCategories: [qsTr( "[ TODOS ]" ),qsTr( "[ CARTAS ]" ),qsTr( "[ APOSTAS ]" )]
-
-    property alias gameCard: gameCard
-
     Rectangle {
         anchors.fill: parent
         color: Colors.background
@@ -82,11 +78,14 @@ Item {
                     ComponentButton {
                         componentBtnText: modelData
                         componentHeight: 48
-                        componentWidth: btnText.contentWidth+ 16
+                        componentWidth: btnText.contentWidth + 16
                         componentEnabledColor: Colors.background
                         componentDisabledColor: Colors.background
                         componentBorderColor: Colors.secondaryGreen
                         componentTextColor: Colors.secondaryGreen
+                        enabled: true
+
+                        onClicked: selectedCategory = model.index
                     }
                 }
             }
@@ -94,15 +93,36 @@ Item {
     }
 
 
-    StartingPageGameCard {
-        id: gameCard
+    Grid {
+        id: gamesGrid
 
-        index: 0
-        width: parent.width / 2
-        height: 240
-        gameDescription: qsTr("Escolha seu garanhão pixelado favorito, analise as odds mutáveis e aposte na vitória final.")
-        gameName: qsTr("Corrida de Cavalos")
-        gameCategory: root.gameCategories[2]
+        columns: 2
+        spacing: 32
+
+        anchors {
+            top: rowButtons.bottom
+            topMargin: 64
+            left: parent.left
+            right: parent.right
+            leftMargin: 32
+            rightMargin: 32
+        }
+
+        Repeater {
+            model: filteredGames
+
+            StartingPageGameCard {
+                width: (gamesGrid.width - gamesGrid.spacing) / 2
+                height: 240
+
+                gameName: modelData.name
+                gameCategory: modelData.category
+                gameDescription: modelData.description
+                gameImage: modelData.image
+
+                onClicked: root.selectedIndex = model.index
+            }
+        }
     }
 
 }
