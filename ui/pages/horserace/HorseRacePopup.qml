@@ -6,4 +6,6 @@ HorseRacePopupDesign {
     signal betAgain()
 
     btnBet.onClicked: root.betAgain()
+
+    onOpened: horseRace.raceFinished = true
 }
