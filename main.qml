@@ -2,10 +2,10 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Colors 1.0
 import Fonts 1.0
-import minigames.blackjack 1.0
-import minigames.horserace 1.0
-import minigames.login 1.0
-import startingpage 1.0
+import pages.blackjack 1.0
+import pages.horserace 1.0
+import pages.login 1.0
+import pages.startingpage 1.0
 
 ApplicationWindow {
     id: root

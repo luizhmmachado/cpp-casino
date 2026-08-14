@@ -1,38 +1,27 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>ui/pages/blackjack/qmldir</file>
+        <file>ui/pages/blackjack/BlackJack.qml</file>
+        <file>ui/pages/login/qmldir</file>
+        <file>ui/pages/login/LoginPage.qml</file>
+        <file>ui/pages/login/RegisterPage.qml</file>
+        <file>ui/pages/horserace/qmldir</file>
+        <file>ui/pages/horserace/HorseRaceMain.qml</file>
         <file>ui/theme/Colors.qml</file>
         <file>ui/theme/Fonts.qml</file>
         <file>ui/theme/fonts/PressStart2P-Regular.ttf</file>
-    </qresource>
-    <qresource prefix="/minigames/blackjack">
-        <file alias="qmldir">ui/pages/blackjack/qmldir</file>
-        <file alias="BlackJack.qml">ui/pages/blackjack/BlackJack.qml</file>
-    </qresource>
-    <qresource prefix="/minigames/login">
-        <file alias="qmldir">ui/pages/login/qmldir</file>
-        <file alias="LoginPage.qml">ui/pages/login/LoginPage.qml</file>
-        <file alias="RegisterPage.qml">ui/pages/login/RegisterPage.qml</file>
-    </qresource>
-    <qresource prefix="/minigames/horserace">
-        <file alias="qmldir">ui/pages/horserace/qmldir</file>
-        <file alias="HorseRaceMain.qml">ui/pages/horserace/HorseRaceMain.qml</file>
-        <file alias="HorseRaceMainDesign.ui.qml">ui/pages/horserace/HorseRaceMainDesign.ui.qml</file>
-        <file alias="HorseSelectionDesign.ui.qml">ui/pages/horserace/HorseSelectionDesign.ui.qml</file>
-        <file alias="HorseSelection.qml">ui/pages/horserace/HorseSelection.qml</file>
-        <file alias="HorseRace.qml">ui/pages/horserace/HorseRace.qml</file>
-        <file alias="HorseRaceDesign.ui.qml">ui/pages/horserace/HorseRaceDesign.ui.qml</file>
-        <file alias="HorseRacePopup.qml">ui/pages/horserace/HorseRacePopup.qml</file>
-        <file alias="HorseRacePopupDesign.ui.qml">ui/pages/horserace/HorseRacePopupDesign.ui.qml</file>
-    </qresource>
-    <qresource prefix="/startingpage">
-        <file alias="qmldir">ui/pages/startingpage/qmldir</file>
-        <file alias="StartingPage.qml">ui/pages/startingpage/StartingPage.qml</file>
-        <file alias="StartingPageDesign.ui.qml">ui/pages/startingpage/StartingPageDesign.ui.qml</file>
-        <file alias="StartingPageGameCard.qml">ui/pages/startingpage/StartingPageGameCard.qml</file>
-        <file alias="StartingPageGameCardDesign.ui.qml">ui/pages/startingpage/StartingPageGameCardDesign.ui.qml</file>
-    </qresource>
-    <qresource prefix="/">
-        <file>resources.qrc</file>
+        <file>ui/pages/horserace/HorseRaceMainDesign.ui.qml</file>
+        <file>ui/pages/horserace/HorseSelectionDesign.ui.qml</file>
+        <file>ui/pages/horserace/HorseSelection.qml</file>
+        <file>ui/pages/horserace/HorseRace.qml</file>
+        <file>ui/pages/horserace/HorseRaceDesign.ui.qml</file>
+        <file>ui/pages/horserace/HorseRacePopup.qml</file>
+        <file>ui/pages/horserace/HorseRacePopupDesign.ui.qml</file>
+        <file>ui/pages/startingpage/qmldir</file>
+        <file>ui/pages/startingpage/StartingPage.qml</file>
+        <file>ui/pages/startingpage/StartingPageDesign.ui.qml</file>
+        <file>ui/pages/startingpage/StartingPageGameCard.qml</file>
+        <file>ui/pages/startingpage/StartingPageGameCardDesign.ui.qml</file>
     </qresource>
 </RCC>
