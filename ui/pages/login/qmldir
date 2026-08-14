@@ -1,4 +1,4 @@
-module minigames.login
+module pages.login
 
 LoginPage 1.0 LoginPage.qml
 RegisterPage 1.0 RegisterPage.qml

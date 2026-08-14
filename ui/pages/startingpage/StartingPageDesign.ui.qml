@@ -3,26 +3,20 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.3
 import Fonts 1.0
 import Colors 1.0
+import Components 1.0
 
 Item {
     anchors.fill: parent
-
-    property var gameCategories: [qsTr( "[ TODOS ]" ),qsTr( "[ CARTAS ]" ),qsTr( "[ APOSTAS ]" )]
-
-    property alias gameCard: gameCard
 
     Rectangle {
         anchors.fill: parent
         color: Colors.background
     }
 
-    Label {
+    ComponentTitle {
         id: lblTitle
 
-        text: qsTr("PIXEL CASINO")
-        font: Fonts.title8bit
-        color: Colors.yellow200
-
+        componentText: qsTr("PIXEL CASINO")
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: parent.top
@@ -81,23 +75,16 @@ Item {
                 Repeater {
                     model: gameCategories
 
-                    Rectangle {
-                        width: txtButton.contentWidth + 16
-                        height: 48
+                    ComponentButton {
+                        componentBtnText: modelData
+                        componentHeight: 48
+                        componentWidth: btnText.contentWidth + 16
+                        componentEnabledColor: Colors.background
+                        componentDisabledColor: Colors.background
+                        componentBorderColor: root.selectedCategory === model.index ? Colors.yellow100 : Colors.secondaryGreen
+                        componentTextColor:  root.selectedCategory === model.index ? Colors.yellow100 : Colors.secondaryGreen
 
-                        radius: 5
-                        color: Colors.background
-                        border.color: Colors.secondaryGreen
-
-                        Text {
-                            id: txtButton
-
-                            anchors.centerIn: parent
-
-                            text: modelData
-                            font: Fonts.text8bit
-                            color: Colors.secondaryGreen
-                        }
+                        onClicked: selectedCategory = model.index
                     }
                 }
             }
@@ -105,15 +92,36 @@ Item {
     }
 
 
-    StartingPageGameCard {
-        id: gameCard
+    Grid {
+        id: gamesGrid
 
-        index: 0
-        width: parent.width / 2
-        height: 240
-        gameDescription: qsTr("Escolha seu garanhão pixelado favorito, analise as odds mutáveis e aposte na vitória final.")
-        gameName: qsTr("Corrida de Cavalos")
-        gameCategory: root.gameCategories[2]
+        columns: 2
+        spacing: 32
+
+        anchors {
+            top: rowButtons.bottom
+            topMargin: 64
+            left: parent.left
+            right: parent.right
+            leftMargin: 32
+            rightMargin: 32
+        }
+
+        Repeater {
+            model: filteredGames
+
+            StartingPageGameCard {
+                width: (gamesGrid.width - gamesGrid.spacing) / 2
+                height: 240
+
+                gameName: modelData.name
+                gameCategory: modelData.category
+                gameDescription: modelData.description
+                gameImage: modelData.image
+
+                onClicked: root.selectedIndex = model.index
+            }
+        }
     }
 
 }

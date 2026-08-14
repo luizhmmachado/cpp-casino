@@ -1,8 +1,7 @@
 import QtQuick 2.15
 import Fonts 1.0
 import Colors 1.0
-
-
+import Components 1.0
 
 Rectangle {
     id: rctGameCard
@@ -10,22 +9,15 @@ Rectangle {
     property string gameName: ""
     property string gameDescription: ""
     property string gameCategory: ""
+    property string gameImage: ""
     property string buttonText: qsTr("JOGAR AGORA")
     property bool hover: true
-    property int index: -1
 
     property alias mouseAreaCard: mouseAreaCard
 
     border.width: 2
     border.color: hover ? Colors.secondary : Colors.yellow100
     color: Colors.primary
-
-    anchors {
-        top: rowButtons.bottom
-        topMargin: 64
-        left: parent.left
-        leftMargin: 32
-    }
 
     Rectangle {
         id: rctImage
@@ -47,7 +39,7 @@ Rectangle {
             height: 48
             width: 48
             anchors.centerIn: parent
-            source: "qrc:/resources/images/icons/horserace.svg"
+            source: gameImage
         }
     }
 
@@ -102,15 +94,14 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    ComponentButton {
         id: rctButton
 
-        border.width: 2
-        border.color: hover ? Colors.secondary : Colors.yellow100
-        color: hover ? Colors.background :Colors.secondary
-        width: parent.width - 32
-        height: 40
-        radius: 5
+        componentWidth: parent.width - 32
+        componentHeight: 40
+        componentBorderColor: rctGameCard.hover ? Colors.secondary : Colors.yellow100
+        componentBorderWidth: 2
+        componentBtnText: buttonText
 
         anchors {
             left: parent.left
@@ -119,16 +110,11 @@ Rectangle {
             bottomMargin: -( rctButton.height / 2 )
         }
 
-        Text {
-            text: buttonText
-            font: Fonts.text8bit
-            color: Colors.textColor
-            anchors.centerIn: parent
-        }
     }
 
     MouseArea {
         id: mouseAreaCard
+
         hoverEnabled: true
         anchors.fill: parent
     }

@@ -1,0 +1,6 @@
+module Components
+
+ComponentButton 1.0 ComponentButton.qml
+ComponentButtonDesign 1.0 ComponentButtonDesign.ui.qml
+ComponentTitle 1.0 ComponentTitle.qml
+ComponentTitleDesign 1.0 ComponentTitleDesign.ui.qml

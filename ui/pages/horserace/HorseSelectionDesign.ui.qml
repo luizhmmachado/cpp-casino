@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import Fonts 1.0
 import Colors 1.0
+import Components 1.0
 
 Item {
     id: root
@@ -164,27 +165,15 @@ Item {
                 }
             }
 
-            Rectangle {
-                radius: 5
-                width: 256
-                height: 48
-                color: enabled ? Colors.secondary : Colors.background
-                border.color: Colors.secondary
-                anchors.top: repeater.bottom
+            ComponentButton {
+                id: btnBet
+
                 enabled: selectedIndex != -1
+                componentBtnText: qsTr( "Apostar" )
 
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "Apostar"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-
-                MouseArea {
-                    id: btnBet
-                    anchors.fill: parent
+                anchors {
+                    top: repeater.bottom
+                horizontalCenter: parent.horizontalCenter
                 }
             }
         }
