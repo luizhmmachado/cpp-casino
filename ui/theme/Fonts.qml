@@ -13,22 +13,28 @@ QtObject {
     property int secondaryTextSize: 12
 
     readonly property font bigTitle8bit: Qt.font({
-        family: family || fallbackFamily,
-        pixelSize: bigTitleSize
-    })
+                                                     family: family || fallbackFamily,
+                                                     pixelSize: bigTitleSize
+                                                 })
 
     readonly property font title8bit: Qt.font({
-        family: family || fallbackFamily,
-        pixelSize: titleSize
-    })
+                                                  family: family || fallbackFamily,
+                                                  pixelSize: titleSize
+                                              })
 
     readonly property font text8bit: Qt.font({
-        family: family || fallbackFamily,
-        pixelSize: textSize
-    })
+                                                 family: family || fallbackFamily,
+                                                 pixelSize: textSize
+                                             })
+
+    readonly property font underlinedText8bit: Qt.font({
+                                                           family: family || fallbackFamily,
+                                                           pixelSize: textSize,
+                                                           underline: true
+                                                       })
 
     readonly property font secondaryText8bit: Qt.font({
-        family: family || fallbackFamily,
-        pixelSize: secondaryTextSize
-    })
+                                                          family: family || fallbackFamily,
+                                                          pixelSize: secondaryTextSize
+                                                      })
 }

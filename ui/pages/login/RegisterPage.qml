@@ -1,365 +1,35 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQml 2.15
 import DataBaseControl 1.0
-import QtQuick.Layouts 1.15
 import Colors 1.0
 import Fonts 1.0
+import Components 1.0
 
 Item {
     id: root
     anchors.fill: parent
 
+    signal login
+    signal success(var balance)
+
     property int day: -1
     property int month: -1
     property int year: -1
     property bool validAge: false
-    property color ageBorderColor: validAge ? Colors.secondary : Colors.error
-    property var passwordRequirements: []
-
-    signal success(var balance)
-
-    Rectangle {
-        anchors.fill: parent
-        color: Colors.background
-    }
-
-    Item {
-        id: loginRequest
-        width: parent.width * 0.5
-        height: clmMain.implicitHeight + 64
-        anchors.centerIn: parent
-
-        Rectangle {
-            id: background
-            anchors.fill: parent
-            color: Colors.yellow200
-            radius: 16
-        }
-
-        Column {
-            id: clmMain
-            anchors {
-                top: parent.top
-                topMargin: 32
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            spacing: 16
-
-            TextField {
-                id: fldCpf
-                height: 32
-                width: loginRequest.width * 0.8
-                placeholderText: "CPF"
-                font: Fonts.text8bit
-
-                property bool validCpf: false
-                property bool programmaticChange: false
-
-                background: Rectangle {
-                    radius: 5
-                    border.color: fldCpf.validCpf ? Colors.secondary : Colors.error
-                    border.width: 2
-                    color: Colors.yellow200
-                }
-
-                onTextChanged: {
-                    if (programmaticChange) {
-                        programmaticChange = false
-                        return
-                    }
-
-                    var numbers = text.replace(/\D/g, "")
-
-                    if (numbers.length > 11)
-                        numbers = numbers.slice(0, 11)
-
-                    var formatted = ""
-
-                    if (numbers.length > 0)
-                        formatted += numbers.substring(0, Math.min(3, numbers.length))
-
-                    if (numbers.length >= 4)
-                        formatted += "." + numbers.substring(3, Math.min(6, numbers.length))
-
-                    if (numbers.length >= 7)
-                        formatted += "." + numbers.substring(6, Math.min(9, numbers.length))
-
-                    if (numbers.length >= 10)
-                        formatted += "-" + numbers.substring(9, Math.min(11, numbers.length))
-
-                    if (formatted !== text) {
-                        programmaticChange = true
-                        text = formatted
-                    }
-
-                    control.cpf = numbers
-                    validCpf = numbers.length === 11
-                }
-            }
-
-            TextField {
-                id: fldName
-                height: 32
-                width: loginRequest.width * 0.8
-                placeholderText: "Nome Completo"
-                font: Fonts.text8bit
-
-                validator: RegularExpressionValidator {
-                    regularExpression: /.{8,}/
-                }
-
-                background: Rectangle {
-                    radius: 5
-                    border.color: fldName.acceptableInput ? Colors.secondary : Colors.error
-                    border.width: 2
-                    color: Colors.yellow200
-                }
-
-                onTextChanged: {
-                    control.name = fldName.text
-                }
-            }
-
-            Row {
-                spacing: 8
-
-                TextField {
-                    id: inputday
-                    width: 50
-                    placeholderText: "DD"
-                    font: Fonts.text8bit
-                    inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator {
-                        bottom: 1
-                        top: 31
-                    }
-
-                    text: day > 0 ? day.toString() : ""
-
-                    onTextChanged: {
-                        day = inputday.text.length > 0 ? parseInt(inputday.text) : -1
-                        ageValidator(day, month, year)
-                    }
-
-                    onActiveFocusChanged: {
-                        if (!activeFocus && day > 0 && day < 10)
-                            inputday.text = "0" + day
-                    }
-
-                    background: Rectangle {
-                        border.width: 2
-                        border.color: ageBorderColor
-                        radius: 5
-                    }
-                }
-
-                TextField {
-                    id: inputmonth
-                    width: 50
-                    placeholderText: "MM"
-                    font: Fonts.text8bit
-                    inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator {
-                        bottom: 1
-                        top: 12
-                    }
-
-                    text: month > 0 ? (month < 10 ? "0" + month : month.toString()) : ""
-
-                    onTextChanged: {
-                        var value = inputmonth.text.replace(/\D/g, "")
-
-                        if (value.length > 2)
-                            value = value.slice(0, 2)
-
-                        month = value.length > 0 ? parseInt(value) : -1
-
-                        ageValidator(day, month, year)
-                    }
-
-                    onActiveFocusChanged: {
-                        if (!activeFocus && month > 0 && month < 10)
-                            inputmonth.text = "0" + month
-                    }
-
-                    background: Rectangle {
-                        border.width: 2
-                        border.color: ageBorderColor
-                        radius: 5
-                    }
-                }
-
-                TextField {
-                    id: inputyear
-                    width: 70
-                    placeholderText: "AAAA"
-                    font: Fonts.text8bit
-                    inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator {
-                        bottom: 1900
-                        top: new Date().getFullYear()
-                    }
-
-                    text: year > 0 ? year.toString() : ""
-
-                    onTextChanged: {
-                        year = inputyear.text.length > 0 ? parseInt(inputyear.text) : -1
-                        ageValidator(day, month, year)
-                    }
-
-                    background: Rectangle {
-                        border.width: 2
-                        border.color: ageBorderColor
-                        radius: 5
-                    }
-                }
-            }
-
-            TextField {
-                id: fldEmail
-
-                height: 32
-                width: loginRequest.width * 0.8
-                placeholderText: "E-mail"
-                font: Fonts.text8bit
-
-                validator: RegularExpressionValidator {
-                    regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
-                }
-
-                background: Rectangle {
-                    radius: 5
-                    border.color: fldEmail.acceptableInput ? Colors.secondary : Colors.error
-                    border.width: 2
-                    color: Colors.yellow200
-                }
-
-                onTextChanged: {
-                    control.email = fldEmail.text
-                }
-            }
-
-            Column {
-                spacing: 8
-
-                TextField {
-                    id: fldPassword
-
-                    height: 32
-                    width: loginRequest.width * 0.8
-                    placeholderText: "password"
-                    font: Fonts.text8bit
-                    echoMode: TextInput.Password
-                    passwordCharacter: "•"
-
-                    validator: RegularExpressionValidator {
-                        regularExpression: /.{8,20}/
-                    }
-
-                    background: Rectangle {
-                        radius: 5
-                        border.color: verifyPassword(fldPassword.text) ? Colors.secondary : Colors.error
-                        border.width: 2
-                        color: Colors.yellow200
-                    }
-
-                    onTextChanged: {
-                        control.password = fldPassword.text
-                    }
-                }
-
-                ColumnLayout {
-                    spacing: 6
-
-                    Repeater {
-                        model: passwordRequirements.length
-
-                        delegate: Row {
-                            spacing: 6
-
-                            visible: (index === 0 && fldPassword.text.length < 8) ||
-                                     (index > 0 && fldPassword.text.length >= 8)
-
-                            Text {
-                                text: "•"
-                                color: passwordRequirements[index].validate(fldPassword.text) ? Colors.success : Colors.error
-                                font: Fonts.text8bit
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-                                text: passwordRequirements[index].text
-                                color: passwordRequirements[index].validate(fldPassword.text) ? Colors.primary : Colors.secondary
-                                font: Fonts.text8bit
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-            }
-
-            Rectangle {
-                id: btnRegister
-                radius: 5
-                width: loginRequest.width * 0.8
-                height: 32
-                color: "#ff3c00"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "Fazer Cadastro"
-                    font: Fonts.text8bit
-                    color: Colors.textColor
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        control.insert()
-                    }
-                }
-            }
-        }
-    }
-
-    DataBaseControl {
-        id: control
-
-        onSuccess:function(balance) {
-            root.success(balance)
-        }
-
-        onFail: function(){
-            console.log("Fail")
-        }
-    }
-
-    function calculateAge(day, month, year) {
-        var today = new Date()
-        var birth = new Date(year, month - 1, day)
-        var age = today.getFullYear() - birth.getFullYear()
-        var m = today.getMonth() - birth.getMonth()
-
-        if (m < 0 || (m === 0 && today.getDate() < birth.getDate()))
-            age--
-
-        return age
-    }
-
-    function ageValidator(day, month, year) {
-        if (isNaN(day) || isNaN(month) || isNaN(year) ||
-                day <= 0 || month <= 0 || year <= 0) {
-            validAge = false
-            return
-        }
-
-        var age = calculateAge(day, month, year)
-
-        validAge = age >= 18
-        control.birthDt = day + "-" + month + "-" + year
-    }
+    property bool validCpf: false
+    property bool validPassword: false
+    property bool validConfirmPassword: false
+    property bool validName: false
+    property bool validEmail: false
+
+    property var passwordRequirements: [
+        "Contém pelo menos 8 caracteres",
+        "Contém letra maiúscula",
+        "Contém letra minúscula",
+        "Contém número",
+        "Contém caractere especial"
+    ]
 
     function hasUppercase(password) {
         return /[A-Z]/.test(password)
@@ -381,28 +51,460 @@ Item {
         return password.length >= 8
     }
 
-    function verifyPassword(password) {
-        if (hasUppercase(password) &&
-                hasLowercase(password) &&
-                hasNumber(password) &&
-                hasSpecial(password) &&
-                hasSize(password)) {
-            passwordRequirements = []
-            return true
+    function validatePasswordRequirement(index, password) {
+        switch (index) {
+        case 0:
+            return hasSize(password)
+        case 1:
+            return hasUppercase(password)
+        case 2:
+            return hasLowercase(password)
+        case 3:
+            return hasNumber(password)
+        case 4:
+            return hasSpecial(password)
+        default:
+            return false
         }
-
-        passwordRequirements = [
-            { text: "Contém pelo menos 8 caracteres", validate: hasSize },
-            { text: "Contém letra maiúscula", validate: hasUppercase },
-            { text: "Contém letra minúscula", validate: hasLowercase },
-            { text: "Contém número", validate: hasNumber },
-            { text: "Contém caractere especial", validate: hasSpecial }
-        ]
-
-        return false
     }
 
-    Component.onCompleted: {
-        ageValidator(day, month, year)
+    function verifyPassword(password) {
+        return hasUppercase(password) && hasLowercase(password) && hasNumber(password) && hasSpecial(password) && hasSize(password)
+    }
+
+    function validateCpf(cpf) {
+        var numbers = cpf.replace(/\D/g, "")
+
+        if (numbers.length !== 11)
+            return false
+
+        if (/^(\d)\1{10}$/.test(numbers))
+            return false
+
+        var sum = 0
+
+        for (var i = 0; i < 9; i++)
+            sum += parseInt(numbers.charAt(i)) * (10 - i)
+
+        var remainder = sum % 11
+        var digit1 = remainder < 2 ? 0 : 11 - remainder
+
+        if (digit1 !== parseInt(numbers.charAt(9)))
+            return false
+
+        sum = 0
+
+        for (var j = 0; j < 10; j++)
+            sum += parseInt(numbers.charAt(j)) * (11 - j)
+
+        remainder = sum % 11
+        var digit2 = remainder < 2 ? 0 : 11 - remainder
+
+        return digit2 === parseInt(numbers.charAt(10))
+    }
+
+    function calculateAge(day, month, year) {
+        var today = new Date()
+        var birth = new Date(year, month - 1, day)
+        var age = today.getFullYear() - birth.getFullYear()
+        var monthDifference = today.getMonth() - birth.getMonth()
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate()))
+            age--
+
+        return age
+    }
+
+    function validateBirthDate(day, month, year) {
+        if (day < 1 || month < 1 || year < 1900)
+            return false
+
+        var date = new Date(year, month - 1, day)
+
+        if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day)
+            return false
+
+        return calculateAge(day, month, year) >= 18
+    }
+
+    function updateFormValidation() {
+        root.validName = fldName.componentText.trim().length >= 8
+        root.validEmail = fldEmail.componentText.length > 0 && fldEmail.acceptableInput
+        root.validCpf = root.validateCpf(fldCpf.componentText)
+        root.validAge = root.validateBirthDate(root.day, root.month, root.year)
+        root.validPassword = root.verifyPassword(fldPassword.componentText)
+        root.validConfirmPassword = fldConfirmPassword.componentText.length > 0 && fldConfirmPassword.componentText === fldPassword.componentText
+
+        btnRegister.enabled = root.validName && root.validEmail && root.validCpf && root.validAge && root.validPassword && root.validConfirmPassword
+    }
+
+    function updateBirthDate() {
+        var dayText = inputDay.text
+        var monthText = inputMonth.text
+        var yearText = inputYear.text
+
+        validAge = false
+
+        if (dayText.length === 2 && monthText.length === 2 && yearText.length === 4) {
+            day = parseInt(dayText)
+            month = parseInt(monthText)
+            year = parseInt(yearText)
+
+            validAge = validateBirthDate(day, month, year)
+
+            if (validAge)
+                control.birthDt = day + "-" + month + "-" + year
+        }
+
+        updateFormValidation()
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: Colors.background
+
+        Rectangle {
+            id: rctForm
+            width: parent.width * 0.6
+            height: formColumn.implicitHeight + 128
+            anchors.centerIn: parent
+            border.width: 2
+            border.color: Colors.yellow100
+            color: Colors.primary
+
+            Column {
+                id: formColumn
+                width: parent.width - 64
+                anchors.top: parent.top
+                anchors.topMargin: 32
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 16
+
+                Label {
+                    width: parent.width
+                    text: qsTr("[ NOVO CADASTRO ]")
+                    font: Fonts.title8bit
+                    color: Colors.yellow200
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: qsTr("NOME COMPLETO:")
+                        font: Fonts.secondaryText8bit
+                        color: Colors.yellow200
+                    }
+
+                    ComponentField {
+                        id: fldName
+                        componentWidth: parent.width
+                        componentPlaceholder: qsTr("DIGITE SEU NOME")
+                        componentValidator: RegularExpressionValidator { regularExpression: /.{8,}/ }
+                        componentValid: validName
+
+                        onTextChanged: {
+                            updateFormValidation()
+                        }
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: qsTr("E-MAIL:")
+                        font: Fonts.secondaryText8bit
+                        color: Colors.yellow200
+                    }
+
+                    ComponentField {
+                        id: fldEmail
+                        componentWidth: parent.width
+                        componentPlaceholder: qsTr("SEU@EMAIL.COM")
+                        componentValidator: RegularExpressionValidator { regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/ }
+                        componentValid: validEmail
+
+                        onTextChanged: {
+                            control.email = componentText
+                            updateFormValidation()
+                        }
+                    }
+                }
+
+                Row {
+                    width: parent.width
+                    spacing: 16
+
+                    Column {
+                        width: (parent.width - 16) / 2
+                        spacing: 8
+
+                        Text {
+                            text: qsTr("CPF:")
+                            font: Fonts.secondaryText8bit
+                            color: Colors.yellow200
+                        }
+
+                        ComponentField {
+                            id: fldCpf
+
+                            property bool cpfValid: false
+
+                            componentWidth: parent.width
+                            componentValid: cpfValid
+                            componentPlaceholder: qsTr("000.000.000-00")
+                            inputMethodHints: Qt.ImhDigitsOnly
+
+                            onTextChanged: {
+                                var numbers = text.replace(/\D/g, "")
+
+                                if (numbers.length > 11)
+                                    numbers = numbers.substring(0, 11)
+
+                                var formatted = ""
+
+                                if (numbers.length > 0)
+                                    formatted += numbers.substring(0, 3)
+
+                                if (numbers.length >= 4)
+                                    formatted += "." + numbers.substring(3, 6)
+
+                                if (numbers.length >= 7)
+                                    formatted += "." + numbers.substring(6, 9)
+
+                                if (numbers.length >= 10)
+                                    formatted += "-" + numbers.substring(9, 11)
+
+                                if (formatted !== text) {
+                                    text = formatted
+                                    return
+                                }
+
+                                cpfValid = root.validateCpf(numbers)
+                                root.validCpf = cpfValid
+                                control.cpf = numbers
+                                root.updateFormValidation()
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: (parent.width - 16) / 2
+                        spacing: 8
+
+                        Text {
+                            text: qsTr("NASCIMENTO:")
+                            font: Fonts.secondaryText8bit
+                            color: Colors.yellow200
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: 8
+
+                            ComponentField {
+                                id: inputDay
+                                componentWidth: 48
+                                componentPlaceholder: "DD"
+                                componentValid: validAge
+                                inputMethodHints: Qt.ImhDigitsOnly
+
+                                onTextChanged: {
+                                    updateBirthDate()
+                                }
+                            }
+
+                            ComponentField {
+                                id: inputMonth
+                                componentWidth: 48
+                                componentPlaceholder: "MM"
+                                componentValid: validAge
+                                inputMethodHints: Qt.ImhDigitsOnly
+
+                                onTextChanged: {
+                                    updateBirthDate()
+                                }
+                            }
+
+                            ComponentField {
+                                id: inputYear
+                                componentWidth: parent.width - 112
+                                componentPlaceholder: "AAAA"
+                                componentValid: validAge
+                                inputMethodHints: Qt.ImhDigitsOnly
+
+                                onTextChanged: {
+                                    updateBirthDate()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Row {
+                    width: parent.width
+                    spacing: 16
+
+                    Column {
+                        width: (parent.width - 16) / 2
+                        spacing: 8
+
+                        Text {
+                            text: qsTr("SENHA:")
+                            font: Fonts.secondaryText8bit
+                            color: Colors.yellow200
+                        }
+
+                        ComponentField {
+                            id: fldPassword
+
+                            componentWidth: parent.width
+                            componentPlaceholder: qsTr("••••••••")
+                            componentEchoMode: TextInput.Password
+                            componentValidator: RegularExpressionValidator { regularExpression: /.{8,20}/ }
+                            componentValid: root.validPassword
+
+                            onTextChanged: {
+                                control.password = componentText
+                                root.validPassword = root.verifyPassword(componentText)
+                                root.validConfirmPassword = fldConfirmPassword.componentText.length > 0 && fldConfirmPassword.componentText === componentText
+                                root.updateFormValidation()
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: (parent.width - 16) / 2
+                        spacing: 8
+
+                        Text {
+                            text: qsTr("CONFIRMAR SENHA:")
+                            font: Fonts.secondaryText8bit
+                            color: Colors.yellow200
+                        }
+
+                        ComponentField {
+                            id: fldConfirmPassword
+
+                            componentWidth: parent.width
+                            componentPlaceholder: qsTr("••••••••")
+                            componentEchoMode: TextInput.Password
+                            componentValid: root.validConfirmPassword
+
+                            onTextChanged: {
+                                root.validConfirmPassword = componentText.length > 0 && componentText === fldPassword.componentText
+                                root.updateFormValidation()
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: rctPasswordRequirements
+                    width: parent.width
+                    height: passwordRequirementsColumn.implicitHeight + 20
+                    color: Colors.background
+                    border.width: 2
+                    border.color: Colors.secondary
+
+                    Column {
+                        id: passwordRequirementsColumn
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.margins: 10
+                        spacing: 6
+
+                        Repeater {
+                            model: passwordRequirements.length
+
+                            delegate: Row {
+                                width: parent.width
+                                spacing: 8
+
+                                Text {
+                                    width: 12
+                                    text: validatePasswordRequirement(index, fldPassword.componentText) ? "✓" : "x"
+                                    color: validatePasswordRequirement(index, fldPassword.componentText) ? Colors.success : Colors.error
+                                    font: Fonts.secondaryText8bit
+                                }
+
+                                Text {
+                                    text: passwordRequirements[index]
+                                    color: Colors.secondary
+                                    font.family: "Press Start 2P"
+                                    font.pixelSize: 12
+                                    font.strikeout: validatePasswordRequirement(index, fldPassword.componentText)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Text {
+                    id: txtError
+                    width: parent.width
+                    visible: text.length > 0
+                    color: Colors.error
+                    font: Fonts.secondaryText8bit
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.WordWrap
+                }
+
+                ComponentButton {
+                    id: btnRegister
+                    componentWidth: parent.width
+                    componentHeight: 48
+                    componentBtnText: qsTr("[ CADASTRAR ]")
+                    enabled: false
+
+                    onClicked: {
+                        control.insert()
+                    }
+                }
+
+                Text {
+                    id: txtLogin
+                    width: parent.width
+                    text: qsTr("Já tem conta? Faça Login")
+                    font: Fonts.underlinedText8bit
+                    color: Colors.yellow200
+                    horizontalAlignment: Text.AlignHCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            root.login()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    DataBaseControl {
+        id: control
+
+        onShowLoading: {
+            btnRegister.enabled = !show && validName && validEmail && validCpf && validAge && validPassword && validConfirmPassword
+
+            if (show)
+                txtError.visible = false
+        }
+
+        onSuccess: {
+            root.success(formattedBalance)
+        }
+
+        onFail: {
+            txtError.text = msg
+            txtError.visible = true
+            btnRegister.enabled = validName && validEmail && validCpf && validAge && validPassword && validConfirmPassword
+        }
     }
 }
