@@ -1,106 +1,207 @@
 #include "databasecontrol.h"
 
-DataBaseControl::DataBaseControl() {
-    if ( !QSqlDatabase::contains( "clientes_connection" ) ) {
-        QSqlDatabase db = QSqlDatabase::addDatabase( "QPSQL", "clientes_connection" );
-        db.setHostName( "localhost" );
-        db.setDatabaseName( "cassino_pt_br" );
-        QString user = QString::fromUtf8( qgetenv( "DB_USER" ) );
-        QString password = QString::fromUtf8( qgetenv( "DB_PASS" ) );
+#include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-        db.setUserName( user );
-        db.setPassword( password );
-        if ( !db.open() ) {
-            qWarning() << "Erro ao conectar no banco:" << db.lastError().text();
-        }
-    }
+#include <sodium.h>
+
+DataBaseControl::DataBaseControl( QObject* parent ) :
+    QObject( parent ) {
+
+    connect( &_supabaseApi, &SupabaseApi::requestFinished, this, &DataBaseControl::handleRequestFinished );
+    connect( &_supabaseApi, &SupabaseApi::requestFailed, this, &DataBaseControl::handleRequestFailed );
 }
 
-bool DataBaseControl::athenticate() {
+void DataBaseControl::insert() {
 
-    qInfo() << "DataBaseControl::athenticate";
+    const QString passwordHash = hashPassword( _password );
 
-    QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
-    if ( !db.isOpen() ) {
-        qWarning() << "Falha ao conectar ao banco de dados";
-        return false;
+    if ( passwordHash.isEmpty() ) {
+        emit fail( "Não foi possível proteger a senha." );
+        return;
     }
 
-    QSqlQuery query( db );
-    query.prepare( "SELECT COUNT(*) FROM clientes WHERE email = :email AND password = crypt(:password, password)" );
-    query.bindValue( ":email", _email );
-    query.bindValue( ":password", _password );
+    QJsonObject user;
 
-    if ( !query.exec() ) {
-        qWarning() << "Erro na consulta:" << query.lastError().text();
-        emit fail( query.lastError().text() );
-        return false;
+    user[ "name" ] = _name;
+    user[ "email" ] = _email;
+    user[ "password" ] = passwordHash;
+    user[ "birth_date" ] = _birthDt;
+    user[ "balance" ] = 0.0;
+
+    if ( !_cpf.isEmpty() ) {
+        user[ "cpf" ] = _cpf;
+    } else {
+        user[ "cpf" ] = QJsonValue::Null;
     }
 
-    if ( query.next() ) {
-        int count = query.value( 0 ).toInt();
-        if ( count > 0 ) {
-            QSqlQuery balanceQuery( db );
-            balanceQuery.prepare( "SELECT balance FROM clientes WHERE email = :email" );
-            balanceQuery.bindValue( ":email", _email );
+    _requestType = RequestType::Insert;
 
-            if ( !balanceQuery.exec() ) {
-                emit fail( "Erro ao buscar saldo: " + balanceQuery.lastError().text() );
-                return false;
-            }
+    emit showLoading( true );
 
-            if ( balanceQuery.next() ) {
-                double balance = balanceQuery.value( 0 ).toDouble();
-                qInfo() << balance;
-                QString formattedBalance = QLocale::system().toCurrencyString( balance );
-                emit success( formattedBalance );
-                return true;
-            }
-        }
-    }
-
-    emit fail( "Usuário ou senha incorreto(s)" );
-
-    qInfo() << "DataBaseControl::athenticate";
-
-    return false;
-
+    _supabaseApi.post( "users", user );
 }
 
-bool DataBaseControl::insert() {
+void DataBaseControl::authenticate() {
 
-    qInfo() << "DataBaseControl::insert";
+    if ( _email.isEmpty() || _password.isEmpty() ) {
+        emit fail( "E-mail e senha são obrigatórios." );
+        return;
+    }
 
-    QSqlDatabase db = QSqlDatabase::database( "clientes_connection" );
-    if ( !db.isOpen() ) {
-        qWarning() << "Falha ao conectar ao banco de dados";
+    _requestType = RequestType::Authenticate;
+
+    emit showLoading( true );
+
+    const QString endpoint = "users?email=eq." + _email + "&select=password,balance";
+
+    _supabaseApi.get( endpoint );
+}
+
+void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
+
+    qInfo() << "DataBaseControl::handleRequestFinished";
+
+    if ( _requestType == RequestType::Authenticate ) {
+
+        _requestType = RequestType::None;
+
+        emit showLoading( false );
+
+        if ( !response.isArray() || response.array().isEmpty() ) {
+
+            qInfo() << "DataBaseControl::handleRequestFinished E-mail ou senha inválidos.";
+
+            emit fail( "E-mail ou senha inválidos." );
+
+            return;
+        }
+
+        const QJsonObject user = response.array().first().toObject();
+
+        const QString passwordHash = user.value( "password" ).toString();
+
+        if ( passwordHash.isEmpty() ) {
+
+            qInfo() << "DataBaseControl::handleRequestFinished E-mail ou senha inválidos.";
+
+            emit fail( "E-mail ou senha inválidos." );
+
+            return;
+        }
+
+        if ( !verifyPassword( _password, passwordHash ) ) {
+
+            qInfo() << "DataBaseControl::handleRequestFinished E-mail ou senha inválidos.";
+
+            emit fail( "E-mail ou senha inválidos." );
+
+            return;
+        }
+
+        const double balance = user.value( "balance" ).toDouble();
+
+        _password.clear();
+
+        emit passwordChanged();
+
+        qInfo() << "DataBaseControl::handleRequestFinished Usuário autenticado com sucesso.";
+
+        emit success( QLocale::system().toCurrencyString( balance ) );
+
+        return;
+    }
+
+    if ( _requestType == RequestType::Insert ) {
+
+        _requestType = RequestType::None;
+
+        emit showLoading( false );
+
+        if ( response.isArray() && !response.array().isEmpty() ) {
+
+            qInfo() << "DataBaseControl::handleRequestFinished Usuário cadastrado com sucesso.";
+
+            emit success( QLocale::system().toCurrencyString( 0.00 ) );
+
+            return;
+        }
+
+        qWarning() << "DataBaseControl::handleRequestFinished Resposta inesperada ao cadastrar usuário.";
+
+        emit fail( "Não foi possível cadastrar o usuário." );
+
+        return;
+    }
+
+    qWarning() << "DataBaseControl::handleRequestFinished Tipo de requisição desconhecido.";
+
+    emit showLoading( false );
+
+    emit fail( "Resposta inesperada do Supabase." );
+}
+
+void DataBaseControl::handleRequestFailed( const QString& error ) {
+
+    const RequestType requestType = _requestType;
+
+    _requestType = RequestType::None;
+
+    emit showLoading( false );
+
+    qWarning() << "DataBaseControl::handleRequestFailed:" << error;
+
+    if ( requestType == RequestType::Authenticate ) {
+        emit fail( "E-mail ou senha inválidos." );
+        return;
+    }
+
+    if ( requestType == RequestType::Insert ) {
+        emit fail( error );
+        return;
+    }
+
+    QString errorMessage = _requestType == RequestType::Insert ? "Erro ao realizar cadastro" : "Erro ao realizar login";
+
+    emit fail( errorMessage );
+}
+
+bool DataBaseControl::verifyPassword( const QString& password, const QString& passwordHash ) const {
+
+    if ( password.isEmpty() || passwordHash.isEmpty() ) {
         return false;
     }
 
-    QSqlQuery query( db );
+    QByteArray passwordData = password.toUtf8();
+    QByteArray hashData = passwordHash.toUtf8();
 
-    query.prepare( R"(
-        INSERT INTO clientes (cpf, nome, email, password, creation_date, birth_date)
-        VALUES (:cpf, :nome, :email, crypt(:password, gen_salt('bf')), :creation_date, :birth_date)
-    )" );
-    query.bindValue( ":cpf", _cpf );
-    query.bindValue( ":nome", _name );
-    query.bindValue( ":email", _email );
-    query.bindValue( ":password", _password );
-    query.bindValue( ":creation_date", QDateTime::currentDateTime() );
-    query.bindValue( ":birth_date", _birthDt );
+    const int result = crypto_pwhash_str_verify( hashData.constData(), passwordData.constData(), static_cast<unsigned long long>( passwordData.size() ) );
 
-    if ( !query.exec() ) {
-        qWarning() << query.lastError().text();
-        emit fail( query.lastError().text() );
-        return false;
+    sodium_memzero( passwordData.data(), static_cast<size_t>( passwordData.size() ) );
+
+    return result == 0;
+}
+
+QString DataBaseControl::hashPassword( const QString& password ) const {
+
+    QByteArray passwordData = password.toUtf8();
+
+    char hashedPassword[ crypto_pwhash_STRBYTES ];
+
+    const int result = crypto_pwhash_str_alg( hashedPassword, passwordData.constData(), static_cast<unsigned long long>( passwordData.size() ), crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE, crypto_pwhash_ALG_ARGON2ID13 );
+
+    sodium_memzero( passwordData.data(), static_cast<size_t>( passwordData.size() ) );
+
+    if ( result != 0 ) {
+
+        qWarning() << "DataBaseControl::hashPassword - Falha ao gerar hash.";
+
+        return {};
     }
 
-    emit success( QLocale::system().toCurrencyString( 0.00 ) );
-
-    qInfo() << "DataBaseControl::insert";
-
-    return true;
+    return QString::fromUtf8( hashedPassword );
 }
 
 QString DataBaseControl::email() const {
@@ -108,9 +209,12 @@ QString DataBaseControl::email() const {
 }
 
 void DataBaseControl::setEmail( const QString& email ) {
+
     if ( _email == email )
         return;
+
     _email = email;
+
     emit emailChanged();
 }
 
@@ -119,9 +223,12 @@ QString DataBaseControl::password() const {
 }
 
 void DataBaseControl::setPassword( const QString& password ) {
+
     if ( _password == password )
         return;
+
     _password = password;
+
     emit passwordChanged();
 }
 
@@ -130,9 +237,12 @@ QString DataBaseControl::cpf() const {
 }
 
 void DataBaseControl::setCpf( const QString& cpf ) {
+
     if ( _cpf == cpf )
         return;
+
     _cpf = cpf;
+
     emit cpfChanged();
 }
 
@@ -141,9 +251,21 @@ QString DataBaseControl::birthDt() const {
 }
 
 void DataBaseControl::setBirthDt( const QString& birthDt ) {
-    if ( _birthDt == birthDt )
+
+    const QDate date = QDate::fromString( birthDt, "d-M-yyyy" );
+
+    if ( !date.isValid() ) {
         return;
-    _birthDt = birthDt;
+    }
+
+    const QString formattedBirthDt = date.toString( "yyyy-MM-dd" );
+
+    if ( _birthDt == formattedBirthDt ) {
+        return;
+    }
+
+    _birthDt = formattedBirthDt;
+
     emit birthDtChanged();
 }
 
@@ -152,8 +274,11 @@ QString DataBaseControl::name() const {
 }
 
 void DataBaseControl::setName( const QString& name ) {
+
     if ( _name == name )
         return;
+
     _name = name;
+
     emit nameChanged();
 }

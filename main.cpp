@@ -14,6 +14,8 @@ int main( int argc, char* argv[] ) {
 #endif
     QGuiApplication app( argc, argv );
 
+    DataBaseControl databaseControl;
+
     QFontDatabase::addApplicationFont( ":/ui/theme/fonts/PressStart2P-Regular.ttf" );
 
     qmlRegisterType<BlackJackControl>( "BlackJackControl", 1, 0, "BlackJackControl" );
