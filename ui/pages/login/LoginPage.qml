@@ -8,147 +8,156 @@ import Components 1.0
 
 Item {
     id: root
+
+    signal register
+    signal success( var balance )
+
     anchors.fill: parent
-
-    property alias fldEmail: fldEmail
-    property alias fldPassword: fldPassword
-    property bool accept: fldEmail.acceptableInput && fldPassword.acceptableInput
-
-    signal cadastrar
-    signal success(var balance)
 
     Rectangle {
         anchors.fill: parent
         color: Colors.background
-    }
-
-    Item {
-        id: loginRequest
-        width: parent.width * 0.5
-        height: clmMain.implicitHeight + 64
-        anchors.centerIn: parent
 
         Rectangle {
-            id: background
-            anchors.fill: parent
-            color: Colors.yellow200
-            radius: 16
-        }
+            id: rctForm
 
-        Column {
-            id: clmMain
-            anchors {
-                top: parent.top
-                topMargin: 32
-                horizontalCenter: parent.horizontalCenter
-            }
+            width: parent.width * 0.4
+            height: formColumn.implicitHeight + 128
 
-            spacing: 16
+            anchors.centerIn: parent
 
-            TextField {
-                id: fldEmail
+            border.width: 2
+            border.color: Colors.yellow100
+            color: Colors.primary
 
-                height: 32
-                width: loginRequest.width * 0.8
-                placeholderText: "E-mail"
-                font: Fonts.text8bit
+            Column {
+                id: formColumn
 
-                validator: RegularExpressionValidator {
-                    regularExpression: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
+                width: parent.width - 64
+
+                anchors {
+                    top: parent.top
+                    topMargin: 64
+                    horizontalCenter: parent.horizontalCenter
                 }
 
-                background: Rectangle {
-                    radius: 5
-                    border.color: fldEmail.acceptableInput ? Colors.secondary : Colors.error
-                    border.width: 2
+                spacing: 32
+
+                Label {
+                    width: parent.width
+
+                    text: qsTr( "[ LOGIN ]" )
+                    font: Fonts.title8bit
                     color: Colors.yellow200
+
+                    horizontalAlignment: Text.AlignHCenter
                 }
 
-                onTextChanged: {
-                    control.email = fldEmail.text
+                Column {
+                    width: parent.width
+
+                    spacing: 8
+
+                    Text {
+                        text: qsTr( "E-MAIL:" )
+                        font: Fonts.text8bit
+                        color: Colors.yellow200
+                    }
+
+                    ComponentField {
+                        componentWidth: parent.width
+                        componentValidator: RegularExpressionValidator {
+                            regularExpression:
+                                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
+                        }
+
+                        onTextChanged: control.email = componentText
+                    }
+
                 }
-            }
 
-            TextField {
-                id: fldPassword
+                Column {
+                    width: parent.width
 
-                height: 32
-                width: loginRequest.width * 0.8
-                placeholderText: "Senha"
-                font: Fonts.text8bit
-                echoMode: TextInput.Password
-                passwordCharacter: "•"
+                    spacing: 8
 
-                validator: RegularExpressionValidator {
-                    regularExpression: /.{8,20}/
+                    Text {
+                        text: qsTr( "SENHA:" )
+                        font: Fonts.text8bit
+                        color: Colors.yellow200
+                    }
+
+                    ComponentField {
+                        componentWidth: parent.width
+                        componentEchoMode: TextInput.Password
+                        componentValidator: RegularExpressionValidator {
+                            regularExpression: /.{8,20}/
+                        }
+
+                        onTextChanged: control.password = componentText
+                    }
                 }
 
-                background: Rectangle {
-                    radius: 5
-                    border.color: fldPassword.acceptableInput ? Colors.secondary : Colors.error
-                    border.width: 2
+                Text {
+                    id: txtError
+
+                    visible: false
+
+                    color: Colors.error
+                    font: Fonts.secondaryText8bit
+                }
+
+                ComponentButton {
+                    id: btnLogin
+
+                    componentWidth: parent.width
+                    componentHeight: 48
+                    componentBtnText: qsTr( "[ ENTRAR ]" )
+
+                    onClicked: {
+                        control.authenticate()
+                    }
+                }
+
+                Text {
+                    id: txtRegister
+
+                    width: parent.width
+
+                    text: qsTr( "Não tem conta? Cadastre-se" )
+                    font: Fonts.underlinedText8bit
                     color: Colors.yellow200
+
+                    horizontalAlignment: Text.AlignHCenter
+
+                    anchors.bottomMargin: 64
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: root.register()
+                    }
                 }
 
-                onTextChanged: {
-                    control.password = fldPassword.text
-                }
-            }
 
-            Label{
-                id: lblErro
-
-                color: Colors.error
-                width: parent.width
-                height: 32
-                font: Fonts.text8bit
-                visible: false
-            }
-
-            ComponentButton {
-                id: btnLogin
-
-                componentBtnText: qsTr( "Fazer Login" )
-                componentWidth: loginRequest.width * 0.8
-                componentHeight: 32
-                componentEnabledColor: Colors.success
-                componentDisabledColor: Colors.success
-                componentBorderColor: Colors.success
-                enabled: accept
-                opacity: accept ? 1 : 0.5
-
-                onClicked: {
-                    control.authenticate()
-                }
-            }
-
-            ComponentButton {
-                id: btnRegister
-
-                componentBtnText: qsTr( "Fazer Cadastro" )
-                componentWidth: loginRequest.width * 0.8
-                componentHeight: 32
-                componentEnabledColor: Colors.error
-                componentDisabledColor: Colors.error
-                componentBorderColor: Colors.error
-
-                onClicked: {
-                    cadastrar()
-                }
             }
         }
     }
 
-    DataBaseControl{
+    DataBaseControl {
         id: control
 
-        onSuccess: function(balance){
-            root.success(balance)
+        onShowLoading: {
+            btnLogin.enabled = !show
         }
 
-        onFail: function(msg){
-            lblErro.visible = true
-            lblErro.text = msg
+        onSuccess: {
+            root.success( formattedBalance )
+        }
+
+        onFail: {
+            txtError.text = msg
+            txtError.visible = true
         }
     }
 }

@@ -10,7 +10,7 @@ import pages.startingpage 1.0
 ApplicationWindow {
     id: root
 
-    property var loaderComponent: startingPage
+    property var loaderComponent: loginPage
     property bool blockReturn: true
     //    visibility: "FullScreen"
     height: 960
@@ -24,11 +24,15 @@ ApplicationWindow {
     function _getPageTitle(){
         switch(loaderComponent){
         case horseracePage:
-            return "Corrida de Cavalos"
+            return qsTr( "Corrida de Cavalos" )
         case blackjackPage:
-            return "BlackJack"
+            return qsTr( "BlackJack" )
         case startingPage:
-            return "Página Inicial"
+            return qsTr( "Página Inicial" )
+        case loginPage:
+            return  qsTr( "Login" )
+        case registerPage:
+            return  qsTr( "Cadastro" )
         }
     }
 
@@ -241,7 +245,7 @@ ApplicationWindow {
         id: loginPage
 
         LoginPage{
-            onCadastrar: loaderComponent = registerPage
+            onRegister: loaderComponent = registerPage
             onSuccess: function(balance) {
                 loaderComponent = startingPage
             }

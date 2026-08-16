@@ -28,5 +28,7 @@
         <file>ui/Components/qmldir</file>
         <file>ui/Components/ComponentTitleDesign.ui.qml</file>
         <file>ui/Components/ComponentTitle.qml</file>
+        <file>ui/Components/ComponentFieldDesign.ui.qml</file>
+        <file>ui/Components/ComponentField.qml</file>
     </qresource>
 </RCC>
