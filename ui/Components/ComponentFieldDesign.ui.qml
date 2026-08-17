@@ -28,7 +28,7 @@ TextField {
     background: Rectangle {
         radius: 5
         border.width: 2
-        border.color: fldPassword.text.length === 0 || !fldPassword.componentValid ? Colors.error : Colors.secondary
+        border.color: fldPassword.borderColor
         color: Colors.background
     }
 }

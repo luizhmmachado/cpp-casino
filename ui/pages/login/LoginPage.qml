@@ -71,7 +71,7 @@ Item {
                                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
                         }
 
-                        onTextChanged: control.email = componentText
+                        onTextChanged: control.email = text
                     }
 
                 }
@@ -94,7 +94,7 @@ Item {
                             regularExpression: /.{8,20}/
                         }
 
-                        onTextChanged: control.password = componentText
+                        onTextChanged: control.password = text
                     }
                 }
 

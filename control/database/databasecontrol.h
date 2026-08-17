@@ -54,7 +54,8 @@ private:
     enum class RequestType {
         None,
         Insert,
-        Authenticate
+        Authenticate,
+        CheckDuplicate
     };
 
     SupabaseApi _supabaseApi;

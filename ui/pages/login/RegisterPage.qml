@@ -127,13 +127,17 @@ Item {
         return calculateAge(day, month, year) >= 18
     }
 
+    function updatePasswordMatch() {
+        root.validConfirmPassword = fldConfirmPassword.text.length > 0 && fldConfirmPassword.text === fldPassword.text
+    }
+
     function updateFormValidation() {
         root.validName = fldName.componentText.trim().length >= 8
         root.validEmail = fldEmail.componentText.length > 0 && fldEmail.acceptableInput
-        root.validCpf = root.validateCpf(fldCpf.componentText)
+        root.validCpf = root.validateCpf(fldCpf.text.replace(/\D/g, ""))
         root.validAge = root.validateBirthDate(root.day, root.month, root.year)
         root.validPassword = root.verifyPassword(fldPassword.componentText)
-        root.validConfirmPassword = fldConfirmPassword.componentText.length > 0 && fldConfirmPassword.componentText === fldPassword.componentText
+        updatePasswordMatch()
 
         btnRegister.enabled = root.validName && root.validEmail && root.validCpf && root.validAge && root.validPassword && root.validConfirmPassword
     }
@@ -145,15 +149,21 @@ Item {
 
         validAge = false
 
-        if (dayText.length === 2 && monthText.length === 2 && yearText.length === 4) {
-            day = parseInt(dayText)
-            month = parseInt(monthText)
-            year = parseInt(yearText)
+        if (dayText.length > 0 && monthText.length > 0 && yearText.length > 0) {
+            var dayNum = parseInt(dayText)
+            var monthNum = parseInt(monthText)
+            var yearNum = parseInt(yearText)
 
-            validAge = validateBirthDate(day, month, year)
+            if (!isNaN(dayNum) && !isNaN(monthNum) && !isNaN(yearNum)) {
+                day = dayNum
+                month = monthNum
+                year = yearNum
 
-            if (validAge)
-                control.birthDt = day + "-" + month + "-" + year
+                validAge = validateBirthDate(day, month, year)
+
+                if (validAge)
+                    control.birthDt = day + "-" + month + "-" + year
+            }
         }
 
         updateFormValidation()
@@ -206,6 +216,7 @@ Item {
                         componentValid: validName
 
                         onTextChanged: {
+                            control.name = text
                             updateFormValidation()
                         }
                     }
@@ -229,7 +240,7 @@ Item {
                         componentValid: validEmail
 
                         onTextChanged: {
-                            control.email = componentText
+                            control.email = text
                             updateFormValidation()
                         }
                     }
@@ -281,7 +292,6 @@ Item {
 
                                 if (formatted !== text) {
                                     text = formatted
-                                    return
                                 }
 
                                 cpfValid = root.validateCpf(numbers)
@@ -369,9 +379,9 @@ Item {
                             componentValid: root.validPassword
 
                             onTextChanged: {
-                                control.password = componentText
+                                control.password = text
                                 root.validPassword = root.verifyPassword(componentText)
-                                root.validConfirmPassword = fldConfirmPassword.componentText.length > 0 && fldConfirmPassword.componentText === componentText
+                                root.updatePasswordMatch()
                                 root.updateFormValidation()
                             }
                         }
@@ -396,7 +406,7 @@ Item {
                             componentValid: root.validConfirmPassword
 
                             onTextChanged: {
-                                root.validConfirmPassword = componentText.length > 0 && componentText === fldPassword.componentText
+                                root.updatePasswordMatch()
                                 root.updateFormValidation()
                             }
                         }
