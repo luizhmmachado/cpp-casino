@@ -41,7 +41,7 @@ Item {
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                spacing: 32
+                spacing: 16
 
                 Label {
                     width: parent.width
@@ -51,6 +51,11 @@ Item {
                     color: Colors.yellow200
 
                     horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item {
+                    width: 1
+                    height: 16
                 }
 
                 Column {
@@ -107,15 +112,22 @@ Item {
                     font: Fonts.secondaryText8bit
                 }
 
-                ComponentButton {
-                    id: btnLogin
+                Item {
+                    width: parent.width
+                    height: 64
 
-                    componentWidth: parent.width
-                    componentHeight: 48
-                    componentBtnText: qsTr( "[ ENTRAR ]" )
+                    ComponentButton {
+                        id: btnLogin
 
-                    onClicked: {
-                        control.authenticate()
+                        anchors.bottom: parent.bottom
+
+                        componentWidth: parent.width
+                        componentHeight: 48
+                        componentBtnText: qsTr( "[ ENTRAR ]" )
+
+                        onClicked: {
+                            control.authenticate()
+                        }
                     }
                 }
 

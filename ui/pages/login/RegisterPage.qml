@@ -186,7 +186,7 @@ Item {
                 id: formColumn
                 width: parent.width - 64
                 anchors.top: parent.top
-                anchors.topMargin: 32
+                anchors.topMargin: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 16
 
@@ -196,6 +196,11 @@ Item {
                     font: Fonts.title8bit
                     color: Colors.yellow200
                     horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item {
+                    width: 1
+                    height: 16
                 }
 
                 Column {
@@ -413,6 +418,11 @@ Item {
                     }
                 }
 
+                Item {
+                    width: 1
+                    height: 8
+                }
+
                 Rectangle {
                     id: rctPasswordRequirements
                     width: parent.width
@@ -463,6 +473,11 @@ Item {
                     font: Fonts.secondaryText8bit
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.WordWrap
+                }
+
+                Item {
+                    width: 1
+                    height: 8
                 }
 
                 ComponentButton {

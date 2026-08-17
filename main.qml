@@ -12,6 +12,7 @@ ApplicationWindow {
 
     property var loaderComponent: loginPage
     property bool blockReturn: true
+    property var nonReturnablePages: [loginPage, registerPage, startingPage]
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -19,7 +20,17 @@ ApplicationWindow {
     // @disable-check M16
     title: qsTr("Pixel Casino")
 
-    onLoaderComponentChanged: blockReturn = loaderComponent === startingPage
+    onLoaderComponentChanged: isNonReturnable()
+
+    function isNonReturnable() {
+        blockReturn = false
+        for (var i = 0; i < nonReturnablePages.length; i++) {
+            if (loaderComponent === nonReturnablePages[i]) {
+                blockReturn = true
+                break
+            }
+        }
+    }
 
     function _getPageTitle(){
         switch(loaderComponent){
@@ -37,6 +48,8 @@ ApplicationWindow {
     }
 
     function returnStartingPage() {
+        isNonReturnable()
+
         if ( blockReturn ){
             return
         }
@@ -128,7 +141,7 @@ ApplicationWindow {
         Loader {
             id: contentLoader
             width: parent.width
-            height: parent.height - header.height
+            height: parent.height - header.height - footer.height
 
             sourceComponent: loaderComponent
 
@@ -258,6 +271,10 @@ ApplicationWindow {
         RegisterPage{
             onSuccess: function(balance) {
                 loaderComponent = startingPage
+            }
+
+            onLogin: {
+                loaderComponent = loginPage
             }
         }
     }
