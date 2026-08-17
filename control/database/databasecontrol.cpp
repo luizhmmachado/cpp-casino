@@ -23,25 +23,17 @@ void DataBaseControl::insert() {
         return;
     }
 
-    QJsonObject user;
-
-    user[ "name" ] = _name;
-    user[ "email" ] = _email;
-    user[ "password" ] = passwordHash;
-    user[ "birth_date" ] = _birthDt;
-    user[ "balance" ] = 0.0;
-
-    if ( !_cpf.isEmpty() ) {
-        user[ "cpf" ] = _cpf;
-    } else {
-        user[ "cpf" ] = QJsonValue::Null;
-    }
-
-    _requestType = RequestType::Insert;
+    _requestType = RequestType::CheckDuplicate;
 
     emit showLoading( true );
 
-    _supabaseApi.post( "users", user );
+    QString endpoint = "users?select=id&email=eq." + _email;
+    
+    if ( !_cpf.isEmpty() ) {
+        endpoint = "users?select=id&or=(email.eq." + _email + ",cpf.eq." + _cpf + ")";
+    }
+
+    _supabaseApi.get( endpoint );
 }
 
 void DataBaseControl::authenticate() {
@@ -63,6 +55,47 @@ void DataBaseControl::authenticate() {
 void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
     qInfo() << "DataBaseControl::handleRequestFinished";
+
+    if ( _requestType == RequestType::CheckDuplicate ) {
+
+        _requestType = RequestType::None;
+
+        emit showLoading( false );
+
+        if ( response.isArray() && !response.array().isEmpty() ) {
+
+            qInfo() << "DataBaseControl::handleRequestFinished E-mail ou CPF já registrado.";
+
+            emit fail( "E-mail ou CPF já registrado no sistema." );
+
+            return;
+        }
+
+        // Prosseguir com o insert
+        const QString passwordHash = hashPassword( _password );
+
+        QJsonObject user;
+
+        user[ "name" ] = _name;
+        user[ "email" ] = _email;
+        user[ "password" ] = passwordHash;
+        user[ "birth_date" ] = _birthDt;
+        user[ "balance" ] = 0.0;
+
+        if ( !_cpf.isEmpty() ) {
+            user[ "cpf" ] = _cpf;
+        } else {
+            user[ "cpf" ] = QJsonValue::Null;
+        }
+
+        _requestType = RequestType::Insert;
+
+        emit showLoading( true );
+
+        _supabaseApi.post( "users", user );
+
+        return;
+    }
 
     if ( _requestType == RequestType::Authenticate ) {
 
@@ -155,6 +188,11 @@ void DataBaseControl::handleRequestFailed( const QString& error ) {
 
     if ( requestType == RequestType::Authenticate ) {
         emit fail( "E-mail ou senha inválidos." );
+        return;
+    }
+
+    if ( requestType == RequestType::CheckDuplicate ) {
+        emit fail( "E-mail ou CPF já registrado no sistema." );
         return;
     }
 
