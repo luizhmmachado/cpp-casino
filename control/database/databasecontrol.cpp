@@ -28,7 +28,7 @@ void DataBaseControl::insert() {
     emit showLoading( true );
 
     QString endpoint = "users?select=id&email=eq." + _email;
-    
+
     if ( !_cpf.isEmpty() ) {
         endpoint = "users?select=id&or=(email.eq." + _email + ",cpf.eq." + _cpf + ")";
     }
@@ -71,7 +71,6 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
             return;
         }
 
-        // Prosseguir com o insert
         const QString passwordHash = hashPassword( _password );
 
         QJsonObject user;

@@ -149,13 +149,11 @@ Item {
 
         validAge = false
 
-        // Try to validate with current values, even if not complete
         if (dayText.length > 0 && monthText.length > 0 && yearText.length > 0) {
             var dayNum = parseInt(dayText)
             var monthNum = parseInt(monthText)
             var yearNum = parseInt(yearText)
 
-            // Only validate if we have valid numbers
             if (!isNaN(dayNum) && !isNaN(monthNum) && !isNaN(yearNum)) {
                 day = dayNum
                 month = monthNum
