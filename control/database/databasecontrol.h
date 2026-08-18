@@ -43,7 +43,7 @@ signals:
     void birthDtChanged();
     void nameChanged();
     void showLoading( bool show );
-    void success( const QString& formattedBalance );
+    void success( const QString& formattedBalance, const QString& userName );
     void fail( const QString& msg );
 
 private slots:
@@ -60,10 +60,8 @@ private:
 
     SupabaseApi _supabaseApi;
 
-    bool verifyPassword(
-        const QString& password,
-        const QString& passwordHash
-        ) const;
+    bool verifyPassword( const QString& password, const QString& passwordHash ) const;
+    QString normalizeUserName( const QString& fullName ) const;
 
     QString hashPassword( const QString& password ) const;
 

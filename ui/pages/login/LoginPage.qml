@@ -10,7 +10,49 @@ Item {
     id: root
 
     signal register
-    signal success( var balance )
+    signal success( var balance, string userName )
+
+    property bool updatingIdentifier: false
+
+    function validateCpf(cpf) {
+        var numbers = cpf.replace(/\D/g, "")
+
+        if (numbers.length !== 11)
+            return false
+
+        if (/^(\d)\1{10}$/.test(numbers))
+            return false
+
+        var sum = 0
+
+        for (var i = 0; i < 9; i++)
+            sum += parseInt(numbers.charAt(i)) * (10 - i)
+
+        var remainder = sum % 11
+        var digit1 = remainder < 2 ? 0 : 11 - remainder
+
+        if (digit1 !== parseInt(numbers.charAt(9)))
+            return false
+
+        sum = 0
+
+        for (var j = 0; j < 10; j++)
+            sum += parseInt(numbers.charAt(j)) * (11 - j)
+
+        remainder = sum % 11
+        var digit2 = remainder < 2 ? 0 : 11 - remainder
+
+        return digit2 === parseInt(numbers.charAt(10))
+    }
+
+    function formatCpf(cpf) {
+        var numbers = cpf.replace(/\D/g, "")
+
+        if (numbers.length !== 11)
+            return cpf
+
+        return numbers.substring(0, 3) + "." + numbers.substring(3, 6) + "." + numbers.substring(6, 9) + "-" + numbers.substring(9, 11)
+    }
 
     anchors.fill: parent
 
@@ -64,19 +106,37 @@ Item {
                     spacing: 8
 
                     Text {
-                        text: qsTr( "E-MAIL:" )
+                        text: qsTr( "E-MAIL / USUÁRIO / CPF:" )
                         font: Fonts.text8bit
                         color: Colors.yellow200
                     }
 
                     ComponentField {
+                        id: fldIdentifier
                         componentWidth: parent.width
-                        componentValidator: RegularExpressionValidator {
-                            regularExpression:
-                                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/
-                        }
 
-                        onTextChanged: control.email = text
+                        onTextChanged: {
+                            if (root.updatingIdentifier) {
+                                control.email = text
+                                return
+                            }
+
+                            var typedText = text
+                            var cpfDigits = typedText.replace(/\D/g, "")
+
+                            if (cpfDigits.length === 11 && root.validateCpf(cpfDigits)) {
+                                var maskedCpf = root.formatCpf(cpfDigits)
+
+                                if (maskedCpf !== typedText) {
+                                    root.updatingIdentifier = true
+                                    text = maskedCpf
+                                    root.updatingIdentifier = false
+                                    typedText = maskedCpf
+                                }
+                            }
+
+                            control.email = typedText
+                        }
                     }
 
                 }
@@ -164,7 +224,7 @@ Item {
         }
 
         onSuccess: {
-            root.success( formattedBalance )
+            root.success( formattedBalance, userName )
         }
 
         onFail: {
