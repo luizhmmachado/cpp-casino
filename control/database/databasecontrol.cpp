@@ -1,6 +1,7 @@
 #include "databasecontrol.h"
 
 #include <QDebug>
+#include <QDateTime>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -67,12 +68,56 @@ void DataBaseControl::authenticate() {
         filters << "cpf.eq." + cpfIdentifier;
     }
 
-    const QString endpoint = "users?or=(" + filters.join( "," ) + ")&select=password,balance,user";
+    const QString endpoint = "users?or=(" + filters.join( "," ) + ")&select=password,balance,user,creation_date,cpf,email,birth_date";
+
+    _supabaseApi.get( endpoint );
+}
+
+void DataBaseControl::validateSession( const QString& userName ) {
+
+    const QString normalizedUserName = userName.trimmed().toLower();
+
+    if ( normalizedUserName.isEmpty() ) {
+        emit sessionValidated( false, "", "", "", "", "", "" );
+        return;
+    }
+
+    _requestType = RequestType::ValidateSession;
+
+    const QString encodedUser = QString::fromUtf8( QUrl::toPercentEncoding( normalizedUserName ) );
+    const QString endpoint = "users?user=eq." + encodedUser + "&select=user,balance,creation_date,cpf,email,birth_date&limit=1";
 
     _supabaseApi.get( endpoint );
 }
 
 void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
+
+    auto toProfileDate = []( const QJsonObject& user ) {
+        const QString rawDate = user.value( "creation_date" ).toString();
+
+        if ( rawDate.isEmpty() ) {
+            return QString();
+        }
+
+        QDateTime parsedDate = QDateTime::fromString( rawDate, Qt::ISODateWithMs );
+
+        if ( !parsedDate.isValid() ) {
+            parsedDate = QDateTime::fromString( rawDate, Qt::ISODate );
+        }
+
+        if ( parsedDate.isValid() ) {
+            return parsedDate.date().toString( "dd/MM/yyyy" );
+        }
+
+        return rawDate;
+    };
+
+    auto toBirthDate = []( const QJsonObject& user ) {
+        const QString rawDate = user.value( "birth_date" ).toString();
+        const QDate parsedDate = QDate::fromString( rawDate, "yyyy-MM-dd" );
+
+        return parsedDate.isValid() ? parsedDate.toString( "dd/MM/yyyy" ) : rawDate;
+    };
 
     qInfo() << "DataBaseControl::handleRequestFinished";
 
@@ -157,6 +202,10 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
         const double balance = user.value( "balance" ).toDouble();
         const QString userName = user.value( "user" ).toString();
+        const QString creationDate = toProfileDate( user );
+        const QString cpf = user.value( "cpf" ).toString();
+        const QString email = user.value( "email" ).toString();
+        const QString birthDate = toBirthDate( user );
 
         _password.clear();
 
@@ -164,7 +213,35 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
         qInfo() << "DataBaseControl::handleRequestFinished Usuário autenticado com sucesso.";
 
-        emit success( QLocale::system().toCurrencyString( balance ), userName );
+        emit success( QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate );
+
+        return;
+    }
+
+    if ( _requestType == RequestType::ValidateSession ) {
+
+        _requestType = RequestType::None;
+
+        if ( !response.isArray() || response.array().isEmpty() ) {
+            emit sessionValidated( false, "", "", "", "", "", "" );
+            return;
+        }
+
+        const QJsonObject user = response.array().first().toObject();
+        const QString userName = user.value( "user" ).toString();
+
+        if ( userName.isEmpty() ) {
+            emit sessionValidated( false, "", "", "", "", "", "" );
+            return;
+        }
+
+        const double balance = user.value( "balance" ).toDouble();
+        const QString creationDate = toProfileDate( user );
+        const QString cpf = user.value( "cpf" ).toString();
+        const QString email = user.value( "email" ).toString();
+        const QString birthDate = toBirthDate( user );
+
+        emit sessionValidated( true, QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate );
 
         return;
     }
@@ -179,7 +256,13 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
             qInfo() << "DataBaseControl::handleRequestFinished Usuário cadastrado com sucesso.";
 
-            emit success( QLocale::system().toCurrencyString( 0.00 ), normalizeUserName( _name ) );
+            const QJsonObject insertedUser = response.array().first().toObject();
+            const QString creationDate = toProfileDate( insertedUser );
+            const QString cpf = insertedUser.value( "cpf" ).toString();
+            const QString email = insertedUser.value( "email" ).toString();
+            const QString birthDate = toBirthDate( insertedUser );
+
+            emit success( QLocale::system().toCurrencyString( 0.00 ), normalizeUserName( _name ), creationDate, cpf, email, birthDate );
 
             return;
         }
@@ -227,6 +310,11 @@ void DataBaseControl::handleRequestFailed( const QString& error ) {
         }
 
         emit fail( error );
+        return;
+    }
+
+    if ( requestType == RequestType::ValidateSession ) {
+        emit sessionValidated( false, "", "", "", "", "", "" );
         return;
     }
 

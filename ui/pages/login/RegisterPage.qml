@@ -11,7 +11,7 @@ Item {
     anchors.fill: parent
 
     signal login
-    signal success(var balance, string userName)
+    signal success(var balance, string userName, string creationDate, string userCpf, string userEmail, string birthDate)
 
     property int day: -1
     property int month: -1
@@ -524,7 +524,7 @@ Item {
         }
 
         onSuccess: {
-            root.success(formattedBalance, userName)
+            root.success(formattedBalance, userName, creationDate, cpf, email, birthDate)
         }
 
         onFail: {

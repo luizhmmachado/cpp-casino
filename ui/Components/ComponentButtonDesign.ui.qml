@@ -18,6 +18,7 @@ Rectangle {
     property string componentBorderColor: Colors.secondary
     property string componentBorderColorOnHovered: Colors.yellow100
     property string componentTextColor: Colors.textColor
+    property string componentTextColorOnHovered: Colors.yellow100
     property string componentTextFont: Fonts.text8bit
     property string componentBtnText: ""
     property bool containsMouse: mouseAreaBtn.containsMouse

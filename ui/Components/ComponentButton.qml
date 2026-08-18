@@ -18,7 +18,21 @@ ComponentButtonDesign {
         return componentBorderColor
     }
 
+    function textColor() {
+        if( !enableHover ){
+            return componentTextColor
+        }
+
+        if( containsMouse ){
+            return componentTextColorOnHovered
+        }
+
+        return componentTextColor
+    }
+
     mouseAreaBtn.onClicked: root.clicked()
     mouseAreaBtn.onContainsMouseChanged: root.hovered()
+
     componentButton.border.color: borderColor()
+    btnText.color: textColor()
 }

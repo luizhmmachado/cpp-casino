@@ -14,6 +14,7 @@ Rectangle {
     property bool hover: true
 
     property alias mouseAreaCard: mouseAreaCard
+    property alias rctButton: rctButton
 
     border.width: 2
     border.color: hover ? Colors.secondary : Colors.yellow100

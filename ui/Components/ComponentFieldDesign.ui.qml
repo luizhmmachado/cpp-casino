@@ -4,8 +4,6 @@ import Colors 1.0
 import Fonts 1.0
 
 TextField {
-    id: fldPassword
-
     property string componentText: text
     property string componentPlaceholder: ""
     property color componentTextColor: Colors.secondaryGreen
@@ -28,7 +26,7 @@ TextField {
     background: Rectangle {
         radius: 5
         border.width: 2
-        border.color: fldPassword.borderColor
+        border.color: borderColor
         color: Colors.background
     }
 }

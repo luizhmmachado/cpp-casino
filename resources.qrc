@@ -17,5 +17,6 @@
         <file>images/icons/horserace.svg</file>
         <file>images/icons/profile.svg</file>
         <file>images/icons/menu.svg</file>
+        <file>images/icons/edit.svg</file>
     </qresource>
 </RCC>

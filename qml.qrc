@@ -30,5 +30,14 @@
         <file>ui/Components/ComponentTitle.qml</file>
         <file>ui/Components/ComponentFieldDesign.ui.qml</file>
         <file>ui/Components/ComponentField.qml</file>
+        <file>ui/pages/profile/ProfilePage.qml</file>
+        <file>ui/pages/profile/ProfilePageDesign.ui.qml</file>
+        <file>ui/pages/profile/qmldir</file>
+        <file>ui/pages/profile/ProfileCardDesign.ui.qml</file>
+        <file>ui/pages/profile/ProfileCard.qml</file>
+        <file>ui/pages/profile/ProfilePageBalanceDesign.ui.qml</file>
+        <file>ui/pages/profile/ProfilePageBalance.qml</file>
+        <file>ui/pages/profile/ProfilePageDataDesign.ui.qml</file>
+        <file>ui/pages/profile/ProfilePageData.qml</file>
     </qresource>
 </RCC>

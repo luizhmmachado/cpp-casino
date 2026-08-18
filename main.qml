@@ -1,12 +1,14 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Qt.labs.settings 1.1
+import DataBaseControl 1.0
 import Colors 1.0
 import Fonts 1.0
 import pages.blackjack 1.0
 import pages.horserace 1.0
 import pages.login 1.0
 import pages.startingpage 1.0
+import pages.profile 1.0
 
 ApplicationWindow {
     id: root
@@ -17,6 +19,10 @@ ApplicationWindow {
     property var nonReturnablePages: [loginPage, registerPage, startingPage]
     property string userName: ""
     property string userBalance: ""
+    property string userCreationDate: ""
+    property string userCpf: ""
+    property string userEmail: ""
+    property string userBirthDate: ""
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -30,24 +36,35 @@ ApplicationWindow {
         sessionSettings.loggedIn = true
         sessionSettings.userName = root.userName
         sessionSettings.userBalance = root.userBalance
+        sessionSettings.userCreationDate = root.userCreationDate
+        sessionSettings.userCpf = root.userCpf
+        sessionSettings.userEmail = root.userEmail
+        sessionSettings.userBirthDate = root.userBirthDate
     }
 
     function restoreSession() {
-        if (!sessionSettings.loggedIn)
+        if (!sessionSettings.loggedIn) {
             return
+        }
 
-        root.userName = sessionSettings.userName
-        root.userBalance = sessionSettings.userBalance
-        loaderComponent = startingPage
+        sessionValidator.validateSession(sessionSettings.userName)
     }
 
     function signOut() {
         sessionSettings.loggedIn = false
         sessionSettings.userName = ""
         sessionSettings.userBalance = ""
+        sessionSettings.userCreationDate = ""
+        sessionSettings.userCpf = ""
+        sessionSettings.userEmail = ""
+        sessionSettings.userBirthDate = ""
 
         root.userName = ""
         root.userBalance = ""
+        root.userCreationDate = ""
+        root.userCpf = ""
+        root.userEmail = ""
+        root.userBirthDate = ""
         loaderComponent = loginPage
     }
 
@@ -73,6 +90,8 @@ ApplicationWindow {
             return  qsTr( "Login" )
         case registerPage:
             return  qsTr( "Cadastro" )
+        case profilePage:
+            return qsTr( "Perfil" )
         }
     }
 
@@ -95,6 +114,30 @@ ApplicationWindow {
         property bool loggedIn: false
         property string userName: ""
         property string userBalance: ""
+        property string userCreationDate: ""
+        property string userCpf: ""
+        property string userEmail: ""
+        property string userBirthDate: ""
+    }
+
+    DataBaseControl {
+        id: sessionValidator
+
+        onSessionValidated: function(isValid, formattedBalance, userName, creationDate, cpf, email, birthDate) {
+            if (!isValid) {
+                signOut()
+                return
+            }
+
+            root.userName = userName
+            root.userBalance = formattedBalance
+            root.userCreationDate = creationDate
+            root.userCpf = cpf
+            root.userEmail = email
+            root.userBirthDate = birthDate
+            saveSession()
+            loaderComponent = startingPage
+        }
     }
 
     Column {
@@ -129,27 +172,40 @@ ApplicationWindow {
                     leftMargin: 32
                 }
 
-                Image {
-                    id: imgProfile
+                Row {
+                    id: rowProfile
 
-                    source: "qrc:/resources/images/icons/profile.svg"
-                    width: 32
-                    height: 32
-                    anchors {
-                        left: parent.left
-                        verticalCenter: parent.verticalCenter
+                    spacing: 8
+                    anchors.fill: parent
+
+                    Image {
+                        id: imgProfile
+
+                        source: "qrc:/resources/images/icons/profile.svg"
+                        width: 32
+                        height: 32
+                        anchors {
+                            left: parent.left
+                            verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    Text {
+                        text: userName
+                        font: Fonts.secondaryText8bit
+                        color: Colors.textColor
+                        anchors {
+                            leftMargin: 8
+                            left: imgProfile.right
+                            verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
 
-                Text {
-                    text: userName
-                    font: Fonts.secondaryText8bit
-                    color: Colors.textColor
-                    anchors {
-                        leftMargin: 8
-                        left: imgProfile.right
-                        verticalCenter: parent.verticalCenter
-                    }
+                MouseArea {
+                    anchors.fill: rowProfile
+
+                    onClicked: loaderComponent = profilePage
                 }
 
                 Text {
@@ -266,6 +322,21 @@ ApplicationWindow {
     }
 
     Component {
+        id: profilePage
+
+        ProfilePage {
+            userName: root.userName
+            userCreationDate: root.userCreationDate
+            userBalance: root.userBalance
+            userCpf: root.userCpf
+            userEmail: root.userEmail
+            userBirthDate: root.userBirthDate
+
+            onSignOut: signOut()
+        }
+    }
+
+    Component {
         id: horseracePage
 
         HorseRaceMain{
@@ -296,9 +367,13 @@ ApplicationWindow {
 
         LoginPage{
             onRegister: loaderComponent = registerPage
-            onSuccess: function(balance, userName) {
+            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate) {
                 root.userBalance = balance
                 root.userName = userName
+                root.userCreationDate = creationDate
+                root.userCpf = cpf
+                root.userEmail = email
+                root.userBirthDate = birthDate
                 saveSession()
                 loaderComponent = startingPage
             }
@@ -309,10 +384,14 @@ ApplicationWindow {
         id: registerPage
 
         RegisterPage{
-            onSuccess: function(balance, userName) {
+            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate) {
                 loaderComponent = startingPage
                 root.userBalance = balance
                 root.userName = userName
+                root.userCreationDate = creationDate
+                root.userCpf = cpf
+                root.userEmail = email
+                root.userBirthDate = birthDate
                 saveSession()
             }
 
