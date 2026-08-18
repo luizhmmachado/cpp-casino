@@ -3,6 +3,9 @@ import Colors 1.0
 import Fonts 1.0
 
 Rectangle {
+    id: componentButton
+
+    property alias componentButton: componentButton
     property alias mouseAreaBtn: mouseAreaBtn
     property alias btnText: btnText
 
@@ -13,16 +16,17 @@ Rectangle {
     property string componentEnabledColor: Colors.secondary
     property string componentDisabledColor: Colors.background
     property string componentBorderColor: Colors.secondary
+    property string componentBorderColorOnHovered: Colors.yellow100
     property string componentTextColor: Colors.textColor
     property string componentTextFont: Fonts.text8bit
     property string componentBtnText: ""
     property bool containsMouse: mouseAreaBtn.containsMouse
+    property bool enableHover: true
 
     radius: componentRadius
     width: componentWidth
     height: componentHeight
     color: enabled ? componentEnabledColor : componentDisabledColor
-    border.color: componentBorderColor
     border.width: componentBorderWidth
 
     Text {

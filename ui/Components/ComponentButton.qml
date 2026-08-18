@@ -6,6 +6,19 @@ ComponentButtonDesign {
     signal clicked()
     signal hovered()
 
+    function borderColor() {
+        if( !enableHover ){
+            return componentBorderColor
+        }
+
+        if( containsMouse ){
+            return componentBorderColorOnHovered
+        }
+
+        return componentBorderColor
+    }
+
     mouseAreaBtn.onClicked: root.clicked()
     mouseAreaBtn.onContainsMouseChanged: root.hovered()
+    componentButton.border.color: borderColor()
 }
