@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt.labs.settings 1.1
 import Colors 1.0
 import Fonts 1.0
 import pages.blackjack 1.0
@@ -24,6 +25,31 @@ ApplicationWindow {
     title: qsTr("Pixel Casino")
 
     onLoaderComponentChanged: isNonReturnable()
+
+    function saveSession() {
+        sessionSettings.loggedIn = true
+        sessionSettings.userName = root.userName
+        sessionSettings.userBalance = root.userBalance
+    }
+
+    function restoreSession() {
+        if (!sessionSettings.loggedIn)
+            return
+
+        root.userName = sessionSettings.userName
+        root.userBalance = sessionSettings.userBalance
+        loaderComponent = startingPage
+    }
+
+    function signOut() {
+        sessionSettings.loggedIn = false
+        sessionSettings.userName = ""
+        sessionSettings.userBalance = ""
+
+        root.userName = ""
+        root.userBalance = ""
+        loaderComponent = loginPage
+    }
 
     function isNonReturnable() {
         blockReturn = false
@@ -58,6 +84,17 @@ ApplicationWindow {
         }
 
         loaderComponent = startingPage
+    }
+
+    Component.onCompleted: {
+        restoreSession()
+    }
+
+    Settings {
+        id: sessionSettings
+        property bool loggedIn: false
+        property string userName: ""
+        property string userBalance: ""
     }
 
     Column {
@@ -262,6 +299,7 @@ ApplicationWindow {
             onSuccess: function(balance, userName) {
                 root.userBalance = balance
                 root.userName = userName
+                saveSession()
                 loaderComponent = startingPage
             }
         }
@@ -275,6 +313,7 @@ ApplicationWindow {
                 loaderComponent = startingPage
                 root.userBalance = balance
                 root.userName = userName
+                saveSession()
             }
 
             onLogin: {
