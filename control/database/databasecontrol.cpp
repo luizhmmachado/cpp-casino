@@ -4,6 +4,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRegularExpression>
+#include <QUrl>
 
 #include <sodium.h>
 
@@ -27,10 +29,12 @@ void DataBaseControl::insert() {
 
     emit showLoading( true );
 
-    QString endpoint = "users?select=id&email=eq." + _email;
+    const QString userName = normalizeUserName( _name );
+
+    QString endpoint = "users?select=id&or=(email.eq." + _email + ",user.eq." + userName + ")";
 
     if ( !_cpf.isEmpty() ) {
-        endpoint = "users?select=id&or=(email.eq." + _email + ",cpf.eq." + _cpf + ")";
+        endpoint = "users?select=id&or=(email.eq." + _email + ",cpf.eq." + _cpf + ",user.eq." + userName + ")";
     }
 
     _supabaseApi.get( endpoint );
@@ -39,7 +43,7 @@ void DataBaseControl::insert() {
 void DataBaseControl::authenticate() {
 
     if ( _email.isEmpty() || _password.isEmpty() ) {
-        emit fail( "E-mail e senha são obrigatórios." );
+        emit fail( "E-mail, usuário ou CPF e senha são obrigatórios." );
         return;
     }
 
@@ -47,7 +51,23 @@ void DataBaseControl::authenticate() {
 
     emit showLoading( true );
 
-    const QString endpoint = "users?email=eq." + _email + "&select=password,balance";
+    const QString loginIdentifier = _email.trimmed();
+    QString cpfIdentifier = loginIdentifier;
+    cpfIdentifier.remove( QRegularExpression( "\\D+" ) );
+
+    const QString encodedIdentifier = QString::fromUtf8( QUrl::toPercentEncoding( loginIdentifier ) );
+    const QString encodedUserIdentifier = QString::fromUtf8( QUrl::toPercentEncoding( loginIdentifier.toLower() ) );
+
+    QStringList filters;
+
+    filters << "email.eq." + encodedIdentifier;
+    filters << "user.eq." + encodedUserIdentifier;
+
+    if ( !cpfIdentifier.isEmpty() ) {
+        filters << "cpf.eq." + cpfIdentifier;
+    }
+
+    const QString endpoint = "users?or=(" + filters.join( "," ) + ")&select=password,balance,user";
 
     _supabaseApi.get( endpoint );
 }
@@ -72,10 +92,12 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
         }
 
         const QString passwordHash = hashPassword( _password );
+        const QString userName = normalizeUserName( _name );
 
         QJsonObject user;
 
         user[ "name" ] = _name;
+        user[ "user" ] = userName;
         user[ "email" ] = _email;
         user[ "password" ] = passwordHash;
         user[ "birth_date" ] = _birthDt;
@@ -134,6 +156,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
         }
 
         const double balance = user.value( "balance" ).toDouble();
+        const QString userName = user.value( "user" ).toString();
 
         _password.clear();
 
@@ -141,7 +164,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
         qInfo() << "DataBaseControl::handleRequestFinished Usuário autenticado com sucesso.";
 
-        emit success( QLocale::system().toCurrencyString( balance ) );
+        emit success( QLocale::system().toCurrencyString( balance ), userName );
 
         return;
     }
@@ -156,7 +179,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
             qInfo() << "DataBaseControl::handleRequestFinished Usuário cadastrado com sucesso.";
 
-            emit success( QLocale::system().toCurrencyString( 0.00 ) );
+            emit success( QLocale::system().toCurrencyString( 0.00 ), normalizeUserName( _name ) );
 
             return;
         }
@@ -191,11 +214,18 @@ void DataBaseControl::handleRequestFailed( const QString& error ) {
     }
 
     if ( requestType == RequestType::CheckDuplicate ) {
-        emit fail( "E-mail ou CPF já registrado no sistema." );
+        emit fail( "E-mail, CPF ou usuário já registrado no sistema." );
         return;
     }
 
     if ( requestType == RequestType::Insert ) {
+        const QString lowerError = error.toLower();
+
+        if ( lowerError.contains( "duplicate key" ) || lowerError.contains( "unique constraint" ) || lowerError.contains( "23505" ) ) {
+            emit fail( "E-mail, CPF ou usuário já registrado no sistema." );
+            return;
+        }
+
         emit fail( error );
         return;
     }
@@ -219,6 +249,16 @@ bool DataBaseControl::verifyPassword( const QString& password, const QString& pa
     sodium_memzero( passwordData.data(), static_cast<size_t>( passwordData.size() ) );
 
     return result == 0;
+}
+
+QString DataBaseControl::normalizeUserName( const QString& fullName ) const {
+
+    QString userName = fullName;
+
+    userName = userName.toLower();
+    userName.remove( QRegularExpression( "\\s+" ) );
+
+    return userName;
 }
 
 QString DataBaseControl::hashPassword( const QString& password ) const {

@@ -11,7 +11,7 @@ Item {
     anchors.fill: parent
 
     signal login
-    signal success(var balance)
+    signal success(var balance, string userName)
 
     property int day: -1
     property int month: -1
@@ -132,7 +132,7 @@ Item {
     }
 
     function updateFormValidation() {
-        root.validName = fldName.componentText.trim().length >= 8
+        root.validName = fldName.componentText.trim().length >= 8 && fldName.acceptableInput
         root.validEmail = fldEmail.componentText.length > 0 && fldEmail.acceptableInput
         root.validCpf = root.validateCpf(fldCpf.text.replace(/\D/g, ""))
         root.validAge = root.validateBirthDate(root.day, root.month, root.year)
@@ -186,7 +186,7 @@ Item {
                 id: formColumn
                 width: parent.width - 64
                 anchors.top: parent.top
-                anchors.topMargin: 32
+                anchors.topMargin: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 16
 
@@ -196,6 +196,11 @@ Item {
                     font: Fonts.title8bit
                     color: Colors.yellow200
                     horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item {
+                    width: 1
+                    height: 16
                 }
 
                 Column {
@@ -212,7 +217,7 @@ Item {
                         id: fldName
                         componentWidth: parent.width
                         componentPlaceholder: qsTr("DIGITE SEU NOME")
-                        componentValidator: RegularExpressionValidator { regularExpression: /.{8,}/ }
+                        componentValidator: RegularExpressionValidator { regularExpression: /^(?=.*[A-Za-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/ }
                         componentValid: validName
 
                         onTextChanged: {
@@ -413,6 +418,11 @@ Item {
                     }
                 }
 
+                Item {
+                    width: 1
+                    height: 8
+                }
+
                 Rectangle {
                     id: rctPasswordRequirements
                     width: parent.width
@@ -453,6 +463,11 @@ Item {
                             }
                         }
                     }
+                }
+
+                Item {
+                    width: 1
+                    height: 8
                 }
 
                 Text {
@@ -503,12 +518,13 @@ Item {
         onShowLoading: {
             btnRegister.enabled = !show && validName && validEmail && validCpf && validAge && validPassword && validConfirmPassword
 
-            if (show)
+            if (show){
                 txtError.visible = false
+            }
         }
 
         onSuccess: {
-            root.success(formattedBalance)
+            root.success(formattedBalance, userName)
         }
 
         onFail: {

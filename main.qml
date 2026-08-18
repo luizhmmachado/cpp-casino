@@ -12,6 +12,10 @@ ApplicationWindow {
 
     property var loaderComponent: loginPage
     property bool blockReturn: true
+    property bool isLoginOrRegisterPage: loaderComponent === loginPage || loaderComponent === registerPage
+    property var nonReturnablePages: [loginPage, registerPage, startingPage]
+    property string userName: ""
+    property string userBalance: ""
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -19,7 +23,17 @@ ApplicationWindow {
     // @disable-check M16
     title: qsTr("Pixel Casino")
 
-    onLoaderComponentChanged: blockReturn = loaderComponent === startingPage
+    onLoaderComponentChanged: isNonReturnable()
+
+    function isNonReturnable() {
+        blockReturn = false
+        for (var i = 0; i < nonReturnablePages.length; i++) {
+            if (loaderComponent === nonReturnablePages[i]) {
+                blockReturn = true
+                break
+            }
+        }
+    }
 
     function _getPageTitle(){
         switch(loaderComponent){
@@ -37,6 +51,8 @@ ApplicationWindow {
     }
 
     function returnStartingPage() {
+        isNonReturnable()
+
         if ( blockReturn ){
             return
         }
@@ -53,6 +69,7 @@ ApplicationWindow {
             width: parent.width
             height: 60
             color: Colors.primary
+            visible: !isLoginOrRegisterPage
 
             anchors.top: parent.top
 
@@ -88,8 +105,7 @@ ApplicationWindow {
                 }
 
                 Text {
-                    // todo alterar para o nome do usuario
-                    text: qsTr("JOGADOR_99")
+                    text: userName
                     font: Fonts.secondaryText8bit
                     color: Colors.textColor
                     anchors {
@@ -112,8 +128,7 @@ ApplicationWindow {
                 Text {
                     id: txtBalance
 
-                    // todo alterar para saldo do usuario
-                    text: qsTr("R$ 15.420,00")
+                    text: userBalance
                     font: Fonts.secondaryText8bit
                     color: Colors.yellow100
                     anchors {
@@ -128,11 +143,11 @@ ApplicationWindow {
         Loader {
             id: contentLoader
             width: parent.width
-            height: parent.height - header.height
+            height: isLoginOrRegisterPage ? (parent.height - footer.height) : (parent.height - header.height - footer.height)
 
             sourceComponent: loaderComponent
 
-            anchors.top: header.bottom
+            anchors.top: isLoginOrRegisterPage ? parent.top : header.bottom
         }
 
         Rectangle {
@@ -154,8 +169,6 @@ ApplicationWindow {
                 color: Colors.secondary
             }
         }
-
-
 
         Text {
             text: _getPageTitle()
@@ -246,7 +259,9 @@ ApplicationWindow {
 
         LoginPage{
             onRegister: loaderComponent = registerPage
-            onSuccess: function(balance) {
+            onSuccess: function(balance, userName) {
+                root.userBalance = balance
+                root.userName = userName
                 loaderComponent = startingPage
             }
         }
@@ -256,8 +271,14 @@ ApplicationWindow {
         id: registerPage
 
         RegisterPage{
-            onSuccess: function(balance) {
+            onSuccess: function(balance, userName) {
                 loaderComponent = startingPage
+                root.userBalance = balance
+                root.userName = userName
+            }
+
+            onLogin: {
+                loaderComponent = loginPage
             }
         }
     }
