@@ -35,6 +35,7 @@ public:
 public slots:
     void insert();
     void authenticate();
+    void validateSession( const QString& userName );
 
 signals:
     void emailChanged();
@@ -43,7 +44,8 @@ signals:
     void birthDtChanged();
     void nameChanged();
     void showLoading( bool show );
-    void success( const QString& formattedBalance, const QString& userName );
+    void success( const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate );
+    void sessionValidated( bool isValid, const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate );
     void fail( const QString& msg );
 
 private slots:
@@ -55,7 +57,8 @@ private:
         None,
         Insert,
         Authenticate,
-        CheckDuplicate
+        CheckDuplicate,
+        ValidateSession
     };
 
     SupabaseApi _supabaseApi;

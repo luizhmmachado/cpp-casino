@@ -17,4 +17,10 @@ StartingPageGameCardDesign {
 
         hover = true
     }
+
+    rctButton.onHovered: {
+        hover = !rctButton.mouseAreaBtn.containsMouse
+    }
+
+    rctButton.onClicked: root.clicked()
 }

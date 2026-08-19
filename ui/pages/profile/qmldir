@@ -1,0 +1,10 @@
+module pages.profile
+
+ProfilePage 1.0 ProfilePage.qml
+ProfilePageDesign 1.0 ProfilePageDesign.ui.qml
+ProfileCard 1.0 ProfileCard.qml
+ProfileCardDesign 1.0 ProfileCardDesign.ui.qml
+ProfilePageBalance.ui.qml 1.0 ProfilePageBalance.qml
+ProfilePageBalanceDesign 1.0 ProfilePageBalanceDesign.ui.qml
+ProfilePageData 1.0 ProfilePageData.qml
+ProfilePageDataDesign 1.0 ProfilePageDataDesign.ui.qml

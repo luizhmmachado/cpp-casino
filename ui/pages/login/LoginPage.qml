@@ -10,7 +10,7 @@ Item {
     id: root
 
     signal register
-    signal success( var balance, string userName )
+    signal success( var balance, string userName, string creationDate, string userCpf, string userEmail, string birthDate )
 
     property bool updatingIdentifier: false
 
@@ -114,6 +114,7 @@ Item {
                     ComponentField {
                         id: fldIdentifier
                         componentWidth: parent.width
+                        componentValid: text.length > 0
 
                         onTextChanged: {
                             if (root.updatingIdentifier) {
@@ -153,11 +154,13 @@ Item {
                     }
 
                     ComponentField {
+                        id: fldPassword
                         componentWidth: parent.width
                         componentEchoMode: TextInput.Password
                         componentValidator: RegularExpressionValidator {
                             regularExpression: /.{8,20}/
                         }
+                        componentValid: text.length > 0 && acceptableInput
 
                         onTextChanged: control.password = text
                     }
@@ -224,7 +227,7 @@ Item {
         }
 
         onSuccess: {
-            root.success( formattedBalance, userName )
+            root.success( formattedBalance, userName, creationDate, cpf, email, birthDate )
         }
 
         onFail: {
