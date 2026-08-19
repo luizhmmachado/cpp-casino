@@ -4,8 +4,11 @@ ProfilePageDesign {
 	signal signOut()
 	signal userNameUpdated(string newUserName)
 	signal userEmailUpdated(string newEmail)
+	signal userAvatarUpdated(int avatarIndex, int avatarColorIndex)
 
 	property string editingField: ""
+	property int pendingAvatarIndex: -1
+	property int pendingAvatarColorIndex: -1
 
 	function parseBalance(value) {
 		var normalized = (value || "").replace(/[^0-9,.-]/g, "")
@@ -51,6 +54,26 @@ ProfilePageDesign {
 		editingField = ""
 	}
 
+	profileCard.btnChangePfp.onClicked: {
+		editingField = "avatar"
+		popupSelectAvatar.errorText = ""
+		popupSelectAvatar.successText = ""
+		popupSelectAvatar.selectedAvatarIndex = userAvatarIndex
+		popupSelectAvatar.selectedColorIndex = userAvatarColorIndex
+		popupSelectAvatar.open()
+	}
+
+	popupSelectAvatar.onConfirm: {
+		pendingAvatarIndex = popupSelectAvatar.selectedAvatarIndex
+		pendingAvatarColorIndex = popupSelectAvatar.selectedColorIndex
+		profileControl.userName = userName
+		profileControl.changeAvatar(popupSelectAvatar.selectedAvatarIndex, popupSelectAvatar.selectedColorIndex)
+	}
+
+	popupSelectAvatar.onCancel: {
+		editingField = ""
+	}
+
 	profileControl.onSuccess: {
 		if (editingField === "userName") {
 			popupEditUserName.errorText = ""
@@ -62,6 +85,10 @@ ProfilePageDesign {
 			popupEditEmail.successText = qsTr("E-mail alterado com sucesso.")
 			popupEditEmail.fldInput.enabled = false
 			userEmailUpdated(popupEditEmail.fldInput.text)
+		} else if (editingField === "avatar") {
+			popupSelectAvatar.errorText = ""
+			popupSelectAvatar.successText = qsTr("Avatar alterado com sucesso.")
+			userAvatarUpdated(pendingAvatarIndex, pendingAvatarColorIndex)
 		}
 	}
 
@@ -70,6 +97,8 @@ ProfilePageDesign {
 			popupEditUserName.errorText = msg
 		} else if (editingField === "userEmail") {
 			popupEditEmail.errorText = msg
+		} else if (editingField === "avatar") {
+			popupSelectAvatar.errorText = msg
 		}
 	}
 }

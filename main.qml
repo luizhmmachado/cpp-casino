@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import DataBaseControl 1.0
 import Colors 1.0
@@ -23,6 +24,9 @@ ApplicationWindow {
     property string userCpf: ""
     property string userEmail: ""
     property string userBirthDate: ""
+    property int userAvatarIndex: 0
+    property int userAvatarColorIndex: 0
+    property var avatarNames: [ "card", "crown", "diamond", "horse", "profile", "star" ]
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -40,6 +44,8 @@ ApplicationWindow {
         sessionSettings.userCpf = root.userCpf
         sessionSettings.userEmail = root.userEmail
         sessionSettings.userBirthDate = root.userBirthDate
+        sessionSettings.userAvatarIndex = root.userAvatarIndex
+        sessionSettings.userAvatarColorIndex = root.userAvatarColorIndex
     }
 
     function restoreSession() {
@@ -65,6 +71,8 @@ ApplicationWindow {
         root.userCpf = ""
         root.userEmail = ""
         root.userBirthDate = ""
+        root.userAvatarIndex = 0
+        root.userAvatarColorIndex = 0
         loaderComponent = loginPage
     }
 
@@ -118,12 +126,14 @@ ApplicationWindow {
         property string userCpf: ""
         property string userEmail: ""
         property string userBirthDate: ""
+        property int userAvatarIndex: 0
+        property int userAvatarColorIndex: 0
     }
 
     DataBaseControl {
         id: sessionValidator
 
-        onSessionValidated: function(isValid, formattedBalance, userName, creationDate, cpf, email, birthDate) {
+        onSessionValidated: function(isValid, formattedBalance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
             if (!isValid) {
                 signOut()
                 return
@@ -135,6 +145,8 @@ ApplicationWindow {
             root.userCpf = cpf
             root.userEmail = email
             root.userBirthDate = birthDate
+            root.userAvatarIndex = avatarIndex
+            root.userAvatarColorIndex = avatarColorIndex
             saveSession()
             loaderComponent = startingPage
         }
@@ -181,13 +193,20 @@ ApplicationWindow {
                     Image {
                         id: imgProfile
 
-                        source: "qrc:/resources/images/icons/profile.svg"
+                        source: "qrc:/resources/images/avatar/" + root.avatarNames[ root.userAvatarIndex ] + "32-avatar.svg"
                         width: 32
                         height: 32
+                        visible: false
                         anchors {
                             left: parent.left
                             verticalCenter: parent.verticalCenter
                         }
+                    }
+
+                    ColorOverlay {
+                        anchors.fill: imgProfile
+                        source: imgProfile
+                        color: Colors.avatarColors[ root.userAvatarColorIndex ]
                     }
 
                     Text {
@@ -331,6 +350,8 @@ ApplicationWindow {
             userCpf: root.userCpf
             userEmail: root.userEmail
             userBirthDate: root.userBirthDate
+            userAvatarIndex: root.userAvatarIndex
+            userAvatarColorIndex: root.userAvatarColorIndex
 
             onSignOut: root.signOut()
             onUserNameUpdated: {
@@ -339,6 +360,11 @@ ApplicationWindow {
             }
             onUserEmailUpdated: {
                 root.userEmail = newEmail
+                saveSession()
+            }
+            onUserAvatarUpdated: {
+                root.userAvatarIndex = avatarIndex
+                root.userAvatarColorIndex = avatarColorIndex
                 saveSession()
             }
         }
@@ -375,13 +401,15 @@ ApplicationWindow {
 
         LoginPage{
             onRegister: loaderComponent = registerPage
-            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate) {
+            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
                 root.userBalance = balance
                 root.userName = userName
                 root.userCreationDate = creationDate
                 root.userCpf = cpf
                 root.userEmail = email
                 root.userBirthDate = birthDate
+                root.userAvatarIndex = avatarIndex
+                root.userAvatarColorIndex = avatarColorIndex
                 saveSession()
                 loaderComponent = startingPage
             }
@@ -392,7 +420,7 @@ ApplicationWindow {
         id: registerPage
 
         RegisterPage{
-            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate) {
+            onSuccess: function(balance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
                 loaderComponent = startingPage
                 root.userBalance = balance
                 root.userName = userName
@@ -400,6 +428,8 @@ ApplicationWindow {
                 root.userCpf = cpf
                 root.userEmail = email
                 root.userBirthDate = birthDate
+                root.userAvatarIndex = avatarIndex
+                root.userAvatarColorIndex = avatarColorIndex
                 saveSession()
             }
 

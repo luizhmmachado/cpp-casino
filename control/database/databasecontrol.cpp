@@ -68,7 +68,7 @@ void DataBaseControl::authenticate() {
         filters << "cpf.eq." + cpfIdentifier;
     }
 
-    const QString endpoint = "users?or=(" + filters.join( "," ) + ")&select=password,balance,user,creation_date,cpf,email,birth_date";
+    const QString endpoint = "users?or=(" + filters.join( "," ) + ")&select=password,balance,user,creation_date,cpf,email,birth_date,avatar_index,avatar_color_index";
 
     _supabaseApi.get( endpoint );
 }
@@ -78,14 +78,14 @@ void DataBaseControl::validateSession( const QString& userName ) {
     const QString normalizedUserName = userName.trimmed().toLower();
 
     if ( normalizedUserName.isEmpty() ) {
-        emit sessionValidated( false, "", "", "", "", "", "" );
+        emit sessionValidated( false, "", "", "", "", "", "", 0, 0 );
         return;
     }
 
     _requestType = RequestType::ValidateSession;
 
     const QString encodedUser = QString::fromUtf8( QUrl::toPercentEncoding( normalizedUserName ) );
-    const QString endpoint = "users?user=eq." + encodedUser + "&select=user,balance,creation_date,cpf,email,birth_date&limit=1";
+    const QString endpoint = "users?user=eq." + encodedUser + "&select=user,balance,creation_date,cpf,email,birth_date,avatar_index,avatar_color_index&limit=1";
 
     _supabaseApi.get( endpoint );
 }
@@ -213,7 +213,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
 
         qInfo() << "DataBaseControl::handleRequestFinished Usuário autenticado com sucesso.";
 
-        emit success( QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate );
+        emit success( QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate, user.value( "avatar_index" ).toInt( 0 ), user.value( "avatar_color_index" ).toInt( 0 ) );
 
         return;
     }
@@ -223,7 +223,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
         _requestType = RequestType::None;
 
         if ( !response.isArray() || response.array().isEmpty() ) {
-            emit sessionValidated( false, "", "", "", "", "", "" );
+            emit sessionValidated( false, "", "", "", "", "", "", 0, 0 );
             return;
         }
 
@@ -231,7 +231,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
         const QString userName = user.value( "user" ).toString();
 
         if ( userName.isEmpty() ) {
-            emit sessionValidated( false, "", "", "", "", "", "" );
+            emit sessionValidated( false, "", "", "", "", "", "", 0, 0 );
             return;
         }
 
@@ -241,7 +241,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
         const QString email = user.value( "email" ).toString();
         const QString birthDate = toBirthDate( user );
 
-        emit sessionValidated( true, QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate );
+        emit sessionValidated( true, QLocale::system().toCurrencyString( balance ), userName, creationDate, cpf, email, birthDate, user.value( "avatar_index" ).toInt( 0 ), user.value( "avatar_color_index" ).toInt( 0 ) );
 
         return;
     }
@@ -262,7 +262,7 @@ void DataBaseControl::handleRequestFinished( const QJsonDocument& response ) {
             const QString email = insertedUser.value( "email" ).toString();
             const QString birthDate = toBirthDate( insertedUser );
 
-            emit success( QLocale::system().toCurrencyString( 0.00 ), normalizeUserName( _name ), creationDate, cpf, email, birthDate );
+            emit success( QLocale::system().toCurrencyString( 0.00 ), normalizeUserName( _name ), creationDate, cpf, email, birthDate, 0, 0 );
 
             return;
         }
@@ -314,7 +314,7 @@ void DataBaseControl::handleRequestFailed( const QString& error ) {
     }
 
     if ( requestType == RequestType::ValidateSession ) {
-        emit sessionValidated( false, "", "", "", "", "", "" );
+        emit sessionValidated( false, "", "", "", "", "", "", 0, 0 );
         return;
     }
 

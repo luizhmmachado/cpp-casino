@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtGraphicalEffects 1.0
 import Fonts 1.0
 import Colors 1.0
 import Components 1.0
@@ -9,6 +10,14 @@ Rectangle {
     implicitHeight: profileContent.implicitHeight + 64
     height: implicitHeight
     width: height
+
+    property string userName: ""
+    property string userCreationDate: ""
+    property int avatarIndex: 0
+    property int avatarColorIndex: 0
+    property var avatarNames: [ "card", "crown", "diamond", "horse", "profile", "star" ]
+
+    property alias btnChangePfp: btnChangePfp
 
     color: Colors.primary
     border.width: 2
@@ -22,12 +31,23 @@ Rectangle {
         anchors.topMargin: 32
         anchors.horizontalCenter: parent.horizontalCenter
 
-        Image {
-            id: imgProfile
-            source: "qrc:/resources/images/icons/profile.svg"
+        Item {
             width: 128
             height: 128
             anchors.horizontalCenter: parent.horizontalCenter
+
+            Image {
+                id: imgProfile
+                anchors.fill: parent
+                source: "qrc:/resources/images/avatar/" + rctProfile.avatarNames[ rctProfile.avatarIndex ] + "-avatar.svg"
+                visible: false
+            }
+
+            ColorOverlay {
+                anchors.fill: imgProfile
+                source: imgProfile
+                color: Colors.avatarColors[ rctProfile.avatarColorIndex ]
+            }
         }
 
         ComponentButton {

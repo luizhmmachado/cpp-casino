@@ -83,6 +83,33 @@ void ProfileControl::changeEmail( const QString& newEmail ) {
     _supabaseApi.patch( endpoint, data );
 }
 
+void ProfileControl::changeAvatar( int avatarIndex, int avatarColorIndex ) {
+
+    if ( _userName.isEmpty() ) {
+        emit fail( "Usuário inválido." );
+        return;
+    }
+
+    if ( avatarIndex < 0 || avatarIndex > static_cast<int>( Avatar::Star ) ||
+         avatarColorIndex < 0 || avatarColorIndex > static_cast<int>( AvatarColor::Orange ) ) {
+        emit fail( "Avatar inválido." );
+        return;
+    }
+
+    _requestType = RequestType::UpdateAvatar;
+
+    emit showLoading( true );
+
+    const QString encodedUserName = QString::fromUtf8( QUrl::toPercentEncoding( _userName.trimmed().toLower() ) );
+    const QString endpoint = "users?user=eq." + encodedUserName;
+
+    QJsonObject data;
+    data[ "avatar_index" ] = avatarIndex;
+    data[ "avatar_color_index" ] = avatarColorIndex;
+
+    _supabaseApi.patch( endpoint, data );
+}
+
 void ProfileControl::handleRequestFinished( const QJsonDocument& response ) {
 
     if ( _requestType == RequestType::FetchCurrentPassword ) {
@@ -183,6 +210,22 @@ void ProfileControl::handleRequestFinished( const QJsonDocument& response ) {
         return;
     }
 
+    if ( _requestType == RequestType::UpdateAvatar ) {
+
+        _requestType = RequestType::None;
+
+        emit showLoading( false );
+
+        if ( !response.isArray() || response.array().isEmpty() ) {
+            emit fail( "Não foi possível atualizar o avatar." );
+            return;
+        }
+
+        emit success();
+
+        return;
+    }
+
     emit showLoading( false );
     emit fail( "Resposta inesperada do Supabase." );
 }
@@ -207,6 +250,11 @@ void ProfileControl::handleRequestFailed( const QString& error ) {
 
     if ( requestType == RequestType::UpdateEmail ) {
         emit fail( isDuplicate ? "E-mail já está em uso." : "Não foi possível atualizar o e-mail." );
+        return;
+    }
+
+    if ( requestType == RequestType::UpdateAvatar ) {
+        emit fail( "Não foi possível atualizar o avatar." );
         return;
     }
 

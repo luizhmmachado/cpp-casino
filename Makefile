@@ -233,6 +233,7 @@ DIST          = /opt/qt/5.15.4/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/default_pre.prf \
@@ -427,6 +428,7 @@ Makefile: cassino-pt-br.pro /opt/qt/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf /
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/qt/5.15.4/gcc_64/mkspecs/features/default_pre.prf \
@@ -602,6 +604,7 @@ Makefile: cassino-pt-br.pro /opt/qt/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf /
 /opt/qt/5.15.4/gcc_64/mkspecs/features/qt_config.prf:
 /opt/qt/5.15.4/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/qt/5.15.4/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/qt/5.15.4/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/qt/5.15.4/gcc_64/mkspecs/features/toolchain.prf:
 /opt/qt/5.15.4/gcc_64/mkspecs/features/default_pre.prf:
@@ -720,11 +723,22 @@ qrc_resources.cpp: resources.qrc \
 		images/horserace/horse.svg \
 		images/horserace/half-star.svg \
 		images/horserace/star.svg \
+		images/avatar/star32-avatar.svg \
+		images/avatar/profile-avatar.svg \
+		images/avatar/star-avatar.svg \
+		images/avatar/crown32-avatar.svg \
+		images/avatar/card-avatar.svg \
+		images/avatar/horse32-avatar.svg \
+		images/avatar/horse-avatar.svg \
+		images/avatar/profile32-avatar.svg \
+		images/avatar/diamond-avatar.svg \
+		images/avatar/diamond32-avatar.svg \
+		images/avatar/crown-avatar.svg \
+		images/avatar/card32-avatar.svg \
 		images/icons/blackjack.svg \
 		images/icons/horserace.svg \
 		images/icons/menu.svg \
 		images/icons/edit.svg \
-		images/icons/profile.svg \
 		images/cartas/carta2.png \
 		images/cartas/carta6.png \
 		images/cartas/carta10.png \
