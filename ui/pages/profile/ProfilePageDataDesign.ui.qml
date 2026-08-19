@@ -12,6 +12,9 @@ Rectangle {
     property string userCpf: ""
     property string formattedCpf: ""
 
+    property alias mouseAreaEditUserName: mouseAreaEditUserName
+    property alias mouseAreaEditEmail: mouseAreaEditEmail
+
     color: Colors.primary
     border.width: 2
     border.color: Colors.secondary
@@ -43,7 +46,7 @@ Rectangle {
                 id: clmData1
 
                 width: (parent.width - parent.spacing) / 2
-                spacing: 16
+                spacing: 8
 
                 Row{
                     width: clmData1.width
@@ -66,6 +69,12 @@ Rectangle {
                         height: 16
                         width: 16
                         source: "qrc:/resources/images/icons/edit.svg"
+
+                        MouseArea {
+                            id: mouseAreaEditUserName
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                        }
                     }
                 }
 
@@ -78,14 +87,16 @@ Rectangle {
                     enabled: false
                 }
 
+                Item {
+                    width: 1
+                    height: 8
+                }
 
                 Text {
                     text: qsTr("CPF:")
                     font: Fonts.secondaryText8bit
                     color: Colors.yellow200
                 }
-
-
 
                 ComponentField {
                     id: fldCpf
@@ -101,7 +112,7 @@ Rectangle {
                 id: clmData2
 
                 width: (parent.width - parent.spacing) / 2
-                spacing: 16
+                spacing: 8
 
                 Row {
                     width: clmData2.width
@@ -123,14 +134,26 @@ Rectangle {
                         height: 16
                         width: 16
                         source: "qrc:/resources/images/icons/edit.svg"
+
+                        MouseArea {
+                            id: mouseAreaEditEmail
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                        }
                     }
                 }
 
                 ComponentField {
+                    id: fldEmail
                     componentWidth: clmData2.width
                     componentPlaceholder: userEmail
                     borderColor: Colors.secondary
                     enabled: false
+                }
+
+                Item {
+                    width: 1
+                    height: 8
                 }
 
                 Text {

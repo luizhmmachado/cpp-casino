@@ -332,7 +332,15 @@ ApplicationWindow {
             userEmail: root.userEmail
             userBirthDate: root.userBirthDate
 
-            onSignOut: signOut()
+            onSignOut: root.signOut()
+            onUserNameUpdated: {
+                root.userName = newUserName
+                saveSession()
+            }
+            onUserEmailUpdated: {
+                root.userEmail = newEmail
+                saveSession()
+            }
         }
     }
 

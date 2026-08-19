@@ -6,3 +6,5 @@ ComponentTitle 1.0 ComponentTitle.qml
 ComponentTitleDesign 1.0 ComponentTitleDesign.ui.qml
 ComponentField 1.0 ComponentField.qml
 ComponentFieldDesign 1.0 ComponentFieldDesign.ui.qml
+ComponentPopupConfirmation 1.0 ComponentPopupConfirmation.qml
+ComponentPopupConfirmationDesign 1.0 ComponentPopupConfirmationDesign.ui.qml

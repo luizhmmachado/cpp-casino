@@ -1,0 +1,125 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import Components 1.0
+import Colors 1.0
+import Fonts 1.0
+
+Popup {
+    id: popup
+
+    property string titlePopup: ""
+    property string componentText: ""
+    property string componentCancelBtnText: qsTr( "Cancelar" )
+    property string componentConfirmBtnText: qsTr( "Confirmar" )
+    property bool canCancel: true
+    property bool showInput: false
+    property string errorText: ""
+    property string successText: ""
+    property alias btnCancel: btnCancel
+    property alias btnConfirm: btnConfirm
+    property alias fldInput: fldInput
+
+    width: Math.max( 360, cmpTitle.implicitWidth + 64 )
+    height: clmContent.implicitHeight + 64
+    padding: 0
+    modal: true
+    focus: true
+    closePolicy: Popup.NoAutoClose
+
+    background: Rectangle {
+        color: Colors.primary
+        radius: 5
+        border.width: 1
+        border.color: Colors.yellow200
+    }
+
+    Overlay.modal: Rectangle {
+        color: Colors.popupDim
+    }
+
+    Column {
+        id: clmContent
+
+        anchors {
+            fill: parent
+            margins: 32
+        }
+        spacing: 16
+
+        ComponentTitle {
+            id: cmpTitle
+
+            componentText: titlePopup
+        }
+
+        Item {
+            width: 1
+            height: 32
+        }
+
+        Text {
+            width: parent.width
+            wrapMode: Text.WordWrap
+            height: contentHeight
+            font: Fonts.text8bit
+            color: Colors.yellow100
+            horizontalAlignment: Text.AlignHCenter
+            lineHeight: 1.5
+            lineHeightMode: Text.ProportionalHeight
+            text: componentText
+        }
+
+        ComponentField {
+            id: fldInput
+
+            visible: popup.showInput
+            componentWidth: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Text {
+            width: parent.width
+            visible: popup.errorText.length > 0
+            wrapMode: Text.WordWrap
+            font: Fonts.secondaryText8bit
+            color: Colors.error
+            horizontalAlignment: Text.AlignHCenter
+            text: popup.errorText
+        }
+
+        Text {
+            width: parent.width
+            visible: popup.successText.length > 0
+            wrapMode: Text.WordWrap
+            font: Fonts.secondaryText8bit
+            color: Colors.success
+            horizontalAlignment: Text.AlignHCenter
+            text: popup.successText
+        }
+
+        Row {
+            id: rowButtons
+            width: parent.width
+            spacing: 32
+
+            ComponentButton {
+                id: btnCancel
+
+                componentBtnText: popup.successText.length > 0 ? qsTr( "Fechar" ) : popup.componentCancelBtnText
+                componentWidth: popup.successText.length > 0 ? parent.width : (parent.width - parent.spacing) / 2
+                visible: popup.canCancel || popup.successText.length > 0
+                componentBorderColor: Colors.error
+                componentTextColor: Colors.error
+            }
+
+            ComponentButton {
+                id: btnConfirm
+
+                componentBtnText: popup.componentConfirmBtnText
+                componentWidth: (parent.width - parent.spacing) / 2
+                visible: popup.successText.length === 0
+                enabled: !popup.showInput || fldInput.componentValid
+            }
+        }
+    }
+}
