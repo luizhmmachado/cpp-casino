@@ -11,6 +11,7 @@ cmake_install.cmake
 *.out
 *.exe
 *.dll
+cassino-pt-br
 
 # Arquivos do Qt Creator
 *.pro.user
@@ -34,3 +35,4 @@ qrc_*
 .vscode/
 .idea/
 .clangd/
+.qtc_clangd/
