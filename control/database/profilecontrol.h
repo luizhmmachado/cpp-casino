@@ -15,6 +15,25 @@ class ProfileControl : public QObject {
 public:
     explicit ProfileControl( QObject* parent = nullptr );
 
+    enum class Avatar {
+        Card = 0,
+        Crown,
+        Diamond,
+        Horse,
+        Profile,
+        Star
+    };
+    Q_ENUM( Avatar )
+
+    enum class AvatarColor {
+        Red = 0,
+        Blue,
+        Yellow,
+        Green,
+        Orange
+    };
+    Q_ENUM( AvatarColor )
+
     QString userName() const;
     void setUserName( const QString& userName );
 
@@ -28,6 +47,7 @@ public slots:
     void changePassword();
     void changeUserName( const QString& newUserName );
     void changeEmail( const QString& newEmail );
+    void changeAvatar( int avatarIndex, int avatarColorIndex );
 
 signals:
     void userNameChanged();
@@ -47,7 +67,8 @@ private:
         FetchCurrentPassword,
         UpdatePassword,
         UpdateUserName,
-        UpdateEmail
+        UpdateEmail,
+        UpdateAvatar
     };
 
     bool verifyPassword( const QString& password, const QString& passwordHash ) const;

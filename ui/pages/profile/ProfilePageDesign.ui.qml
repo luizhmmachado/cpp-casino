@@ -18,12 +18,16 @@ Item {
     property string userBirthDate: ""
     property string userCreationDate: ""
     property string userBalance: ""
+    property int userAvatarIndex: 0
+    property int userAvatarColorIndex: 0
     property bool canWithdraw: false
     property alias btnExit: btnExit
+    property alias profileCard: profileCard
     property alias profileData: profileData
     property alias profileControl: profileControl
     property alias popupEditUserName: popupEditUserName
     property alias popupEditEmail: popupEditEmail
+    property alias popupSelectAvatar: popupSelectAvatar
 
     Rectangle {
         anchors.fill: parent
@@ -67,6 +71,11 @@ Item {
 
                         ProfileCard {
                             id: profileCard
+
+                            userName: root.userName
+                            userCreationDate: root.userCreationDate
+                            avatarIndex: root.userAvatarIndex
+                            avatarColorIndex: root.userAvatarColorIndex
                         }
 
                         ComponentButton {
@@ -146,6 +155,80 @@ Item {
         fldInput.componentValid: fldInput.text.length > 0 && fldInput.acceptableInput
 
         anchors.centerIn: parent
+    }
+
+    ComponentPopupConfirmation {
+        id: popupSelectAvatar
+
+        property int selectedAvatarIndex: -1
+        property int selectedColorIndex: -1
+        property var avatarNames: [ "card", "crown", "diamond", "horse", "profile", "star" ]
+
+        canCancel: true
+        showInput: false
+        canConfirm: selectedAvatarIndex >= 0 && selectedColorIndex >= 0
+        titlePopup: qsTr( "Escolher avatar" )
+        componentText: qsTr( "Selecione um avatar e uma cor:" )
+        width: 5 * 144 + 64
+
+        anchors.centerIn: parent
+
+        extraContent: [
+        Repeater {
+            model: popupSelectAvatar.avatarNames.length
+
+            delegate: Row {
+                id: rowAvatar
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 8
+
+                property int avatarIdx: index
+
+                Repeater {
+                    model: Colors.avatarColors.length
+
+                    delegate: Rectangle {
+                        id: rctAvatarColor
+
+                        property int colorIdx: index
+
+                        width: 136
+                        height: 136
+                        radius: 4
+                        color: "transparent"
+                        border.width: ( popupSelectAvatar.selectedAvatarIndex === rowAvatar.avatarIdx && popupSelectAvatar.selectedColorIndex === colorIdx ) ? 3 : 0
+                        border.color: Colors.secondaryGreen
+
+                        Image {
+                            id: imgAvatarOption
+
+                            anchors.centerIn: parent
+                            width: 128
+                            height: 128
+                            source: "qrc:/resources/images/avatar/" + popupSelectAvatar.avatarNames[ rowAvatar.avatarIdx ] + "-avatar.svg"
+                            visible: false
+                        }
+
+                        ColorOverlay {
+                            anchors.fill: imgAvatarOption
+                            source: imgAvatarOption
+                            color: Colors.avatarColors[ colorIdx ]
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onClicked: {
+                                popupSelectAvatar.selectedAvatarIndex = rowAvatar.avatarIdx
+                                popupSelectAvatar.selectedColorIndex = colorIdx
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ]
     }
 }
 

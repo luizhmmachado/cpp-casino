@@ -44,8 +44,8 @@ signals:
     void birthDtChanged();
     void nameChanged();
     void showLoading( bool show );
-    void success( const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate );
-    void sessionValidated( bool isValid, const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate );
+    void success( const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate, int avatarIndex, int avatarColorIndex );
+    void sessionValidated( bool isValid, const QString& formattedBalance, const QString& userName, const QString& creationDate, const QString& cpf, const QString& email, const QString& birthDate, int avatarIndex, int avatarColorIndex );
     void fail( const QString& msg );
 
 private slots:

@@ -13,14 +13,16 @@ Popup {
     property string componentConfirmBtnText: qsTr( "Confirmar" )
     property bool canCancel: true
     property bool showInput: false
+    property bool canConfirm: true
     property string errorText: ""
     property string successText: ""
     property alias btnCancel: btnCancel
     property alias btnConfirm: btnConfirm
     property alias fldInput: fldInput
+    property alias extraContent: clmExtraContent.data
 
     width: Math.max( 360, cmpTitle.implicitWidth + 64 )
-    height: clmContent.implicitHeight + 64
+    height: popup.parent ? Math.min( clmContent.implicitHeight + 64, popup.parent.height - 64 ) : clmContent.implicitHeight + 64
     padding: 0
     modal: true
     focus: true
@@ -37,14 +39,24 @@ Popup {
         color: Colors.popupDim
     }
 
-    Column {
-        id: clmContent
+    Flickable {
+        id: flkContent
 
         anchors {
             fill: parent
             margins: 32
         }
-        spacing: 16
+        clip: true
+        contentWidth: width
+        contentHeight: clmContent.implicitHeight
+        interactive: contentHeight > height
+        boundsBehavior: Flickable.StopAtBounds
+
+        Column {
+            id: clmContent
+
+            width: parent.width
+            spacing: 16
 
         ComponentTitle {
             id: cmpTitle
@@ -67,6 +79,13 @@ Popup {
             lineHeight: 1.5
             lineHeightMode: Text.ProportionalHeight
             text: componentText
+        }
+
+        Column {
+            id: clmExtraContent
+
+            width: parent.width
+            spacing: 16
         }
 
         ComponentField {
@@ -118,8 +137,9 @@ Popup {
                 componentBtnText: popup.componentConfirmBtnText
                 componentWidth: (parent.width - parent.spacing) / 2
                 visible: popup.successText.length === 0
-                enabled: !popup.showInput || fldInput.componentValid
+                enabled: popup.canConfirm && (!popup.showInput || fldInput.componentValid)
             }
         }
+    }
     }
 }

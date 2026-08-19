@@ -30,6 +30,8 @@ QtObject {
     property color greenHorse: "#008841"
     property color orangehorse: "#CA5B00"
 
+    property var avatarColors: [redHorse, blueHorse, yellowHorse, greenHorse, orangehorse]
+
     // @brief
     // starting page color
 

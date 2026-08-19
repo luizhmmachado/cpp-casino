@@ -15,8 +15,19 @@
         <file>images/horserace/half-star.svg</file>
         <file>images/icons/blackjack.svg</file>
         <file>images/icons/horserace.svg</file>
-        <file>images/icons/profile.svg</file>
         <file>images/icons/menu.svg</file>
         <file>images/icons/edit.svg</file>
+        <file>images/avatar/card-avatar.svg</file>
+        <file>images/avatar/crown-avatar.svg</file>
+        <file>images/avatar/diamond-avatar.svg</file>
+        <file>images/avatar/horse-avatar.svg</file>
+        <file>images/avatar/profile-avatar.svg</file>
+        <file>images/avatar/star-avatar.svg</file>
+        <file>images/avatar/profile32-avatar.svg</file>
+        <file>images/avatar/card32-avatar.svg</file>
+        <file>images/avatar/crown32-avatar.svg</file>
+        <file>images/avatar/diamond32-avatar.svg</file>
+        <file>images/avatar/horse32-avatar.svg</file>
+        <file>images/avatar/star32-avatar.svg</file>
     </qresource>
 </RCC>
