@@ -22,6 +22,7 @@ TextField {
     echoMode: componentEchoMode
     placeholderText: componentPlaceholder
     passwordCharacter: "•"
+    selectByMouse: true
 
     background: Rectangle {
         radius: 5

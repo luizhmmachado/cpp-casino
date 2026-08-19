@@ -11,6 +11,7 @@ LIBS += -lsodium
 SOURCES += \
         control/blackjack/blackjackcontrol.cpp \
         control/database/databasecontrol.cpp \
+        control/database/profilecontrol.cpp \
         control/database/supabaseapi.cpp \
         control/horserace/horsemodel.cpp \
         control/horserace/horseracecontrol.cpp \
@@ -34,6 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     control/blackjack/blackjackcontrol.h \
     control/database/databasecontrol.h \
+    control/database/profilecontrol.h \
     control/database/supabaseapi.h \
     control/horserace/horsemodel.h \
     control/horserace/horseracecontrol.h

@@ -39,5 +39,9 @@
         <file>ui/pages/profile/ProfilePageBalance.qml</file>
         <file>ui/pages/profile/ProfilePageDataDesign.ui.qml</file>
         <file>ui/pages/profile/ProfilePageData.qml</file>
+        <file>ui/pages/profile/ProfilePagePasswordDesign.ui.qml</file>
+        <file>ui/pages/profile/ProfilePagePassword.qml</file>
+        <file>ui/Components/ComponentPopupConfirmationDesign.ui.qml</file>
+        <file>ui/Components/ComponentPopupConfirmation.qml</file>
     </qresource>
 </RCC>

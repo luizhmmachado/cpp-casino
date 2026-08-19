@@ -5,6 +5,7 @@
 
 #include <control/blackjack/blackjackcontrol.h>
 #include <control/database/databasecontrol.h>
+#include <control/database/profilecontrol.h>
 #include <control/horserace/horseracecontrol.h>
 #include <control/horserace/horsemodel.h>
 
@@ -14,12 +15,17 @@ int main( int argc, char* argv[] ) {
 #endif
     QGuiApplication app( argc, argv );
 
+    QCoreApplication::setOrganizationName( "PixelCasino" );
+    QCoreApplication::setOrganizationDomain( "pixelcasino.local" );
+    QCoreApplication::setApplicationName( "cassino-pt-br" );
+
     DataBaseControl databaseControl;
 
     QFontDatabase::addApplicationFont( ":/ui/theme/fonts/PressStart2P-Regular.ttf" );
 
     qmlRegisterType<BlackJackControl>( "BlackJackControl", 1, 0, "BlackJackControl" );
     qmlRegisterType<DataBaseControl>( "DataBaseControl", 1, 0, "DataBaseControl" );
+    qmlRegisterType<ProfileControl>( "ProfileControl", 1, 0, "ProfileControl" );
     qmlRegisterType<HorseRaceControl>( "HorseRaceControl", 1, 0, "HorseRaceControl" );
     qmlRegisterType<HorseModel>( "HorseModel", 1, 0, "HorseModel" );
     qmlRegisterSingletonType( QUrl( QStringLiteral( "qrc:/ui/theme/Colors.qml" ) ),
