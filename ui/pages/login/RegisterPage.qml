@@ -12,6 +12,7 @@ Item {
 
     signal login
     signal success(var balance, string userName, string creationDate, string userCpf, string userEmail, string birthDate, int avatarIndex, int avatarColorIndex)
+    signal showLoading(bool show)
 
     property int day: -1
     property int month: -1
@@ -516,6 +517,7 @@ Item {
         id: control
 
         onShowLoading: {
+            root.showLoading(show)
             btnRegister.enabled = !show && validName && validEmail && validCpf && validAge && validPassword && validConfirmPassword
 
             if (show){

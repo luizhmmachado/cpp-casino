@@ -11,6 +11,7 @@ Item {
 
     signal register
     signal success( var balance, string userName, string creationDate, string userCpf, string userEmail, string birthDate, int avatarIndex, int avatarColorIndex )
+    signal showLoading( bool show )
 
     property bool updatingIdentifier: false
 
@@ -223,6 +224,7 @@ Item {
         id: control
 
         onShowLoading: {
+            root.showLoading(show)
             btnLogin.enabled = !show
         }
 

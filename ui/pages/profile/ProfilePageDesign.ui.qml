@@ -25,6 +25,7 @@ Item {
     property alias profileCard: profileCard
     property alias profileData: profileData
     property alias profileControl: profileControl
+    property alias profilePagePassword: profilePagePassword
     property alias popupEditUserName: popupEditUserName
     property alias popupEditEmail: popupEditEmail
     property alias popupSelectAvatar: popupSelectAvatar
@@ -112,6 +113,8 @@ Item {
                         }
 
                         ProfilePagePassword {
+                            id: profilePagePassword
+
                             width: parent.width
                             userName: root.userName
                         }
