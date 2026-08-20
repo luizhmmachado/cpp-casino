@@ -114,6 +114,14 @@ ApplicationWindow {
         transactionControl.createTransaction(root.userName, amount, transactionType, transactionDescription)
     }
 
+    function notifyBetDebitResult(success) {
+        if (!contentLoader.item || !contentLoader.item.onBetDebitTransactionFinished) {
+            return
+        }
+
+        contentLoader.item.onBetDebitTransactionFinished(success)
+    }
+
     function isNonReturnable() {
         blockReturn = false
         for (var i = 0; i < nonReturnablePages.length; i++) {
@@ -209,9 +217,11 @@ ApplicationWindow {
         onSuccess: function(formattedBalance, balance) {
             root.userBalance = formattedBalance
             saveSession()
+            notifyBetDebitResult(true)
         }
         onFail: function(msg) {
             console.warn("TransactionControl error:", msg)
+            notifyBetDebitResult(false)
         }
     }
 

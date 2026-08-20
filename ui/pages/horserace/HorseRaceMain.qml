@@ -6,9 +6,35 @@ HorseRaceMainDesign {
 
     property int betIndex: -1
     property int betValue: 0
+    property int pendingBetIndex: -1
+    property int pendingBetValue: 0
+    property bool awaitingBetDebit: false
 
     signal navigationLockChanged(bool locked)
     signal balanceTransactionRequested(real amount, int transactionType, int transactionDescription)
+
+    function onBetDebitTransactionFinished(success) {
+        if (!awaitingBetDebit) {
+            return
+        }
+
+        awaitingBetDebit = false
+
+        if (!success) {
+            pendingBetIndex = -1
+            pendingBetValue = 0
+            navigationLockChanged(false)
+            return
+        }
+
+        root.betIndex = pendingBetIndex
+        root.betValue = pendingBetValue
+        horseRace.selectedIndex = pendingBetIndex
+        horseSelection.visible = false
+        horseRace.visible = true
+        navigationLockChanged(true)
+        horseRace.startCountdown()
+    }
 
     function formatBalance(value) {
         var integerValue = Math.max(0, Math.floor(value))
@@ -55,14 +81,11 @@ HorseRaceMainDesign {
     }
 
     horseSelection.onPlaceBet: {
-        root.betIndex = selectedIndex
-        root.betValue = betValue
-        balanceTransactionRequested(root.betValue, 1, 2)
-        horseRace.selectedIndex = selectedIndex
-        horseSelection.visible = false
-        horseRace.visible = true
+        pendingBetIndex = selectedIndex
+        pendingBetValue = betValue
+        awaitingBetDebit = true
         root.navigationLockChanged(true)
-        horseRace.startCountdown()
+        balanceTransactionRequested(pendingBetValue, 1, 2)
     }
 
     horseRace.onFinished: {
