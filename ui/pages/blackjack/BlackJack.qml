@@ -38,7 +38,7 @@ BlackJackDesign {
 		roundFinished = true
 
 		var multiplier = isBlackJack ? 3 : 2
-		var delta = calculateRoundDelta(multiplier)
+		var delta = didWin ? calculateRoundDelta(multiplier) : betValue.betValue
 		var amountText = formatBalance(Math.abs(delta))
 
 		if (didWin) {

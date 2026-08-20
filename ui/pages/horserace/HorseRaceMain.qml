@@ -79,7 +79,7 @@ HorseRaceMainDesign {
             horsePopup.componentText = qsTr("%1 foram adicionados ao seu saldo.").arg(amountText)
         }else{
             horsePopup.titlePopup = qsTr("VOCÊ PERDEU")
-            horsePopup.componentText = qsTr("O valor da aposta foi descontado do seu saldo.")
+            horsePopup.componentText = qsTr("%1 foram removidos do seu saldo.").arg(amountText)
         }
 
         horsePopup.open()
