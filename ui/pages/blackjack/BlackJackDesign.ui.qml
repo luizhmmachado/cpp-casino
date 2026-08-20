@@ -52,6 +52,7 @@ Item {
                 ComponentBetValue {
                     id: betValue
 
+                    availableBalance: root.userBalance
                     width: ( parent.width / 3 ) * 2
                     height: betValue.implicitHeight
                     anchors.horizontalCenter: parent.horizontalCenter

@@ -14,6 +14,7 @@ Item {
     property bool countdownRunning: false
     property string countdownText: ""
     property int horseWinner: -1
+    property int selectedIndex: -1
 
     property alias countdownAnimation: countdownAnimation
     property alias countdownTimer: countdownTimer
@@ -24,14 +25,29 @@ Item {
         anchors.fill: parent
         color: Colors.background
 
-        Column {
+        Flickable {
+            id: flkMain
+
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 32
+            clip: true
+            contentWidth: width
+            contentHeight: clmMain.implicitHeight
+            boundsBehavior: Flickable.StopAtBounds
 
-            Item {
-                width: parent.width
-                height: root.horsesList.length * 96
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+            }
+
+            Column {
+                id: clmMain
+
+                width: flkMain.width
+                spacing: 32
+
+                Item {
+                    width: parent.width
+                    height: root.horsesList.length * 96
 
                 Column {
                     width: parent.width
@@ -131,8 +147,8 @@ Item {
                     }
                 }
 
-                Grid {
-                    id: finishLine
+                    Grid {
+                        id: finishLine
 
                     width: 16
                     height: parent.height
@@ -154,6 +170,7 @@ Item {
 
                             color: (index + Math.floor(index / 2)) % 2 === 0 ? Colors.white : Colors.black
                          }
+                    }
                     }
                 }
             }

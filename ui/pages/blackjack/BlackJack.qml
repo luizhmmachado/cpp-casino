@@ -3,22 +3,11 @@ import QtQuick 2.15
 BlackJackDesign {
 	id: root
 
-	property int maxBetLimit: 999999
 	property bool roundStarted: false
 	property bool roundFinished: false
 	property bool resultHandled: false
 
-	function parseBalance(value) {
-		var raw = (value || "").toString()
-		raw = raw.replace(/\s/g, "")
-		raw = raw.replace(/[Rr]\$/g, "")
-		raw = raw.replace(/\./g, "")
-		raw = raw.replace(/,/g, ".")
-		raw = raw.replace(/[^0-9.-]/g, "")
-
-		var parsed = Number(raw)
-		return isNaN(parsed) ? 0 : parsed
-	}
+	signal navigationLockChanged(bool locked)
 
 	function formatBalance(value) {
 		var integerValue = Math.max(0, Math.floor(value))
@@ -33,19 +22,6 @@ BlackJackDesign {
 		grouped = raw + grouped
 
 		return "R$ " + grouped + ",00"
-	}
-
-	function updateBetLimitsFromBalance() {
-		var balanceValue = Math.max(0, Math.floor(parseBalance(userBalance)))
-		var effectiveMaxBet = Math.min(maxBetLimit, balanceValue)
-
-		betValue.maxBet = effectiveMaxBet
-
-		if (betValue.betValue > betValue.maxBet) {
-			betValue.betValue = betValue.maxBet
-		}
-
-		betValue.availableText = qsTr("(disponível: %1)").arg(formatBalance(balanceValue))
 	}
 
 	function calculateRoundDelta(multiplier) {
@@ -75,7 +51,8 @@ BlackJackDesign {
 	}
 
 	function updateActionButtons() {
-		var canStartRound = betValue.betValue > betValue.minBet
+		betValue.updateBetLimits()
+		var canStartRound = betValue.betValue > betValue.minBet && betValue.betValue <= betValue.effectiveMaxBet
 		var canBuyCard = roundStarted && !roundFinished && blackjackCards.control.userCardsSum < 21
 		var canHoldHand = roundStarted && !roundFinished
 						  && blackjackCards.control.userCardsSum < 21
@@ -91,6 +68,7 @@ BlackJackDesign {
 		roundFinished = false
 		resultHandled = false
 		betValue.visible = false
+		navigationLockChanged(true)
 		blackjackCards.startGame()
 		updateActionButtons()
 	}
@@ -121,10 +99,11 @@ BlackJackDesign {
 	}
 
 	betValue.onBetValueChangedByUser: updateActionButtons()
-	onUserBalanceChanged: {
-		updateBetLimitsFromBalance()
-		updateActionButtons()
-	}
+	betValue.onBetValueChanged: updateActionButtons()
+	betValue.onBetValidChanged: updateActionButtons()
+	betValue.onEffectiveMaxBetChanged: updateActionButtons()
+	betValue.onAvailableBalanceChanged: updateActionButtons()
+	onUserBalanceChanged: updateActionButtons()
 	blackjackCards.control.onUserCardsSumChanged: updateActionButtons()
 	blackjackCards.control.onCpuCardsSumChanged: updateActionButtons()
 
@@ -152,6 +131,7 @@ BlackJackDesign {
 		roundStarted = false
 		roundFinished = false
 		resultHandled = false
+		navigationLockChanged(false)
 		updateActionButtons()
 	}
 
@@ -159,8 +139,12 @@ BlackJackDesign {
 		betValue.visible = true
 		blackjackCards.restart()
 		popupRoundResult.close()
-		updateBetLimitsFromBalance()
+		navigationLockChanged(false)
 		updateActionButtons()
+		Qt.callLater(function() {
+			betValue.applyBetValue(betValue.betValue)
+			updateActionButtons()
+		})
 	}
 
 }

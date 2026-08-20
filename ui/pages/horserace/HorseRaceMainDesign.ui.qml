@@ -9,6 +9,7 @@ Item {
 
     anchors.fill: parent
 
+    property string userBalance: ""
     property alias horseSelection: horseSelection
     property alias horseRace: horseRace
     property alias horsePopup: horsePopup
@@ -37,6 +38,7 @@ Item {
                 width: parent.width
                 height: parent.height - title.height
                 horsesList: control.horsesList
+                betValue.availableBalance: root.userBalance
             }
 
             HorseRace{
@@ -48,11 +50,13 @@ Item {
                 visible: false
             }
 
-            HorseRacePopup {
+            ComponentPopupConfirmation {
                 id: horsePopup
 
                 width: parent.width / 2
-                height: parent.height / 2
+                canCancel: false
+                showInput: false
+                componentConfirmBtnText: qsTr("Apostar novamente")
                 anchors.centerIn: parent
             }
         }

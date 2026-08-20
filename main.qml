@@ -32,6 +32,7 @@ ApplicationWindow {
     property var avatarNames: [ "card", "crown", "diamond", "horse", "profile", "star" ]
     property bool pageLoading: false
     property bool requestLoading: false
+    property bool gameNavigationLocked: false
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -134,7 +135,7 @@ ApplicationWindow {
     function returnStartingPage() {
         isNonReturnable()
 
-        if ( blockReturn ){
+        if ( blockReturn || gameNavigationLocked ){
             return
         }
 
@@ -264,7 +265,13 @@ ApplicationWindow {
                 MouseArea {
                     anchors.fill: rowProfile
 
-                    onClicked: navigateTo(profilePage)
+                    onClicked: {
+                        if (gameNavigationLocked) {
+                            return
+                        }
+
+                        navigateTo(profilePage)
+                    }
                 }
 
                 Text {
@@ -435,17 +442,9 @@ ApplicationWindow {
         id: horseracePage
 
         HorseRaceMain{
-            horseRace.onRaceStartedChanged: {
-                if( horseRace.raceStarted ) {
-                    root.blockReturn = true
-                }
-            }
+            userBalance: root.userBalance
 
-            horseRace.onRaceFinishedChanged: {
-                if( horseRace.raceFinished ) {
-                    root.blockReturn = false
-                }
-            }
+            onNavigationLockChanged: root.gameNavigationLocked = locked
         }
     }
 
@@ -454,6 +453,8 @@ ApplicationWindow {
 
         BlackJack{
             userBalance: root.userBalance
+
+            onNavigationLockChanged: root.gameNavigationLocked = locked
         }
     }
 

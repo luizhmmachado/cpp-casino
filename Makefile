@@ -699,9 +699,7 @@ qrc_qml.cpp: qml.qrc \
 		ui/pages/horserace/HorseRaceDesign.ui.qml \
 		ui/pages/horserace/qmldir \
 		ui/pages/horserace/HorseRace.qml \
-		ui/pages/horserace/HorseRacePopup.qml \
 		ui/pages/horserace/HorseSelectionDesign.ui.qml \
-		ui/pages/horserace/HorseRacePopupDesign.ui.qml \
 		ui/pages/horserace/HorseRaceMainDesign.ui.qml \
 		ui/pages/horserace/HorseSelection.qml \
 		ui/pages/login/LoginPage.qml \

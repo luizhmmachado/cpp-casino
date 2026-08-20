@@ -5,10 +5,14 @@ ComponentBetValueDesign {
 
 	property int betValue: 500
 	property int minBet: 0
-	property int maxBet: 99999999
+	property int maxBet: 999999
+	property var availableBalance: ""
 	property string availableText: ""
+	property bool autoAvailableText: true
 	property string currencySymbol: "R$"
 	property var quickBetValues: [100, 500, 1000, 5000]
+	property int effectiveMaxBet: resolvedMaxBet()
+	property bool betValid: betValue > minBet && betValue <= effectiveMaxBet
 
 	property var _quickLabels: []
 	property bool _editing: false
@@ -17,10 +21,39 @@ ComponentBetValueDesign {
 
 	titleText: qsTr("APOSTA:")
 	quickBetLabels: _quickLabels
-	availableDisplayText: availableText
 
 	function clampBet(value) {
-		return Math.max(minBet, Math.min(maxBet, value))
+		return Math.max(minBet, Math.min(effectiveMaxBet, value))
+	}
+
+	function resolvedMaxBet() {
+		if (availableBalance === undefined || availableBalance === null || availableBalance.toString().trim() === "")
+			return maxBet
+
+		var parsedBalance = parseToInt(availableBalance)
+
+		return Math.min(maxBet, parsedBalance)
+	}
+
+	function updateAvailableDisplayText() {
+		if (autoAvailableText) {
+			var parsedBalance = parseToInt(availableBalance)
+			availableDisplayText = qsTr("(disponível: %1)").arg(formatCurrency(parsedBalance))
+			return
+		}
+
+		availableDisplayText = availableText
+	}
+
+	function updateBetLimits() {
+		effectiveMaxBet = resolvedMaxBet()
+
+		if (betValue > effectiveMaxBet) {
+			betValue = effectiveMaxBet
+			return
+		}
+
+		refreshInputTextForced()
 	}
 
 	function parseToInt(text) {
@@ -28,7 +61,6 @@ ComponentBetValueDesign {
 		raw = raw.replace(/\s/g, "")
 		raw = raw.replace(/[Rr]\$/g, "")
 
-		// Keep only the integer part when value is in currency format (e.g. 1.000,00).
 		var integerPart = raw.split(",")[0]
 		integerPart = integerPart.replace(/\./g, "")
 		integerPart = integerPart.replace(/[^0-9-]/g, "")
@@ -99,7 +131,7 @@ ComponentBetValueDesign {
 	}
 
 	onMaxClicked: {
-		applyBetValue(maxBet)
+		applyBetValue(effectiveMaxBet)
 	}
 
 	btnMinus.onClicked: {
@@ -140,13 +172,28 @@ ComponentBetValueDesign {
 	onCurrencySymbolChanged: {
 		rebuildQuickLabels()
 		refreshInputText()
+		updateAvailableDisplayText()
 	}
 
-	onAvailableTextChanged: availableDisplayText = availableText
+	onAvailableBalanceChanged: {
+		updateBetLimits()
+		updateAvailableDisplayText()
+	}
+
+	onMaxBetChanged: updateBetLimits()
+
+	onAutoAvailableTextChanged: updateAvailableDisplayText()
+
+	onAvailableTextChanged: {
+		if (!autoAvailableText)
+			updateAvailableDisplayText()
+	}
 
 	Component.onCompleted: {
 		betValue = clampBet(betValue)
+		updateBetLimits()
 		rebuildQuickLabels()
+		updateAvailableDisplayText()
 		refreshInputText()
 	}
 
