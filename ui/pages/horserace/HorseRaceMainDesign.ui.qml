@@ -35,10 +35,11 @@ Item {
             HorseSelection{
                 id: horseSelection
 
-                width: parent.width
+                width: ( parent.width / 3 ) * 2
                 height: parent.height - title.height
                 horsesList: control.horsesList
                 betValue.availableBalance: root.userBalance
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             HorseRace{
@@ -48,6 +49,7 @@ Item {
                 height: parent.height - title.height
                 horsesList: control.horsesList
                 visible: false
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             ComponentPopupConfirmation {

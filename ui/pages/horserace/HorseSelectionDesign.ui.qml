@@ -31,7 +31,7 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
 
             ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
+                policy: ScrollBar.AlwaysOff
             }
 
             Column{
@@ -195,6 +195,11 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     enabled: selectedIndex != -1 && betValue.betValid
                     componentBtnText: qsTr( "Apostar" )
+                }
+
+                Item {
+                    width: 1
+                    height: 16
                 }
             }
         }

@@ -40,7 +40,9 @@ BlackJackDesign {
 		var delta = calculateRoundDelta(multiplier)
 		var amountText = formatBalance(Math.abs(delta))
 
-		popupRoundResult.titlePopup = didWin ? qsTr("VOCÊ VENCEU") : qsTr("VOCÊ PERDEU")
+		popupRoundResult.titlePopup = didWin
+			? (isBlackJack ? qsTr("BLACKJACK!") : qsTr("VOCÊ VENCEU"))
+			: qsTr("VOCÊ PERDEU")
 		popupRoundResult.componentText = didWin
 			? qsTr("%1 foram adicionados ao seu saldo.").arg(amountText)
 			: qsTr("%1 foram removidos do seu saldo.").arg(amountText)

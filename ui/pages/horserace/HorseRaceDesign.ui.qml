@@ -36,7 +36,7 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
 
             ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
+                policy: ScrollBar.AlwaysOff
             }
 
             Column {
@@ -78,6 +78,13 @@ Item {
                             property real progress: 0
                             property real raceStartX: 8
                             property real raceEndX: horseTrack.width - finishLine.width - 32
+                            property real phaseOneProgress: 0.16 + Math.random() * 0.14
+                            property real phaseTwoProgress: 0.60 + Math.random() * 0.20
+                            property real phaseOneFactor: 0.34 + Math.random() * 0.14
+                            property real phaseTwoFactor: 0.26 + Math.random() * 0.18
+                            property int phaseOneDuration: Math.max( 200, Math.round( horseTrack.raceDuration * horseTrack.phaseOneFactor ) )
+                            property int phaseTwoDuration: Math.max( 250, Math.round( horseTrack.raceDuration * horseTrack.phaseTwoFactor ) )
+                            property int phaseThreeDuration: Math.max( 300, horseTrack.raceDuration - horseTrack.phaseOneDuration - horseTrack.phaseTwoDuration )
 
                             Image {
                                 id: imgHorse
@@ -130,16 +137,37 @@ Item {
                                 }
                             }
 
-                            NumberAnimation {
+                            SequentialAnimation {
                                 id: raceAnimation
 
-                                target: horseTrack
-
-                                property: "progress"
-                                from: 0
-                                to: 1
-                                duration: horseTrack.raceDuration
                                 running: root.raceStarted
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: 0
+                                    to: horseTrack.phaseOneProgress
+                                    duration: horseTrack.phaseOneDuration
+                                    easing.type: Easing.InOutSine
+                                }
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: horseTrack.phaseOneProgress
+                                    to: horseTrack.phaseTwoProgress
+                                    duration: horseTrack.phaseTwoDuration
+                                    easing.type: Easing.OutInQuad
+                                }
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: horseTrack.phaseTwoProgress
+                                    to: 1
+                                    duration: horseTrack.phaseThreeDuration
+                                    easing.type: Easing.OutQuad
+                                }
 
                                 onFinished: horseWinner = index
                             }

@@ -62,6 +62,8 @@ Popup {
                 id: cmpTitle
 
                 componentText: titlePopup
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
             }
 
             Item {

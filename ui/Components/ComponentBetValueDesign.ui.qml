@@ -23,7 +23,7 @@ Item {
 		anchors.fill: parent
 		color: Colors.primary
 		border.width: 2
-		border.color: Colors.secondaryGreen
+		border.color: Colors.secondary
 		radius: 4
 
 		Column {
