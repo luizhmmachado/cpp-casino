@@ -5,6 +5,7 @@ ProfilePageDesign {
 	signal userNameUpdated(string newUserName)
 	signal userEmailUpdated(string newEmail)
 	signal userAvatarUpdated(int avatarIndex, int avatarColorIndex)
+	signal showLoading(bool show)
 
 	property string editingField: ""
 	property int pendingAvatarIndex: -1
@@ -90,6 +91,23 @@ ProfilePageDesign {
 			popupSelectAvatar.successText = qsTr("Avatar alterado com sucesso.")
 			userAvatarUpdated(pendingAvatarIndex, pendingAvatarColorIndex)
 		}
+	}
+
+	popupEditEmail.onOpened: {
+		popupEditEmail.fldInput.enabled = true
+		popupEditEmail.fldInput.text = ""
+	}
+	popupEditUserName.onOpened: {
+		popupEditUserName.fldInput.enabled = true
+		popupEditUserName.fldInput.text = ""
+	}
+
+	profileControl.onShowLoading: {
+		showLoading(show)
+	}
+
+	profilePagePassword.onShowLoading: {
+		showLoading(show)
 	}
 
 	profileControl.onFail: {

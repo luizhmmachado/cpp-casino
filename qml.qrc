@@ -43,5 +43,7 @@
         <file>ui/pages/profile/ProfilePagePassword.qml</file>
         <file>ui/Components/ComponentPopupConfirmationDesign.ui.qml</file>
         <file>ui/Components/ComponentPopupConfirmation.qml</file>
+        <file>ui/Components/ComponentLoadingDesign.ui.qml</file>
+        <file>ui/Components/ComponentLoading.qml</file>
     </qresource>
 </RCC>
