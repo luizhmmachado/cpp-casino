@@ -8,6 +8,7 @@ BlackJackDesign {
 	property bool resultHandled: false
 
 	signal navigationLockChanged(bool locked)
+	signal balanceTransactionRequested(real amount, int transactionType, int transactionDescription)
 
 	function formatBalance(value) {
 		var integerValue = Math.max(0, Math.floor(value))
@@ -36,9 +37,13 @@ BlackJackDesign {
 		roundStarted = false
 		roundFinished = true
 
-		var multiplier = didWin ? (isBlackJack ? 3 : 2) : -1
+		var multiplier = isBlackJack ? 3 : 2
 		var delta = calculateRoundDelta(multiplier)
 		var amountText = formatBalance(Math.abs(delta))
+
+		if (didWin) {
+			balanceTransactionRequested(Math.abs(delta), 0, 3)
+		}
 
 		popupRoundResult.titlePopup = didWin
 			? (isBlackJack ? qsTr("BLACKJACK!") : qsTr("VOCÊ VENCEU"))
@@ -65,6 +70,7 @@ BlackJackDesign {
 	}
 
 	function startRound() {
+		balanceTransactionRequested(betValue.betValue, 1, 2)
 		blackjackCards.restart()
 		roundStarted = true
 		roundFinished = false

@@ -55,6 +55,7 @@ OBJECTS_DIR   = ./
 SOURCES       = control/blackjack/blackjackcontrol.cpp \
 		control/database/databasecontrol.cpp \
 		control/database/profilecontrol.cpp \
+		control/database/transactioncontrol.cpp \
 		control/database/supabaseapi.cpp \
 		control/horserace/horsemodel.cpp \
 		control/horserace/horseracecontrol.cpp \
@@ -63,12 +64,14 @@ SOURCES       = control/blackjack/blackjackcontrol.cpp \
 		moc_blackjackcontrol.cpp \
 		moc_databasecontrol.cpp \
 		moc_profilecontrol.cpp \
+		moc_transactioncontrol.cpp \
 		moc_supabaseapi.cpp \
 		moc_horsemodel.cpp \
 		moc_horseracecontrol.cpp
 OBJECTS       = blackjackcontrol.o \
 		databasecontrol.o \
 		profilecontrol.o \
+		transactioncontrol.o \
 		supabaseapi.o \
 		horsemodel.o \
 		horseracecontrol.o \
@@ -78,6 +81,7 @@ OBJECTS       = blackjackcontrol.o \
 		moc_blackjackcontrol.o \
 		moc_databasecontrol.o \
 		moc_profilecontrol.o \
+		moc_transactioncontrol.o \
 		moc_supabaseapi.o \
 		moc_horsemodel.o \
 		moc_horseracecontrol.o
@@ -256,11 +260,13 @@ DIST          = /opt/qt/5.15.4/gcc_64/mkspecs/features/spec_pre.prf \
 		cassino-pt-br.pro control/blackjack/blackjackcontrol.h \
 		control/database/databasecontrol.h \
 		control/database/profilecontrol.h \
+		control/database/transactioncontrol.h \
 		control/database/supabaseapi.h \
 		control/horserace/horsemodel.h \
 		control/horserace/horseracecontrol.h control/blackjack/blackjackcontrol.cpp \
 		control/database/databasecontrol.cpp \
 		control/database/profilecontrol.cpp \
+		control/database/transactioncontrol.cpp \
 		control/database/supabaseapi.cpp \
 		control/horserace/horsemodel.cpp \
 		control/horserace/horseracecontrol.cpp \
@@ -643,8 +649,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents qml.qrc resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/qt/5.15.4/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents control/blackjack/blackjackcontrol.h control/database/databasecontrol.h control/database/profilecontrol.h control/database/supabaseapi.h control/horserace/horsemodel.h control/horserace/horseracecontrol.h $(DISTDIR)/
-	$(COPY_FILE) --parents control/blackjack/blackjackcontrol.cpp control/database/databasecontrol.cpp control/database/profilecontrol.cpp control/database/supabaseapi.cpp control/horserace/horsemodel.cpp control/horserace/horseracecontrol.cpp main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents control/blackjack/blackjackcontrol.h control/database/databasecontrol.h control/database/profilecontrol.h control/database/transactioncontrol.h control/database/supabaseapi.h control/horserace/horsemodel.h control/horserace/horseracecontrol.h $(DISTDIR)/
+	$(COPY_FILE) --parents control/blackjack/blackjackcontrol.cpp control/database/databasecontrol.cpp control/database/profilecontrol.cpp control/database/transactioncontrol.cpp control/database/supabaseapi.cpp control/horserace/horsemodel.cpp control/horserace/horseracecontrol.cpp main.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -804,9 +810,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /opt/qt/5.15.4/gcc_64/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -Wall -Wextra -dM -E -o moc_predefs.h /opt/qt/5.15.4/gcc_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_blackjackcontrol.cpp moc_databasecontrol.cpp moc_profilecontrol.cpp moc_supabaseapi.cpp moc_horsemodel.cpp moc_horseracecontrol.cpp
+compiler_moc_header_make_all: moc_blackjackcontrol.cpp moc_databasecontrol.cpp moc_profilecontrol.cpp moc_transactioncontrol.cpp moc_supabaseapi.cpp moc_horsemodel.cpp moc_horseracecontrol.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_blackjackcontrol.cpp moc_databasecontrol.cpp moc_profilecontrol.cpp moc_supabaseapi.cpp moc_horsemodel.cpp moc_horseracecontrol.cpp
+	-$(DEL_FILE) moc_blackjackcontrol.cpp moc_databasecontrol.cpp moc_profilecontrol.cpp moc_transactioncontrol.cpp moc_supabaseapi.cpp moc_horsemodel.cpp moc_horseracecontrol.cpp
 moc_blackjackcontrol.cpp: control/blackjack/blackjackcontrol.h \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QObject \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject.h \
@@ -1084,6 +1090,116 @@ moc_profilecontrol.cpp: control/database/profilecontrol.h \
 		moc_predefs.h \
 		/opt/qt/5.15.4/gcc_64/bin/moc
 	/opt/qt/5.15.4/gcc_64/bin/moc $(DEFINES) --include /home/luizmachado/cpp-casino/moc_predefs.h -I/opt/qt/5.15.4/gcc_64/mkspecs/linux-g++ -I/home/luizmachado/cpp-casino -I/opt/qt/5.15.4/gcc_64/include -I/opt/qt/5.15.4/gcc_64/include/QtQuick -I/opt/qt/5.15.4/gcc_64/include/QtGui -I/opt/qt/5.15.4/gcc_64/include/QtQmlModels -I/opt/qt/5.15.4/gcc_64/include/QtQml -I/opt/qt/5.15.4/gcc_64/include/QtNetwork -I/opt/qt/5.15.4/gcc_64/include/QtSql -I/opt/qt/5.15.4/gcc_64/include/QtConcurrent -I/opt/qt/5.15.4/gcc_64/include/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/database/profilecontrol.h -o moc_profilecontrol.cpp
+
+moc_transactioncontrol.cpp: control/database/transactioncontrol.h \
+		control/database/supabaseapi.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QObject \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qnamespace.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qglobal.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qconfig.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlogging.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qflags.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmutex.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qnumeric.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstring.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qchar.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbytearray.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qrefcount.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qarraydata.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringview.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qiterator.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qpair.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvector.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qpoint.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringlist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qregexp.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmetatype.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QJsonDocument \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsondocument.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qshareddata.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qhash.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcborvalue.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qdatetime.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcborcommon.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qdebug.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmap.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtextstream.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qiodevice.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlocale.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvariant.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qset.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qurl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qurlquery.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/quuid.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QJsonObject \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QSharedDataPointer \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QString \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QUrl \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QVariant \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QVector \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QSslConfiguration \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslerror.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcryptographichash.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qssl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QFlags \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QMetaType \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkReply \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QIODevice \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkRequest \
+		moc_predefs.h \
+		/opt/qt/5.15.4/gcc_64/bin/moc
+	/opt/qt/5.15.4/gcc_64/bin/moc $(DEFINES) --include /home/luizmachado/cpp-casino/moc_predefs.h -I/opt/qt/5.15.4/gcc_64/mkspecs/linux-g++ -I/home/luizmachado/cpp-casino -I/opt/qt/5.15.4/gcc_64/include -I/opt/qt/5.15.4/gcc_64/include/QtQuick -I/opt/qt/5.15.4/gcc_64/include/QtGui -I/opt/qt/5.15.4/gcc_64/include/QtQmlModels -I/opt/qt/5.15.4/gcc_64/include/QtQml -I/opt/qt/5.15.4/gcc_64/include/QtNetwork -I/opt/qt/5.15.4/gcc_64/include/QtSql -I/opt/qt/5.15.4/gcc_64/include/QtConcurrent -I/opt/qt/5.15.4/gcc_64/include/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include control/database/transactioncontrol.h -o moc_transactioncontrol.cpp
 
 moc_supabaseapi.cpp: control/database/supabaseapi.h \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QObject \
@@ -1633,6 +1749,118 @@ profilecontrol.o: control/database/profilecontrol.cpp control/database/profileco
 		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonarray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o profilecontrol.o control/database/profilecontrol.cpp
 
+transactioncontrol.o: control/database/transactioncontrol.cpp control/database/transactioncontrol.h \
+		control/database/supabaseapi.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QObject \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qnamespace.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qglobal.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qconfig.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlogging.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qflags.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmutex.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qnumeric.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstring.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qchar.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbytearray.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qrefcount.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qarraydata.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringview.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qiterator.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qpair.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvector.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qpoint.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringlist.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qregexp.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmetatype.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QJsonDocument \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsondocument.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qshareddata.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qhash.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcborvalue.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qdatetime.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcborcommon.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qdebug.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qmap.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qtextstream.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qiodevice.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qlocale.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qvariant.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qset.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qurl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qurlquery.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/quuid.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QJsonObject \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QSharedDataPointer \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QString \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QUrl \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QVariant \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QVector \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QSslConfiguration \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslerror.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qcryptographichash.h \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qssl.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QFlags \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QMetaType \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkReply \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QIODevice \
+		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkRequest \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QDateTime \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QJsonArray \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/qjsonarray.h \
+		/opt/qt/5.15.4/gcc_64/include/QtCore/QLocale
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transactioncontrol.o control/database/transactioncontrol.cpp
+
 supabaseapi.o: control/database/supabaseapi.cpp control/database/supabaseapi.h \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QObject \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/qobject.h \
@@ -2014,6 +2242,7 @@ main.o: main.cpp /opt/qt/5.15.4/gcc_64/include/QtGui/QGuiApplication \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QIODevice \
 		/opt/qt/5.15.4/gcc_64/include/QtNetwork/QNetworkRequest \
 		control/database/profilecontrol.h \
+		control/database/transactioncontrol.h \
 		control/horserace/horseracecontrol.h \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QList \
 		/opt/qt/5.15.4/gcc_64/include/QtCore/QVariantList \
@@ -2034,6 +2263,9 @@ moc_databasecontrol.o: moc_databasecontrol.cpp
 
 moc_profilecontrol.o: moc_profilecontrol.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_profilecontrol.o moc_profilecontrol.cpp
+
+moc_transactioncontrol.o: moc_transactioncontrol.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_transactioncontrol.o moc_transactioncontrol.cpp
 
 moc_supabaseapi.o: moc_supabaseapi.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_supabaseapi.o moc_supabaseapi.cpp

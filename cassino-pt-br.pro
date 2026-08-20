@@ -12,6 +12,7 @@ SOURCES += \
         control/blackjack/blackjackcontrol.cpp \
         control/database/databasecontrol.cpp \
         control/database/profilecontrol.cpp \
+        control/database/transactioncontrol.cpp \
         control/database/supabaseapi.cpp \
         control/horserace/horsemodel.cpp \
         control/horserace/horseracecontrol.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     control/blackjack/blackjackcontrol.h \
     control/database/databasecontrol.h \
     control/database/profilecontrol.h \
+    control/database/transactioncontrol.h \
     control/database/supabaseapi.h \
     control/horserace/horsemodel.h \
     control/horserace/horseracecontrol.h

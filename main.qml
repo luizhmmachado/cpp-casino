@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import DataBaseControl 1.0
+import TransactionControl 1.0
 import Components 1.0
 import Colors 1.0
 import Fonts 1.0
@@ -105,6 +106,14 @@ ApplicationWindow {
         navigateTo(loginPage)
     }
 
+    function applyBalanceTransaction(amount, transactionType, transactionDescription) {
+        if (!root.userName) {
+            return
+        }
+
+        transactionControl.createTransaction(root.userName, amount, transactionType, transactionDescription)
+    }
+
     function isNonReturnable() {
         blockReturn = false
         for (var i = 0; i < nonReturnablePages.length; i++) {
@@ -190,6 +199,19 @@ ApplicationWindow {
             root.userAvatarColorIndex = avatarColorIndex
             saveSession()
             loaderComponent = startingPage
+        }
+    }
+
+    TransactionControl {
+        id: transactionControl
+
+        onShowLoading: root.loading(show)
+        onSuccess: function(formattedBalance, balance) {
+            root.userBalance = formattedBalance
+            saveSession()
+        }
+        onFail: function(msg) {
+            console.warn("TransactionControl error:", msg)
         }
     }
 
@@ -445,6 +467,9 @@ ApplicationWindow {
             userBalance: root.userBalance
 
             onNavigationLockChanged: root.gameNavigationLocked = locked
+            onBalanceTransactionRequested: function(amount, transactionType, transactionDescription) {
+                applyBalanceTransaction(amount, transactionType, transactionDescription)
+            }
         }
     }
 
@@ -455,6 +480,9 @@ ApplicationWindow {
             userBalance: root.userBalance
 
             onNavigationLockChanged: root.gameNavigationLocked = locked
+            onBalanceTransactionRequested: function(amount, transactionType, transactionDescription) {
+                applyBalanceTransaction(amount, transactionType, transactionDescription)
+            }
         }
     }
 
