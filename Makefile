@@ -741,16 +741,58 @@ qrc_resources.cpp: resources.qrc \
 		images/icons/horserace.svg \
 		images/icons/menu.svg \
 		images/icons/edit.svg \
-		images/cartas/carta2.png \
-		images/cartas/carta6.png \
-		images/cartas/carta10.png \
-		images/cartas/carta1.png \
-		images/cartas/carta5.png \
-		images/cartas/carta9.png \
-		images/cartas/carta4.png \
-		images/cartas/carta8.png \
-		images/cartas/carta3.png \
-		images/cartas/carta7.png
+		images/cards/3-clubs.png \
+		images/cards/jack-hearts.png \
+		images/cards/2-clubs.png \
+		images/cards/ace-spades.png \
+		images/cards/ace-clubs.png \
+		images/cards/9-hearts.png \
+		images/cards/5-hearts.png \
+		images/cards/8-spades.png \
+		images/cards/4-spades.png \
+		images/cards/ace-diamonds.png \
+		images/cards/queen-diamonds.png \
+		images/cards/king-diamonds.png \
+		images/cards/ace-hearts.png \
+		images/cards/8-clubs.png \
+		images/cards/8-hearts.png \
+		images/cards/queen-clubs.png \
+		images/cards/4-hearts.png \
+		images/cards/7-spades.png \
+		images/cards/3-spades.png \
+		images/cards/9-diamonds.png \
+		images/cards/5-clubs.png \
+		images/cards/4-clubs.png \
+		images/cards/king-clubs.png \
+		images/cards/4-diamonds.png \
+		images/cards/8-diamonds.png \
+		images/cards/10-spades.png \
+		images/cards/queen-spades.png \
+		images/cards/jack-clubs.png \
+		images/cards/7-hearts.png \
+		images/cards/3-diamonds.png \
+		images/cards/3-hearts.png \
+		images/cards/7-diamonds.png \
+		images/cards/6-spades.png \
+		images/cards/2-spades.png \
+		images/cards/king-spades.png \
+		images/cards/10-clubs.png \
+		images/cards/2-diamonds.png \
+		images/cards/9-clubs.png \
+		images/cards/6-diamonds.png \
+		images/cards/10-diamonds.png \
+		images/cards/jack-spades.png \
+		images/cards/jack-diamonds.png \
+		images/cards/10-hearts.png \
+		images/cards/queen-hearts.png \
+		images/cards/7-clubs.png \
+		images/cards/6-hearts.png \
+		images/cards/9-spades.png \
+		images/cards/5-diamonds.png \
+		images/cards/2-hearts.png \
+		images/cards/6-clubs.png \
+		images/cards/king-hearts.png \
+		images/cards/5-spades.png
 	/opt/qt/5.15.4/gcc_64/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_predefs_make_all: moc_predefs.h

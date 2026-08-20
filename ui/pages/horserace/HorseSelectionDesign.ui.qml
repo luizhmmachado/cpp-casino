@@ -165,18 +165,14 @@ Item {
                 }
             }
 
-            ComponentButton {
-                id: btnBet
+            Row{
+                ComponentButton {
+                    id: btnBet
 
-                enabled: selectedIndex != -1
-                componentBtnText: qsTr( "Apostar" )
-
-                anchors {
-                    top: repeater.bottom
-                horizontalCenter: parent.horizontalCenter
+                    enabled: selectedIndex != -1
+                    componentBtnText: qsTr( "Apostar" )
                 }
             }
         }
     }
-
 }
