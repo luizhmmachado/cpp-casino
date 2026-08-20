@@ -677,19 +677,24 @@ qrc_qml.cpp: qml.qrc \
 		ui/theme/Colors.qml \
 		ui/theme/Fonts.qml \
 		ui/theme/fonts/PressStart2P-Regular.ttf \
+		ui/Components/ComponentBetValue.qml \
 		ui/Components/ComponentPopupConfirmationDesign.ui.qml \
 		ui/Components/ComponentButton.qml \
 		ui/Components/ComponentLoading.qml \
 		ui/Components/ComponentTitleDesign.ui.qml \
 		ui/Components/ComponentField.qml \
 		ui/Components/qmldir \
+		ui/Components/ComponentBetValueDesign.ui.qml \
 		ui/Components/ComponentFieldDesign.ui.qml \
 		ui/Components/ComponentButtonDesign.ui.qml \
 		ui/Components/ComponentLoadingDesign.ui.qml \
 		ui/Components/ComponentTitle.qml \
 		ui/Components/ComponentPopupConfirmation.qml \
+		ui/pages/blackjack/BlackJackCardsDesign.ui.qml \
+		ui/pages/blackjack/BlackJackDesign.ui.qml \
 		ui/pages/blackjack/qmldir \
 		ui/pages/blackjack/BlackJack.qml \
+		ui/pages/blackjack/BlackJackCards.qml \
 		ui/pages/horserace/HorseRaceMain.qml \
 		ui/pages/horserace/HorseRaceDesign.ui.qml \
 		ui/pages/horserace/qmldir \

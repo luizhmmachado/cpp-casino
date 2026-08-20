@@ -23,8 +23,21 @@ BlackJackControl::BlackJackControl() :
 }
 
 void BlackJackControl::startGame() {
-    buy();
-    buy();
+    const QString userCard1 = drawCard();
+    const QString cpuCard1 = drawCard();
+    const QString userCard2 = drawCard();
+    const QString cpuCard2 = drawCard();
+
+    _userCardsList.push_back( userCard1 );
+    _CPUCardsList.push_back( cpuCard1 );
+    _userCardsList.push_back( userCard2 );
+    _CPUCardsList.push_back( cpuCard2 );
+
+    _userCardsSum = calculateHandValue( _userCardsList );
+    _CPUCardsSum = calculateHandValue( _CPUCardsList );
+
+    checkWinner();
+    refreshCards();
 
     emit releaseBuy();
 }
@@ -48,14 +61,6 @@ void BlackJackControl::buy() {
     _userCardsList.push_back( userCard );
     _userCardsSum = calculateHandValue( _userCardsList );
     qDebug() << _userCardsSum;
-
-    if ( _CPUCardsSum <= 17 && _CPUCardsSum < _userCardsSum && _userCardsSum < 21 ) {
-        const QString cpuCard = drawCard();
-
-        _CPUCardsList.push_back( cpuCard );
-        _CPUCardsSum = calculateHandValue( _CPUCardsList );
-        qDebug() << _CPUCardsSum;
-    }
 
     checkWinner();
 

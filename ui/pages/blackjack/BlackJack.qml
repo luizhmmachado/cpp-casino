@@ -1,235 +1,166 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import BlackJackControl 1.0
-import Colors 1.0
-import Fonts 1.0
-import Components 1.0
 
-Item {
-    anchors.fill: parent
-    property real cardsLabelWidth: Math.max( lblYourCards.implicitWidth, lblCPUCards.implicitWidth )
+BlackJackDesign {
+	id: root
 
-    Rectangle {
-        anchors.fill: parent
-        color: Colors.background
-    }
+	property int maxBetLimit: 999999
+	property bool roundStarted: false
+	property bool roundFinished: false
+	property bool resultHandled: false
 
-    Column {
-        id: mainClm
+	function parseBalance(value) {
+		var raw = (value || "").toString()
+		raw = raw.replace(/\s/g, "")
+		raw = raw.replace(/[Rr]\$/g, "")
+		raw = raw.replace(/\./g, "")
+		raw = raw.replace(/,/g, ".")
+		raw = raw.replace(/[^0-9.-]/g, "")
 
-        anchors.fill: parent
-        spacing: 32
-        padding: 20
-        anchors.verticalCenter: parent.verticalCenter
+		var parsed = Number(raw)
+		return isNaN(parsed) ? 0 : parsed
+	}
 
-        Row{
-            spacing: 16
-            height: 100
-            width: parent.width
+	function formatBalance(value) {
+		var integerValue = Math.max(0, Math.floor(value))
+		var raw = integerValue.toString()
+		var grouped = ""
 
-            Label{
-                id: lblYourCards
-                text: qsTr( "Suas Cartas: " + control.userCardsSum )
-                font: Fonts.text8bit
-                color: Colors.textColor
-                width: cardsLabelWidth
-            }
+		while (raw.length > 3) {
+			grouped = "." + raw.slice(raw.length - 3) + grouped
+			raw = raw.slice(0, raw.length - 3)
+		}
 
-            ListView {
-                id:listViewYourCards
+		grouped = raw + grouped
 
-                interactive: false
-                spacing: 16
-                height: 100
-                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
-                clip: true
-                model: control.userCardsList
-                orientation: ListView.Horizontal
+		return "R$ " + grouped + ",00"
+	}
 
-                delegate: Image {
-                    height: 100
-                    width: 75
-                    source: modelData
-                }
-            }
-        }
+	function updateBetLimitsFromBalance() {
+		var balanceValue = Math.max(0, Math.floor(parseBalance(userBalance)))
+		var effectiveMaxBet = Math.min(maxBetLimit, balanceValue)
 
-        Row{
-            spacing: 16
-            height: 100
-            width: parent.width
+		betValue.maxBet = effectiveMaxBet
 
-            Label{
-                id: lblCPUCards
-                text: qsTr("Cartas da casa: " + control.CPUCardsSum)
-                font: Fonts.text8bit
-                color: Colors.textColor
-                width: cardsLabelWidth
-            }
+		if (betValue.betValue > betValue.maxBet) {
+			betValue.betValue = betValue.maxBet
+		}
 
-            ListView {
-                id:listViewCPUCards
-                interactive: false
-                spacing: 16
-                height: 100
-                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
-                clip: true
-                model: control.CPUCardsList
-                orientation: ListView.Horizontal
+		betValue.availableText = qsTr("(disponível: %1)").arg(formatBalance(balanceValue))
+	}
 
-                delegate: Image {
-                    height: 100
-                    width: 75
-                    source: modelData
-                }
-            }
-        }
+	function calculateRoundDelta(multiplier) {
+		return betValue.betValue * multiplier
+	}
 
-        Rectangle {
-            id: btnStartGame
-            radius: 5
-            width: parent.width / 2
-            height: 32
-            color: Colors.primary
-            Text {
-                anchors.centerIn: parent
-                text: "Começar Jogo"
-                font: Fonts.text8bit
-                color: Colors.textColor
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    control.startGame()
-                }
-            }
-        }
+	function showResultPopup(didWin, isBlackJack) {
+		if (resultHandled)
+			return
 
-        Row {
-            visible: !btnStartGame.visible
-            spacing: 16
-            anchors.horizontalCenter: parent.horizontalCenter
+		resultHandled = true
+		roundStarted = false
+		roundFinished = true
 
-            ComponentButton {
-                id: btnBuy
+		var multiplier = didWin ? (isBlackJack ? 3 : 2) : -1
+		var delta = calculateRoundDelta(multiplier)
+		var amountText = formatBalance(Math.abs(delta))
 
-                componentBtnText: qsTr( "Comprar" )
-                onClicked: {
-                    control.buy()
-                }
-            }
+		popupRoundResult.titlePopup = didWin ? qsTr("VOCÊ VENCEU") : qsTr("VOCÊ PERDEU")
+		popupRoundResult.componentText = didWin
+			? qsTr("%1 foram adicionados ao seu saldo.").arg(amountText)
+			: qsTr("%1 foram removidos do seu saldo.").arg(amountText)
+		popupRoundResult.open()
 
-            ComponentButton {
-                id: btnHold
+		btnBuy.enabled = false
+		btnHold.enabled = false
+	}
 
-                componentBtnText: qsTr( "Hold" )
-                onClicked: {
-                    control.userHold()
-                }
-            }
-        }
-        Text {
-            id: txtWin
+	function updateActionButtons() {
+		var canStartRound = betValue.betValue > betValue.minBet
+		var canBuyCard = roundStarted && !roundFinished && blackjackCards.control.userCardsSum < 21
+		var canHoldHand = roundStarted && !roundFinished
+						  && blackjackCards.control.userCardsSum < 21
+						  && blackjackCards.control.CPUCardsSum < blackjackCards.control.userCardsSum
 
-            visible: false
-            text: "VOCÊ VENCEU"
-            font: Fonts.title8bit
-            color: Colors.yellow100
+		btnBuy.enabled = roundStarted ? canBuyCard : canStartRound
+		btnHold.enabled = canHoldHand
+	}
 
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+	function startRound() {
+		blackjackCards.restart()
+		roundStarted = true
+		roundFinished = false
+		resultHandled = false
+		betValue.visible = false
+		blackjackCards.startGame()
+		updateActionButtons()
+	}
 
-        Rectangle {
-            id: btnRestart
-            radius: 5
-            width: 256
-            height: 48
-            color: Colors.secondary
-            visible: false
+	function finishRound() {
+		roundStarted = false
+		roundFinished = true
+		updateActionButtons()
+	}
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                anchors.centerIn: parent
-                text: "Play Again"
-                font: Fonts.text8bit
-                color: Colors.textColor
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    control.onRestartGame()
-                }
-            }
-        }
-    }
+	btnBuy.onClicked: {
+		if (!roundStarted) {
+			startRound()
+			return
+		}
 
+		blackjackCards.buy()
+		updateActionButtons()
+	}
 
-    BlackJackControl {
-        id: control
+	btnHold.onClicked: {
+		if (!btnHold.enabled) {
+			return
+		}
 
-        onUserCardsSumChanged: {
-            if(control.CPUCardsSum >= control.userCardsSum){
-                btnHold.enabled = false
-                btnHold.opacity = 0.5
-            }else{
-                btnHold.enabled = true
-                btnHold.opacity = 1
-            }
+		blackjackCards.hold()
+		updateActionButtons()
+	}
 
-            if (control.userCardsSum >= 21 ) {
-                btnBuy.enabled = false
-                btnBuy.opacity = 0.5
-            }else{
-                btnBuy.enabled = true
-                btnBuy.opacity = 1
-            }
-        }
+	betValue.onBetValueChangedByUser: updateActionButtons()
+	onUserBalanceChanged: {
+		updateBetLimitsFromBalance()
+		updateActionButtons()
+	}
+	blackjackCards.control.onUserCardsSumChanged: updateActionButtons()
+	blackjackCards.control.onCpuCardsSumChanged: updateActionButtons()
 
-        onCpuCardsSumChanged: {
-            if(control.CPUCardsSum >= control.userCardsSum){
-                btnHold.enabled = false
-                btnHold.opacity = 0.5
-            }else{
-                btnHold.enabled = true
-                btnHold.opacity = 1
-            }
-        }
+	blackjackCards.control.onUserWon: {
+		finishRound()
+		showResultPopup(true, false)
+	}
+	blackjackCards.control.onUserLost: {
+		finishRound()
+		showResultPopup(false, false)
+	}
+	blackjackCards.control.onUserBlackJack: {
+		finishRound()
+		showResultPopup(true, true)
+	}
+	blackjackCards.control.onCpuBlackJack: {
+		finishRound()
+		showResultPopup(false, false)
+	}
 
-        onUserBlackJack: {
-            txtWin.text = "VOCÊ VENCEU"
-            txtWin.visible = true
-            btnRestart.visible = true
-        }
+	popupRoundResult.onConfirm: {
+		popupRoundResult.close()
+		blackjackCards.restart()
+		betValue.visible = true
+		roundStarted = false
+		roundFinished = false
+		resultHandled = false
+		updateActionButtons()
+	}
 
-        onUserWon: {
-            txtWin.text = "VOCÊ VENCEU"
-            txtWin.visible = true
-            btnRestart.visible = true
-        }
+	Component.onCompleted: {
+		betValue.visible = true
+		blackjackCards.restart()
+		popupRoundResult.close()
+		updateBetLimitsFromBalance()
+		updateActionButtons()
+	}
 
-        onUserLost: {
-            txtWin.visible = true
-            txtWin.text = "VOCÊ PERDEU"
-            btnRestart.visible = true
-        }
-
-        onCpuBlackJack: {
-            txtWin.visible = true
-            txtWin.text = "VOCÊ PERDEU"
-            btnRestart.visible = true
-        }
-
-        onRestartGame: {
-            btnRestart.visible = false
-            txtWin.visible = false
-        }
-
-        onReleaseBuy: {
-            btnStartGame.visible = false
-        }
-    }
-
-    Component.onCompleted: {
-        btnStartGame.visible = true
-    }
 }

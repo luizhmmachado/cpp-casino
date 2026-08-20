@@ -453,7 +453,7 @@ ApplicationWindow {
         id: blackjackPage
 
         BlackJack{
-
+            userBalance: root.userBalance
         }
     }
 

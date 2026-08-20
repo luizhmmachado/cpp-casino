@@ -45,5 +45,10 @@
         <file>ui/Components/ComponentPopupConfirmation.qml</file>
         <file>ui/Components/ComponentLoadingDesign.ui.qml</file>
         <file>ui/Components/ComponentLoading.qml</file>
+        <file>ui/pages/blackjack/BlackJackDesign.ui.qml</file>
+        <file>ui/Components/ComponentBetValueDesign.ui.qml</file>
+        <file>ui/Components/ComponentBetValue.qml</file>
+        <file>ui/pages/blackjack/BlackJackCardsDesign.ui.qml</file>
+        <file>ui/pages/blackjack/BlackJackCards.qml</file>
     </qresource>
 </RCC>
