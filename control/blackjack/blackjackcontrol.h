@@ -58,7 +58,13 @@ private slots:
     void refreshCards();
 
 private:
+    void resetDeck();
+    QString drawCard();
+    int calculateHandValue( const QStringList& hand ) const;
+    QString cardRank( const QString& cardPath ) const;
+
     QStringList _imageList;
+    QStringList _drawPile;
     QStringList _userCardsList;
     QStringList _CPUCardsList;
     int _userCardsSum;

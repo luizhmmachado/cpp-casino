@@ -10,6 +10,7 @@ Item {
     id: root
 
     property alias btnBet: btnBet
+    property alias betValue: betValue
     property int selectedIndex: -1
     property var horsesList: []
     property var horseColors: [Colors.redHorse, Colors.blueHorse, Colors.yellowHorse, Colors.greenHorse, Colors.orangehorse]
@@ -19,26 +20,41 @@ Item {
         anchors.horizontalCenter: root.horizontalCenter
         color: Colors.background
 
-        Column{
+        Flickable {
+            id: flkMain
+
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 32
+            clip: true
+            contentWidth: width
+            contentHeight: clmMain.implicitHeight
+            boundsBehavior: Flickable.StopAtBounds
+
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AlwaysOff
+            }
 
             Column{
-                width: parent.width
-                spacing: 4
+                id: clmMain
 
-                Repeater{
-                    id: repeater
-                    model: root.horsesList
+                width: flkMain.width
+                spacing: 32
 
-                    Rectangle{
-                        width: parent.width - 32
-                        height: 96
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        border.width: root.selectedIndex === index ? 4 : 2
-                        border.color: root.selectedIndex === index ? Colors.yellow100 : Colors.secondary
-                        color: "transparent"
+                Column{
+                    width: parent.width
+                    spacing: 4
+
+                    Repeater{
+                        id: repeater
+                        model: root.horsesList
+
+                        Rectangle{
+                            width: parent.width - 32
+                            height: 96
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            border.width: root.selectedIndex === index ? 4 : 2
+                            border.color: root.selectedIndex === index ? Colors.yellow100 : Colors.secondary
+                            color: "transparent"
 
                         Image{
                             id: imgHorse
@@ -155,28 +171,37 @@ Item {
                             }
                         }
 
-                        MouseArea{
-                            id: horseMouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: root.selectedIndex = index
+                            MouseArea{
+                                id: horseMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: root.selectedIndex = index
+                            }
                         }
                     }
                 }
-            }
 
-            ComponentButton {
-                id: btnBet
+                ComponentBetValue {
+                    id: betValue
 
-                enabled: selectedIndex != -1
-                componentBtnText: qsTr( "Apostar" )
+                    width: parent.width - 32
+                    height: implicitHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
 
-                anchors {
-                    top: repeater.bottom
-                horizontalCenter: parent.horizontalCenter
+                ComponentButton {
+                    id: btnBet
+
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    enabled: selectedIndex != -1 && betValue.betValid
+                    componentBtnText: qsTr( "Apostar" )
+                }
+
+                Item {
+                    width: 1
+                    height: 16
                 }
             }
         }
     }
-
 }

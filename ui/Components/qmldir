@@ -10,3 +10,5 @@ ComponentPopupConfirmation 1.0 ComponentPopupConfirmation.qml
 ComponentPopupConfirmationDesign 1.0 ComponentPopupConfirmationDesign.ui.qml
 ComponentLoading 1.0 ComponentLoading.qml
 ComponentLoadingDesign 1.0 ComponentLoadingDesign.ui.qml
+ComponentBetValue 1.0 ComponentBetValue.qml
+ComponentBetValueDesign 1.0 ComponentBetValueDesign.ui.qml

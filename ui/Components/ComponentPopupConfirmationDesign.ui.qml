@@ -62,6 +62,8 @@ Popup {
                 id: cmpTitle
 
                 componentText: titlePopup
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
             }
 
             Item {
@@ -135,7 +137,7 @@ Popup {
                     id: btnConfirm
 
                     componentBtnText: popup.componentConfirmBtnText
-                    componentWidth: (parent.width - parent.spacing) / 2
+                    componentWidth: btnCancel.visible ? (parent.width - parent.spacing) / 2 : parent.width
                     visible: popup.successText.length === 0
                     enabled: popup.canConfirm && (!popup.showInput || fldInput.componentValid)
                 }
