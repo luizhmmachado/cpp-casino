@@ -1,15 +1,5 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>images/cartas/carta1.png</file>
-        <file>images/cartas/carta2.png</file>
-        <file>images/cartas/carta3.png</file>
-        <file>images/cartas/carta4.png</file>
-        <file>images/cartas/carta5.png</file>
-        <file>images/cartas/carta6.png</file>
-        <file>images/cartas/carta7.png</file>
-        <file>images/cartas/carta8.png</file>
-        <file>images/cartas/carta9.png</file>
-        <file>images/cartas/carta10.png</file>
         <file>images/horserace/horse.svg</file>
         <file>images/horserace/star.svg</file>
         <file>images/horserace/half-star.svg</file>
@@ -29,5 +19,57 @@
         <file>images/avatar/diamond32-avatar.svg</file>
         <file>images/avatar/horse32-avatar.svg</file>
         <file>images/avatar/star32-avatar.svg</file>
+        <file>images/cards/10-clubs.png</file>
+        <file>images/cards/10-diamonds.png</file>
+        <file>images/cards/10-hearts.png</file>
+        <file>images/cards/10-spades.png</file>
+        <file>images/cards/2-clubs.png</file>
+        <file>images/cards/2-diamonds.png</file>
+        <file>images/cards/2-hearts.png</file>
+        <file>images/cards/2-spades.png</file>
+        <file>images/cards/3-clubs.png</file>
+        <file>images/cards/3-diamonds.png</file>
+        <file>images/cards/3-hearts.png</file>
+        <file>images/cards/3-spades.png</file>
+        <file>images/cards/4-clubs.png</file>
+        <file>images/cards/4-diamonds.png</file>
+        <file>images/cards/4-hearts.png</file>
+        <file>images/cards/4-spades.png</file>
+        <file>images/cards/5-clubs.png</file>
+        <file>images/cards/5-diamonds.png</file>
+        <file>images/cards/5-hearts.png</file>
+        <file>images/cards/5-spades.png</file>
+        <file>images/cards/6-clubs.png</file>
+        <file>images/cards/6-diamonds.png</file>
+        <file>images/cards/6-hearts.png</file>
+        <file>images/cards/6-spades.png</file>
+        <file>images/cards/7-clubs.png</file>
+        <file>images/cards/7-diamonds.png</file>
+        <file>images/cards/7-hearts.png</file>
+        <file>images/cards/7-spades.png</file>
+        <file>images/cards/8-clubs.png</file>
+        <file>images/cards/8-diamonds.png</file>
+        <file>images/cards/8-hearts.png</file>
+        <file>images/cards/8-spades.png</file>
+        <file>images/cards/9-clubs.png</file>
+        <file>images/cards/9-diamonds.png</file>
+        <file>images/cards/9-hearts.png</file>
+        <file>images/cards/9-spades.png</file>
+        <file>images/cards/ace-clubs.png</file>
+        <file>images/cards/ace-diamonds.png</file>
+        <file>images/cards/ace-hearts.png</file>
+        <file>images/cards/ace-spades.png</file>
+        <file>images/cards/jack-clubs.png</file>
+        <file>images/cards/jack-diamonds.png</file>
+        <file>images/cards/jack-hearts.png</file>
+        <file>images/cards/jack-spades.png</file>
+        <file>images/cards/king-clubs.png</file>
+        <file>images/cards/king-diamonds.png</file>
+        <file>images/cards/king-hearts.png</file>
+        <file>images/cards/king-spades.png</file>
+        <file>images/cards/queen-clubs.png</file>
+        <file>images/cards/queen-diamonds.png</file>
+        <file>images/cards/queen-hearts.png</file>
+        <file>images/cards/queen-spades.png</file>
     </qresource>
 </RCC>

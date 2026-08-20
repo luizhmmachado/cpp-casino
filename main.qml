@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import DataBaseControl 1.0
+import Components 1.0
 import Colors 1.0
 import Fonts 1.0
 import pages.blackjack 1.0
@@ -13,6 +14,8 @@ import pages.profile 1.0
 
 ApplicationWindow {
     id: root
+
+    signal loading( bool show )
 
     property var loaderComponent: loginPage
     property bool blockReturn: true
@@ -27,6 +30,9 @@ ApplicationWindow {
     property int userAvatarIndex: 0
     property int userAvatarColorIndex: 0
     property var avatarNames: [ "card", "crown", "diamond", "horse", "profile", "star" ]
+    property bool pageLoading: false
+    property bool requestLoading: false
+    property bool gameNavigationLocked: false
     //    visibility: "FullScreen"
     height: 960
     width: 1280
@@ -35,6 +41,28 @@ ApplicationWindow {
     title: qsTr("Pixel Casino")
 
     onLoaderComponentChanged: isNonReturnable()
+    onLoading: function(show) {
+        setRequestLoading(show)
+    }
+
+    function updateLoadingPopup() {
+        if (pageLoading || requestLoading) {
+            popupLoading.open()
+            return
+        }
+
+        popupLoading.close()
+    }
+
+    function setPageLoading(show) {
+        pageLoading = show
+        updateLoadingPopup()
+    }
+
+    function setRequestLoading(show) {
+        requestLoading = show
+        updateLoadingPopup()
+    }
 
     function saveSession() {
         sessionSettings.loggedIn = true
@@ -50,6 +78,7 @@ ApplicationWindow {
 
     function restoreSession() {
         if (!sessionSettings.loggedIn) {
+            setRequestLoading(false)
             return
         }
 
@@ -73,7 +102,7 @@ ApplicationWindow {
         root.userBirthDate = ""
         root.userAvatarIndex = 0
         root.userAvatarColorIndex = 0
-        loaderComponent = loginPage
+        navigateTo(loginPage)
     }
 
     function isNonReturnable() {
@@ -106,14 +135,24 @@ ApplicationWindow {
     function returnStartingPage() {
         isNonReturnable()
 
-        if ( blockReturn ){
+        if ( blockReturn || gameNavigationLocked ){
             return
         }
 
-        loaderComponent = startingPage
+        navigateTo(startingPage)
+    }
+
+    function navigateTo(pageComponent) {
+        if (loaderComponent === pageComponent) {
+            return
+        }
+
+        setPageLoading(true)
+        loaderComponent = pageComponent
     }
 
     Component.onCompleted: {
+        setRequestLoading(true)
         restoreSession()
     }
 
@@ -134,6 +173,8 @@ ApplicationWindow {
         id: sessionValidator
 
         onSessionValidated: function(isValid, formattedBalance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
+            setRequestLoading(false)
+
             if (!isValid) {
                 signOut()
                 return
@@ -224,7 +265,13 @@ ApplicationWindow {
                 MouseArea {
                     anchors.fill: rowProfile
 
-                    onClicked: loaderComponent = profilePage
+                    onClicked: {
+                        if (gameNavigationLocked) {
+                            return
+                        }
+
+                        navigateTo(profilePage)
+                    }
                 }
 
                 Text {
@@ -260,6 +307,18 @@ ApplicationWindow {
             sourceComponent: loaderComponent
 
             anchors.top: isLoginOrRegisterPage ? parent.top : header.bottom
+
+            onLoaded: {
+                if (pageLoading) {
+                    setPageLoading(false)
+                }
+            }
+
+            onStatusChanged: {
+                if (status === Loader.Error && pageLoading) {
+                    setPageLoading(false)
+                }
+            }
         }
 
         Rectangle {
@@ -329,14 +388,22 @@ ApplicationWindow {
             }
         }
 
+        ComponentLoading {
+            id: popupLoading
+
+            anchors.centerIn: parent
+
+            titlePopup: qsTr( "Carregando..." )
+        }
+
     }
 
     Component {
         id: startingPage
 
         StartingPage {
-            onPlayHorseRace: loaderComponent = horseracePage
-            onPlayBlackJack: loaderComponent = blackjackPage
+            onPlayHorseRace: navigateTo(horseracePage)
+            onPlayBlackJack: navigateTo(blackjackPage)
         }
     }
 
@@ -354,6 +421,7 @@ ApplicationWindow {
             userAvatarColorIndex: root.userAvatarColorIndex
 
             onSignOut: root.signOut()
+            onShowLoading: root.loading(show)
             onUserNameUpdated: {
                 root.userName = newUserName
                 saveSession()
@@ -374,17 +442,9 @@ ApplicationWindow {
         id: horseracePage
 
         HorseRaceMain{
-            horseRace.onRaceStartedChanged: {
-                if( horseRace.raceStarted ) {
-                    root.blockReturn = true
-                }
-            }
+            userBalance: root.userBalance
 
-            horseRace.onRaceFinishedChanged: {
-                if( horseRace.raceFinished ) {
-                    root.blockReturn = false
-                }
-            }
+            onNavigationLockChanged: root.gameNavigationLocked = locked
         }
     }
 
@@ -392,7 +452,9 @@ ApplicationWindow {
         id: blackjackPage
 
         BlackJack{
+            userBalance: root.userBalance
 
+            onNavigationLockChanged: root.gameNavigationLocked = locked
         }
     }
 
@@ -400,7 +462,8 @@ ApplicationWindow {
         id: loginPage
 
         LoginPage{
-            onRegister: loaderComponent = registerPage
+            onShowLoading: root.loading(show)
+            onRegister: navigateTo(registerPage)
             onSuccess: function(balance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
                 root.userBalance = balance
                 root.userName = userName
@@ -411,7 +474,7 @@ ApplicationWindow {
                 root.userAvatarIndex = avatarIndex
                 root.userAvatarColorIndex = avatarColorIndex
                 saveSession()
-                loaderComponent = startingPage
+                navigateTo(startingPage)
             }
         }
     }
@@ -420,8 +483,8 @@ ApplicationWindow {
         id: registerPage
 
         RegisterPage{
+            onShowLoading: root.loading(show)
             onSuccess: function(balance, userName, creationDate, cpf, email, birthDate, avatarIndex, avatarColorIndex) {
-                loaderComponent = startingPage
                 root.userBalance = balance
                 root.userName = userName
                 root.userCreationDate = creationDate
@@ -431,10 +494,11 @@ ApplicationWindow {
                 root.userAvatarIndex = avatarIndex
                 root.userAvatarColorIndex = avatarColorIndex
                 saveSession()
+                navigateTo(startingPage)
             }
 
             onLogin: {
-                loaderComponent = loginPage
+                navigateTo(loginPage)
             }
         }
     }

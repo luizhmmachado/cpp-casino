@@ -4,6 +4,10 @@ import Colors 1.0
 ProfilePagePasswordDesign {
     id: root
 
+    signal showLoading(bool show)
+    signal anyTextChanged()
+    property bool suppressMessageReset: false
+
     function hasUppercase(password) {
         return /[A-Z]/.test(password)
     }
@@ -45,12 +49,14 @@ ProfilePagePasswordDesign {
     }
 
     fldNewPassword.onTextChanged: {
+        root.anyTextChanged()
         root.validNewPassword = root.verifyPassword(fldNewPassword.text)
         root.updatePasswordRequirementsStatus()
         root.updateConfirmNewPasswordValidity()
     }
 
     fldConfirmNewPassword.onTextChanged: {
+        root.anyTextChanged()
         root.updateConfirmNewPasswordValidity()
     }
 
@@ -63,6 +69,7 @@ ProfilePagePasswordDesign {
     }
 
     control.onShowLoading: {
+        root.showLoading(show)
         root.isChangingPassword = show
     }
 
@@ -70,13 +77,29 @@ ProfilePagePasswordDesign {
         txtPasswordError.text = qsTr( "Senha alterada com sucesso." )
         txtPasswordError.color = Colors.success
 
+        suppressMessageReset = true
         fldActualPassword.text = ""
         fldNewPassword.text = ""
         fldConfirmNewPassword.text = ""
+        suppressMessageReset = false
     }
 
     control.onFail: {
         txtPasswordError.text = msg
         txtPasswordError.color = Colors.error
+    }
+
+    fldActualPassword.onTextChanged: root.anyTextChanged()
+
+    onAnyTextChanged: {
+        if (suppressMessageReset) {
+            return
+        }
+
+        if (fldActualPassword.text === "" && fldNewPassword.text === "" && fldConfirmNewPassword.text === "") {
+            return
+        }
+
+        txtPasswordError.text = ""
     }
 }

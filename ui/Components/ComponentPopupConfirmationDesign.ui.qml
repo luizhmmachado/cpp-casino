@@ -58,88 +58,90 @@ Popup {
             width: parent.width
             spacing: 16
 
-        ComponentTitle {
-            id: cmpTitle
+            ComponentTitle {
+                id: cmpTitle
 
-            componentText: titlePopup
-        }
-
-        Item {
-            width: 1
-            height: 32
-        }
-
-        Text {
-            width: parent.width
-            wrapMode: Text.WordWrap
-            height: contentHeight
-            font: Fonts.text8bit
-            color: Colors.yellow100
-            horizontalAlignment: Text.AlignHCenter
-            lineHeight: 1.5
-            lineHeightMode: Text.ProportionalHeight
-            text: componentText
-        }
-
-        Column {
-            id: clmExtraContent
-
-            width: parent.width
-            spacing: 16
-        }
-
-        ComponentField {
-            id: fldInput
-
-            visible: popup.showInput
-            componentWidth: parent.width
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Text {
-            width: parent.width
-            visible: popup.errorText.length > 0
-            wrapMode: Text.WordWrap
-            font: Fonts.secondaryText8bit
-            color: Colors.error
-            horizontalAlignment: Text.AlignHCenter
-            text: popup.errorText
-        }
-
-        Text {
-            width: parent.width
-            visible: popup.successText.length > 0
-            wrapMode: Text.WordWrap
-            font: Fonts.secondaryText8bit
-            color: Colors.success
-            horizontalAlignment: Text.AlignHCenter
-            text: popup.successText
-        }
-
-        Row {
-            id: rowButtons
-            width: parent.width
-            spacing: 32
-
-            ComponentButton {
-                id: btnCancel
-
-                componentBtnText: popup.successText.length > 0 ? qsTr( "Fechar" ) : popup.componentCancelBtnText
-                componentWidth: popup.successText.length > 0 ? parent.width : (parent.width - parent.spacing) / 2
-                visible: popup.canCancel || popup.successText.length > 0
-                componentBorderColor: Colors.error
-                componentTextColor: Colors.error
+                componentText: titlePopup
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
             }
 
-            ComponentButton {
-                id: btnConfirm
+            Item {
+                width: 1
+                height: 32
+            }
 
-                componentBtnText: popup.componentConfirmBtnText
-                componentWidth: (parent.width - parent.spacing) / 2
-                visible: popup.successText.length === 0
-                enabled: popup.canConfirm && (!popup.showInput || fldInput.componentValid)
+            Text {
+                width: parent.width
+                wrapMode: Text.WordWrap
+                height: contentHeight
+                font: Fonts.text8bit
+                color: Colors.yellow100
+                horizontalAlignment: Text.AlignHCenter
+                lineHeight: 1.5
+                lineHeightMode: Text.ProportionalHeight
+                text: componentText
+            }
+
+            Column {
+                id: clmExtraContent
+
+                width: parent.width
+                spacing: 16
+            }
+
+            ComponentField {
+                id: fldInput
+
+                visible: popup.showInput
+                componentWidth: parent.width
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                width: parent.width
+                visible: popup.errorText.length > 0
+                wrapMode: Text.WordWrap
+                font: Fonts.secondaryText8bit
+                color: Colors.error
+                horizontalAlignment: Text.AlignHCenter
+                text: popup.errorText
+            }
+
+            Text {
+                width: parent.width
+                visible: popup.successText.length > 0
+                wrapMode: Text.WordWrap
+                font: Fonts.secondaryText8bit
+                color: Colors.success
+                horizontalAlignment: Text.AlignHCenter
+                text: popup.successText
+            }
+
+            Row {
+                id: rowButtons
+                width: parent.width
+                spacing: 32
+
+                ComponentButton {
+                    id: btnCancel
+
+                    componentBtnText: popup.successText.length > 0 ? qsTr( "Fechar" ) : popup.componentCancelBtnText
+                    componentWidth: popup.successText.length > 0 ? parent.width : (parent.width - parent.spacing) / 2
+                    visible: popup.canCancel || popup.successText.length > 0
+                    componentBorderColor: Colors.error
+                    componentTextColor: Colors.error
+                }
+
+                ComponentButton {
+                    id: btnConfirm
+
+                    componentBtnText: popup.componentConfirmBtnText
+                    componentWidth: btnCancel.visible ? (parent.width - parent.spacing) / 2 : parent.width
+                    visible: popup.successText.length === 0
+                    enabled: popup.canConfirm && (!popup.showInput || fldInput.componentValid)
+                }
             }
         }
-    }
     }
 }

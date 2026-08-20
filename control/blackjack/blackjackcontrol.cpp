@@ -3,30 +3,41 @@
 #include <QRandomGenerator>
 #include <QDebug>
 
+namespace {
+const QStringList kSuits = { "clubs", "diamonds", "hearts", "spades" };
+const QStringList kRanks = { "ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king" };
+constexpr int kDecksInShoe = 8;
+}
+
 BlackJackControl::BlackJackControl() :
     _userCardsSum( 0 ),
     _CPUCardsSum( 0 ),
     _userHeld( false ) {
-    _imageList = QStringList( {
-        "qrc:/resources/images/cartas/carta1.png",
-        "qrc:/resources/images/cartas/carta2.png",
-        "qrc:/resources/images/cartas/carta3.png",
-        "qrc:/resources/images/cartas/carta4.png",
-        "qrc:/resources/images/cartas/carta5.png",
-        "qrc:/resources/images/cartas/carta6.png",
-        "qrc:/resources/images/cartas/carta7.png",
-        "qrc:/resources/images/cartas/carta8.png",
-        "qrc:/resources/images/cartas/carta9.png",
-        "qrc:/resources/images/cartas/carta10.png",
-        "qrc:/resources/images/cartas/carta10.png",
-        "qrc:/resources/images/cartas/carta10.png",
-        "qrc:/resources/images/cartas/carta10.png"
-    } );
+    for ( const QString& suit : kSuits ) {
+        for ( const QString& rank : kRanks ) {
+            _imageList.push_back( "qrc:/resources/images/cards/" + rank + "-" + suit + ".png" );
+        }
+    }
+
+    resetDeck();
 }
 
 void BlackJackControl::startGame() {
-    buy();
-    buy();
+    const QString userCard1 = drawCard();
+    const QString cpuCard1 = drawCard();
+    const QString userCard2 = drawCard();
+    const QString cpuCard2 = drawCard();
+
+    _userCardsList.push_back( userCard1 );
+    _CPUCardsList.push_back( cpuCard1 );
+    _userCardsList.push_back( userCard2 );
+    _CPUCardsList.push_back( cpuCard2 );
+
+    _userCardsSum = calculateHandValue( _userCardsList );
+    _CPUCardsSum = calculateHandValue( _CPUCardsList );
+
+    checkWinner();
+    refreshCards();
 
     emit releaseBuy();
 }
@@ -41,26 +52,15 @@ void BlackJackControl::buy() {
 
     qInfo() << "BlackJackControl::buy";
 
-    int indiceUser = cardIndex();
-    if ( indiceUser >= 9 ) {
-        indiceUser = 9;
-    }
-    int indiceCPU = cardIndex();
-    if ( indiceCPU >= 9 ) {
-        indiceCPU = 9;
+    if ( _userHeld ) {
+        return;
     }
 
-    _userCardsList.push_back( _imageList[indiceUser] );
-    _userCardsSum += indiceUser + 1;
+    const QString userCard = drawCard();
+
+    _userCardsList.push_back( userCard );
+    _userCardsSum = calculateHandValue( _userCardsList );
     qDebug() << _userCardsSum;
-
-    if ( _CPUCardsSum <= 17 && _CPUCardsSum < _userCardsSum && _userCardsSum < 21 ) {
-
-        _CPUCardsList.push_back( _imageList[indiceCPU] );
-        _CPUCardsSum += indiceCPU + 1;
-        qDebug() << _CPUCardsSum;
-
-    }
 
     checkWinner();
 
@@ -74,6 +74,9 @@ void BlackJackControl::clearCardsList() {
     _userCardsSum = 0;
     _CPUCardsList.clear();
     _CPUCardsSum = 0;
+    _userHeld = false;
+
+    resetDeck();
 
     refreshCards();
 }
@@ -84,32 +87,14 @@ void BlackJackControl::userHold() {
 
     _userHeld = true;
 
-    if ( _CPUCardsSum <= 17 && _CPUCardsSum < _userCardsSum ) {
-        int indiceCPU = cardIndex();
+    while ( _CPUCardsSum <= 17 && _CPUCardsSum < _userCardsSum && _userCardsSum <= 21 ) {
+        const QString cpuCard = drawCard();
 
-        if ( indiceCPU >= 9 ) {
-            indiceCPU = 9;
-        }
-
-        _CPUCardsList.push_back( _imageList[indiceCPU] );
-        _CPUCardsSum += indiceCPU + 1;
-
-        checkWinner();
-
-        emit cpuCardsSumChanged();
-        emit CPUCardsListChanged();
-
-    }else if ( _CPUCardsSum <= 17 && _CPUCardsSum >= _userCardsSum ) {
-        return;
-    }else{
-        if ( _CPUCardsSum <= _userCardsSum ) {
-            qInfo() << "BlackJackControl::userHold Usuário ganhou porque tem uma soma maior que a casa";
-            emit userWon();
-        }else{
-            qInfo() << "BlackJackControl::userHold Usuário perdei porque tem uma soma menor que a casa";
-            emit userLost();
-        }
+        _CPUCardsList.push_back( cpuCard );
+        _CPUCardsSum = calculateHandValue( _CPUCardsList );
     }
+
+    checkWinner();
 
     refreshCards();
 
@@ -164,31 +149,40 @@ void BlackJackControl::checkWinner() {
 
     refreshCards();
 
-    if ( _userHeld ) {
-        if ( _CPUCardsSum>= _userCardsSum ) {
-            qInfo() << "BlackJackControl::checkWinner Usuário perdeu após segurar a mão e ter uma soma menor que a casa";
-            emit userLost();
-        }
-    }
-
     if ( _userCardsSum > 21 ) {
         qInfo() << "BlackJackControl::checkWinner Usuário perdeu por estourar a mão";
         emit userLost();
+        return;
     }
 
     if ( _userCardsSum == 21 ) {
         qInfo() << "BlackJackControl::checkWinner Usuário venceu por BlackJack";
         emit userBlackJack();
+        return;
     }
 
     if ( _CPUCardsSum > 21 ) {
         qInfo() << "BlackJackControl::checkWinner Usuário venceu porque a casa estourou a mão";
         emit userWon();
+        return;
     }
 
     if ( _CPUCardsSum == 21 ) {
         qInfo() << "BlackJackControl::checkWinner Usuário perdeu porque a casa tem BlackJack";
         emit cpuBlackJack();
+        return;
+    }
+
+    if ( _userHeld ) {
+        if ( _CPUCardsSum >= _userCardsSum ) {
+            qInfo() << "BlackJackControl::checkWinner Usuário perdeu após segurar a mão e ter uma soma menor que a casa";
+            emit userLost();
+            return;
+        }
+
+        qInfo() << "BlackJackControl::checkWinner Usuário ganhou porque tem uma soma maior que a casa";
+        emit userWon();
+        return;
     }
 
     qInfo() << "BlackJackControl::checkWinner";
@@ -206,4 +200,64 @@ void BlackJackControl::refreshCards() {
     emit cpuCardsSumChanged();
 
     qInfo() << "BlackJackControl::refreshCards";
+}
+
+void BlackJackControl::resetDeck() {
+    _drawPile.clear();
+    _drawPile.reserve( _imageList.size() * kDecksInShoe );
+
+    for ( int i = 0; i < kDecksInShoe; ++i ) {
+        _drawPile += _imageList;
+    }
+}
+
+QString BlackJackControl::drawCard() {
+    if ( _drawPile.isEmpty() ) {
+        resetDeck();
+    }
+
+    const int index = QRandomGenerator::global()->bounded( _drawPile.size() );
+    const QString card = _drawPile.at( index );
+
+    _drawPile.removeAt( index );
+
+    return card;
+}
+
+int BlackJackControl::calculateHandValue( const QStringList& hand ) const {
+    int total = 0;
+    int aces = 0;
+    bool hasFaceCard = false;
+
+    for ( const QString& card : hand ) {
+        const QString rank = cardRank( card );
+
+        if ( rank == "ace" ) {
+            aces++;
+            total += 1;
+            continue;
+        }
+
+        if ( rank == "jack" || rank == "queen" || rank == "king" ) {
+            hasFaceCard = true;
+            total += 10;
+            continue;
+        }
+
+        const int numericValue = rank.toInt();
+        total += numericValue;
+    }
+
+    if ( aces > 0 && hasFaceCard && total + 10 <= 21 ) {
+        total += 10;
+    }
+
+    return total;
+}
+
+QString BlackJackControl::cardRank( const QString& cardPath ) const {
+    const QString fileName = cardPath.section( '/', -1 );
+    const QString rankWithSuit = fileName.section( '.', 0, 0 );
+
+    return rankWithSuit.section( '-', 0, 0 );
 }

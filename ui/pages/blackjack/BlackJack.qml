@@ -1,235 +1,152 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import BlackJackControl 1.0
-import Colors 1.0
-import Fonts 1.0
-import Components 1.0
 
-Item {
-    anchors.fill: parent
-    property real cardsLabelWidth: Math.max( lblYourCards.implicitWidth, lblCPUCards.implicitWidth )
+BlackJackDesign {
+	id: root
 
-    Rectangle {
-        anchors.fill: parent
-        color: Colors.background
-    }
+	property bool roundStarted: false
+	property bool roundFinished: false
+	property bool resultHandled: false
 
-    Column {
-        id: mainClm
+	signal navigationLockChanged(bool locked)
 
-        anchors.fill: parent
-        spacing: 32
-        padding: 20
-        anchors.verticalCenter: parent.verticalCenter
+	function formatBalance(value) {
+		var integerValue = Math.max(0, Math.floor(value))
+		var raw = integerValue.toString()
+		var grouped = ""
 
-        Row{
-            spacing: 16
-            height: 100
-            width: parent.width
+		while (raw.length > 3) {
+			grouped = "." + raw.slice(raw.length - 3) + grouped
+			raw = raw.slice(0, raw.length - 3)
+		}
 
-            Label{
-                id: lblYourCards
-                text: qsTr( "Suas Cartas: " + control.userCardsSum )
-                font: Fonts.text8bit
-                color: Colors.textColor
-                width: cardsLabelWidth
-            }
+		grouped = raw + grouped
 
-            ListView {
-                id:listViewYourCards
+		return "R$ " + grouped + ",00"
+	}
 
-                interactive: false
-                spacing: 16
-                height: 100
-                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
-                clip: true
-                model: control.userCardsList
-                orientation: ListView.Horizontal
+	function calculateRoundDelta(multiplier) {
+		return betValue.betValue * multiplier
+	}
 
-                delegate: Image {
-                    height: 100
-                    width: 75
-                    source: modelData
-                }
-            }
-        }
+	function showResultPopup(didWin, isBlackJack) {
+		if (resultHandled)
+			return
 
-        Row{
-            spacing: 16
-            height: 100
-            width: parent.width
+		resultHandled = true
+		roundStarted = false
+		roundFinished = true
 
-            Label{
-                id: lblCPUCards
-                text: qsTr("Cartas da casa: " + control.CPUCardsSum)
-                font: Fonts.text8bit
-                color: Colors.textColor
-                width: cardsLabelWidth
-            }
+		var multiplier = didWin ? (isBlackJack ? 3 : 2) : -1
+		var delta = calculateRoundDelta(multiplier)
+		var amountText = formatBalance(Math.abs(delta))
 
-            ListView {
-                id:listViewCPUCards
-                interactive: false
-                spacing: 16
-                height: 100
-                width: Math.max( 0, parent.width - cardsLabelWidth - parent.spacing )
-                clip: true
-                model: control.CPUCardsList
-                orientation: ListView.Horizontal
+		popupRoundResult.titlePopup = didWin
+			? (isBlackJack ? qsTr("BLACKJACK!") : qsTr("VOCÊ VENCEU"))
+			: qsTr("VOCÊ PERDEU")
+		popupRoundResult.componentText = didWin
+			? qsTr("%1 foram adicionados ao seu saldo.").arg(amountText)
+			: qsTr("%1 foram removidos do seu saldo.").arg(amountText)
+		popupRoundResult.open()
 
-                delegate: Image {
-                    height: 100
-                    width: 75
-                    source: modelData
-                }
-            }
-        }
+		btnBuy.enabled = false
+		btnHold.enabled = false
+	}
 
-        Rectangle {
-            id: btnStartGame
-            radius: 5
-            width: parent.width / 2
-            height: 32
-            color: Colors.primary
-            Text {
-                anchors.centerIn: parent
-                text: "Começar Jogo"
-                font: Fonts.text8bit
-                color: Colors.textColor
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    control.startGame()
-                }
-            }
-        }
+	function updateActionButtons() {
+		betValue.updateBetLimits()
+		var canStartRound = betValue.betValue > betValue.minBet && betValue.betValue <= betValue.effectiveMaxBet
+		var canBuyCard = roundStarted && !roundFinished && blackjackCards.control.userCardsSum < 21
+		var canHoldHand = roundStarted && !roundFinished
+						  && blackjackCards.control.userCardsSum < 21
+						  && blackjackCards.control.CPUCardsSum < blackjackCards.control.userCardsSum
 
-        Row {
-            visible: !btnStartGame.visible
-            spacing: 16
-            anchors.horizontalCenter: parent.horizontalCenter
+		btnBuy.enabled = roundStarted ? canBuyCard : canStartRound
+		btnHold.enabled = canHoldHand
+	}
 
-            ComponentButton {
-                id: btnBuy
+	function startRound() {
+		blackjackCards.restart()
+		roundStarted = true
+		roundFinished = false
+		resultHandled = false
+		betValue.visible = false
+		navigationLockChanged(true)
+		blackjackCards.startGame()
+		updateActionButtons()
+	}
 
-                componentBtnText: qsTr( "Comprar" )
-                onClicked: {
-                    control.buy()
-                }
-            }
+	function finishRound() {
+		roundStarted = false
+		roundFinished = true
+		updateActionButtons()
+	}
 
-            ComponentButton {
-                id: btnHold
+	btnBuy.onClicked: {
+		if (!roundStarted) {
+			startRound()
+			return
+		}
 
-                componentBtnText: qsTr( "Hold" )
-                onClicked: {
-                    control.userHold()
-                }
-            }
-        }
-        Text {
-            id: txtWin
+		blackjackCards.buy()
+		updateActionButtons()
+	}
 
-            visible: false
-            text: "VOCÊ VENCEU"
-            font: Fonts.title8bit
-            color: Colors.yellow100
+	btnHold.onClicked: {
+		if (!btnHold.enabled) {
+			return
+		}
 
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+		blackjackCards.hold()
+		updateActionButtons()
+	}
 
-        Rectangle {
-            id: btnRestart
-            radius: 5
-            width: 256
-            height: 48
-            color: Colors.secondary
-            visible: false
+	betValue.onBetValueChangedByUser: updateActionButtons()
+	betValue.onBetValueChanged: updateActionButtons()
+	betValue.onBetValidChanged: updateActionButtons()
+	betValue.onEffectiveMaxBetChanged: updateActionButtons()
+	betValue.onAvailableBalanceChanged: updateActionButtons()
+	onUserBalanceChanged: updateActionButtons()
+	blackjackCards.control.onUserCardsSumChanged: updateActionButtons()
+	blackjackCards.control.onCpuCardsSumChanged: updateActionButtons()
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                anchors.centerIn: parent
-                text: "Play Again"
-                font: Fonts.text8bit
-                color: Colors.textColor
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    control.onRestartGame()
-                }
-            }
-        }
-    }
+	blackjackCards.control.onUserWon: {
+		finishRound()
+		showResultPopup(true, false)
+	}
+	blackjackCards.control.onUserLost: {
+		finishRound()
+		showResultPopup(false, false)
+	}
+	blackjackCards.control.onUserBlackJack: {
+		finishRound()
+		showResultPopup(true, true)
+	}
+	blackjackCards.control.onCpuBlackJack: {
+		finishRound()
+		showResultPopup(false, false)
+	}
 
+	popupRoundResult.onConfirm: {
+		popupRoundResult.close()
+		blackjackCards.restart()
+		betValue.visible = true
+		roundStarted = false
+		roundFinished = false
+		resultHandled = false
+		navigationLockChanged(false)
+		updateActionButtons()
+	}
 
-    BlackJackControl {
-        id: control
+	Component.onCompleted: {
+		betValue.visible = true
+		blackjackCards.restart()
+		popupRoundResult.close()
+		navigationLockChanged(false)
+		updateActionButtons()
+		Qt.callLater(function() {
+			betValue.applyBetValue(betValue.betValue)
+			updateActionButtons()
+		})
+	}
 
-        onUserCardsSumChanged: {
-            if(control.CPUCardsSum >= control.userCardsSum){
-                btnHold.enabled = false
-                btnHold.opacity = 0.5
-            }else{
-                btnHold.enabled = true
-                btnHold.opacity = 1
-            }
-
-            if (control.userCardsSum >= 21 ) {
-                btnBuy.enabled = false
-                btnBuy.opacity = 0.5
-            }else{
-                btnBuy.enabled = true
-                btnBuy.opacity = 1
-            }
-        }
-
-        onCpuCardsSumChanged: {
-            if(control.CPUCardsSum >= control.userCardsSum){
-                btnHold.enabled = false
-                btnHold.opacity = 0.5
-            }else{
-                btnHold.enabled = true
-                btnHold.opacity = 1
-            }
-        }
-
-        onUserBlackJack: {
-            txtWin.text = "VOCÊ VENCEU"
-            txtWin.visible = true
-            btnRestart.visible = true
-        }
-
-        onUserWon: {
-            txtWin.text = "VOCÊ VENCEU"
-            txtWin.visible = true
-            btnRestart.visible = true
-        }
-
-        onUserLost: {
-            txtWin.visible = true
-            txtWin.text = "VOCÊ PERDEU"
-            btnRestart.visible = true
-        }
-
-        onCpuBlackJack: {
-            txtWin.visible = true
-            txtWin.text = "VOCÊ PERDEU"
-            btnRestart.visible = true
-        }
-
-        onRestartGame: {
-            btnRestart.visible = false
-            txtWin.visible = false
-        }
-
-        onReleaseBuy: {
-            btnStartGame.visible = false
-        }
-    }
-
-    Component.onCompleted: {
-        btnStartGame.visible = true
-    }
 }

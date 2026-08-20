@@ -14,6 +14,7 @@ Item {
     property bool countdownRunning: false
     property string countdownText: ""
     property int horseWinner: -1
+    property int selectedIndex: -1
 
     property alias countdownAnimation: countdownAnimation
     property alias countdownTimer: countdownTimer
@@ -24,14 +25,29 @@ Item {
         anchors.fill: parent
         color: Colors.background
 
-        Column {
+        Flickable {
+            id: flkMain
+
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 32
+            clip: true
+            contentWidth: width
+            contentHeight: clmMain.implicitHeight
+            boundsBehavior: Flickable.StopAtBounds
 
-            Item {
-                width: parent.width
-                height: root.horsesList.length * 96
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AlwaysOff
+            }
+
+            Column {
+                id: clmMain
+
+                width: flkMain.width
+                spacing: 32
+
+                Item {
+                    width: parent.width
+                    height: root.horsesList.length * 96
 
                 Column {
                     width: parent.width
@@ -62,6 +78,13 @@ Item {
                             property real progress: 0
                             property real raceStartX: 8
                             property real raceEndX: horseTrack.width - finishLine.width - 32
+                            property real phaseOneProgress: 0.16 + Math.random() * 0.14
+                            property real phaseTwoProgress: 0.60 + Math.random() * 0.20
+                            property real phaseOneFactor: 0.34 + Math.random() * 0.14
+                            property real phaseTwoFactor: 0.26 + Math.random() * 0.18
+                            property int phaseOneDuration: Math.max( 200, Math.round( horseTrack.raceDuration * horseTrack.phaseOneFactor ) )
+                            property int phaseTwoDuration: Math.max( 250, Math.round( horseTrack.raceDuration * horseTrack.phaseTwoFactor ) )
+                            property int phaseThreeDuration: Math.max( 300, horseTrack.raceDuration - horseTrack.phaseOneDuration - horseTrack.phaseTwoDuration )
 
                             Image {
                                 id: imgHorse
@@ -114,16 +137,37 @@ Item {
                                 }
                             }
 
-                            NumberAnimation {
+                            SequentialAnimation {
                                 id: raceAnimation
 
-                                target: horseTrack
-
-                                property: "progress"
-                                from: 0
-                                to: 1
-                                duration: horseTrack.raceDuration
                                 running: root.raceStarted
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: 0
+                                    to: horseTrack.phaseOneProgress
+                                    duration: horseTrack.phaseOneDuration
+                                    easing.type: Easing.InOutSine
+                                }
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: horseTrack.phaseOneProgress
+                                    to: horseTrack.phaseTwoProgress
+                                    duration: horseTrack.phaseTwoDuration
+                                    easing.type: Easing.OutInQuad
+                                }
+
+                                NumberAnimation {
+                                    target: horseTrack
+                                    property: "progress"
+                                    from: horseTrack.phaseTwoProgress
+                                    to: 1
+                                    duration: horseTrack.phaseThreeDuration
+                                    easing.type: Easing.OutQuad
+                                }
 
                                 onFinished: horseWinner = index
                             }
@@ -131,8 +175,8 @@ Item {
                     }
                 }
 
-                Grid {
-                    id: finishLine
+                    Grid {
+                        id: finishLine
 
                     width: 16
                     height: parent.height
@@ -154,6 +198,7 @@ Item {
 
                             color: (index + Math.floor(index / 2)) % 2 === 0 ? Colors.white : Colors.black
                          }
+                    }
                     }
                 }
             }

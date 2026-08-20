@@ -1,3 +1,6 @@
 module pages.blackjack
 
 BlackJack 1.0 BlackJack.qml
+BlackJackDesign 1.0 BlackJackDesign.ui.qml
+BlackJackCards 1.0 BlackJackCards.qml
+BlackJackCardsDesign 1.0 BlackJackCardsDesign.ui.qml

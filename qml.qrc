@@ -16,8 +16,6 @@
         <file>ui/pages/horserace/HorseSelection.qml</file>
         <file>ui/pages/horserace/HorseRace.qml</file>
         <file>ui/pages/horserace/HorseRaceDesign.ui.qml</file>
-        <file>ui/pages/horserace/HorseRacePopup.qml</file>
-        <file>ui/pages/horserace/HorseRacePopupDesign.ui.qml</file>
         <file>ui/pages/startingpage/qmldir</file>
         <file>ui/pages/startingpage/StartingPage.qml</file>
         <file>ui/pages/startingpage/StartingPageDesign.ui.qml</file>
@@ -43,5 +41,12 @@
         <file>ui/pages/profile/ProfilePagePassword.qml</file>
         <file>ui/Components/ComponentPopupConfirmationDesign.ui.qml</file>
         <file>ui/Components/ComponentPopupConfirmation.qml</file>
+        <file>ui/Components/ComponentLoadingDesign.ui.qml</file>
+        <file>ui/Components/ComponentLoading.qml</file>
+        <file>ui/pages/blackjack/BlackJackDesign.ui.qml</file>
+        <file>ui/Components/ComponentBetValueDesign.ui.qml</file>
+        <file>ui/Components/ComponentBetValue.qml</file>
+        <file>ui/pages/blackjack/BlackJackCardsDesign.ui.qml</file>
+        <file>ui/pages/blackjack/BlackJackCards.qml</file>
     </qresource>
 </RCC>

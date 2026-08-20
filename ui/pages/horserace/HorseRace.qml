@@ -21,6 +21,7 @@ HorseRaceDesign {
             return;
         }
 
+        raceFinished = true
         raceStarted = false
         finished( horseWinner )
     }
